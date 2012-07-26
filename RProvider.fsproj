@@ -51,6 +51,7 @@
     <Compile Include="RInterop.fs" />
     <Compile Include="RProvider.fs" />
     <Content Include="HowToBuild.txt" />
+    <None Include="example.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
