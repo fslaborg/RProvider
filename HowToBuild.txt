@@ -1,0 +1,6 @@
+﻿RProvider requires a reference to RDotNet - http://rdotnet.codeplex.com/.  This is not included in the repo because it is covered by LGPL.
+
+Please download the tip version of RDotNet from here: http://rdotnet.codeplex.com/SourceControl/list/changesets.  
+Place binaries in the References subdirectory of this project, and then build.
+
+We hope to make this simpler in the future!
