@@ -30,9 +30,10 @@ let getStockPrices stock count =
               yield float infos.[4] }
     |> Seq.take count |> Array.ofSeq |> Array.rev
 
+//retrieve stock price time series and compute returns
 let msft = getStockPrices "MSFT" 255 |> R.log |> R.diff 
  
-//compute the autocorrelation of msft stock prices
+//compute the autocorrelation of msft stock returns
 let a = R.acf(msft)
 
 //lets see if the msft returns are stationary/non-unit root
