@@ -6,9 +6,8 @@ An F# type provider for interoperating with [R](http://www.r-project.org/).
 
 License
 =======
-BSD license.
+FSharpRProvider is covered by the BSD license.
 
-Building
-=======
-RProvider requires a copy of RDotNet.  Since this is covered by LGPL it is not included in this project.  
-Please follow the instructions in HowToBuild.txt in order to build.
+The library uses [RDotNet](http://rdotnet.codeplex.com/)which is covered by the LGPL.  Please see LICENSE.md for details.  You can access the source to RDotNet from the [RDotNet CodePlex site](http://rdotnet.codeplex.com/).  As per the terms of LGPL, should you be unable to obtain the source we would be happy to provide a copy.
+
+
