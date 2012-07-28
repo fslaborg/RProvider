@@ -7,6 +7,13 @@ What does it do?
 ================
 The R Provider discovers R packages that are available in your R installation and makes them available as .NET namespaces underneath the parent namespace RProvider.  For example, the stats package is available as RProvider.stats.  If you open the namespaces you want to use, functions and values will be available as R.name.  For example:
 
+````
+open namespace R.``base``
+
+let v = R.c(1,2,3)
+````
+
+
 
 
 License
