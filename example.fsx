@@ -6,6 +6,7 @@ open RProvider
 open RProvider.``base``
 open RProvider.graphics
 open RProvider.stats
+// If either of the namespaces below are unrecognized, you need to install the package in R
 open RProvider.tseries
 open RProvider.zoo
  
