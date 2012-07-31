@@ -33,15 +33,12 @@ let getStockPrices stock count =
 
 //retrieve stock price time series and compute returns
 let msft = getStockPrices "MSFT" 255 |> R.log |> R.diff 
-
+ 
 //compute the autocorrelation of msft stock returns
 let a = R.acf(msft)
 
 //lets see if the msft returns are stationary/non-unit root
 let adf = R.adf_test(msft) 
-adf.AsList().ToPairlist().Value
-
-let l = R.list(1,2,324)
 
 //lets look at some pair plots
 let tickers = [ "MSFT"; "AAPL"; "X"; "VXX"; "SPX"; "GLD" ]
