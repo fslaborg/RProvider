@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ProvidedTypes-0.2.fsi" />
     <Compile Include="ProvidedTypes-0.2.fs" />
+    <Compile Include="CharacterDeviceInterceptor.fs" />
     <Compile Include="RInterop.fs" />
     <Compile Include="RProvider.fs" />
     <None Include="example.fsx" />

@@ -50,7 +50,9 @@ module Helpers =
     let (|Expression|_|)    (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.ExpressionVector then Some(sexp.AsExpression()) else None
     let (|Language|_|)      (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.LanguageObject then Some(sexp.AsLanguage()) else None
     let (|List|_|)          (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.List then Some(sexp.AsList()) else None     
+    let (|Pairlist|_|)      (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.Pairlist then Some(sexp :?> Pairlist) else None     
     let (|Null|_|)          (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.Null then Some() else None
+    let (|Symbol|_|)        (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.Symbol then Some(sexp.AsSymbol()) else None
 
 module internal RInteropInternal =
     type RParameter = {
@@ -65,6 +67,8 @@ module internal RInteropInternal =
         | Value
 
     open Microsoft.Win32
+
+    let characterDevice = new CharacterDeviceInterceptor()
 
     // If the registry is set up, use that for configuring the path
     let rCore = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\R-core")
@@ -82,7 +86,7 @@ module internal RInteropInternal =
         Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
 
     let engine = REngine.CreateInstance("RProvider")
-    do engine.Initialize()
+    do engine.Initialize(null, characterDevice)
 
     let private mefContainer = 
         lazy
@@ -160,8 +164,10 @@ module internal RInteropInternal =
         | IntegerVector(v) ->       wrap <| v.ToArray()
         | LogicalVector(v) ->       wrap <| v.ToArray()
         | NumericVector(v) ->       wrap <| v.ToArray()
-        | List(v) ->                wrap <| v.ToPairlist()
+        | List(v) ->                wrap <| v
+        | Pairlist(pl) ->           wrap <| (pl |> Seq.map (fun sym -> sym.PrintName, sym.AsSymbol().Value))
         | Null() ->                 wrap <| null
+        | Symbol(s) ->              wrap <| (s.PrintName, s.Value)
         | _ ->                      None
 
     let internal defaultConvertFromR (sexp: SymbolicExpression) : obj =
@@ -328,3 +334,7 @@ module RInterop =
             let expr = sprintf "%s::%s" packageName funcName
             eval expr
 
+    let sexpToString (sexp: SymbolicExpression) : string =
+        characterDevice.BeginCapture()
+        call "base" "print" [| sexp |] [| |] |> ignore
+        characterDevice.EndCapture()
