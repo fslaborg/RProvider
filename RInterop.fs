@@ -334,7 +334,12 @@ module RInterop =
             let expr = sprintf "%s::%s" packageName funcName
             eval expr
 
-    let sexpToString (sexp: SymbolicExpression) : string =
-        characterDevice.BeginCapture()
-        call "base" "print" [| sexp |] [| |] |> ignore
-        characterDevice.EndCapture()
+
+[<AutoOpen>]
+module RDotNetExtensions2 = 
+    type RDotNet.SymbolicExpression with
+        /// Call the R print function and return output as a string
+        member this.Print() : string = 
+            characterDevice.BeginCapture()
+            RInterop.call "base" "print" [| this |] [| |] |> ignore
+            characterDevice.EndCapture()

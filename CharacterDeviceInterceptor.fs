@@ -11,9 +11,9 @@ type CharacterDeviceInterceptor() =
     interface ICharacterDevice with
         override this.WriteConsole(output, length, outputType) = 
             if sb <> null then
-                sb.AppendLine(output) |> ignore
-
-            base.WriteConsole(output, length, outputType)
+                sb.Append(output) |> ignore
+            else
+                base.WriteConsole(output, length, outputType)
 
     member this.BeginCapture() =
         sb <- new StringBuilder()
