@@ -24,6 +24,8 @@ How to use it
 =============
 There is a lot of info on how to use the provider on our [how to page](https://github.com/BlueMountainCapital/FSharpRProvider/wiki/How-To).
 
+For other information, check out the other pages on the [wiki](https://github.com/BlueMountainCapital/FSharpRProvider/wiki).
+
 License
 =======
 FSharpRProvider is covered by the BSD license.
