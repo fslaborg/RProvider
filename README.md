@@ -20,6 +20,10 @@ This creates an R numeric vector containing 1,2,3, and names it v.  Note that we
 
 And because type providers are used by the Visual Studio IDE, you will get intellisense for R functions.  You will also get compile-time type-checking that the function exists.
 
+How to use it
+=============
+There is a lot of info on how to use the provider on our [how to page](https://github.com/BlueMountainCapital/FSharpRProvider/wiki/How-To).
+
 License
 =======
 FSharpRProvider is covered by the BSD license.
@@ -29,6 +33,7 @@ The library uses [RDotNet](http://rdotnet.codeplex.com/) which is covered by the
 Pre-requisites
 ==============
 The R Provider requires an installation of R for Windows, downloadable from [here](http://cran.cnr.berkeley.edu/bin/windows/base/).  RProvider uses the R registry key SOFTWARE\R-core to locate the R binary directory, in order to load R.dll.  It will also locate R.dll if it is on the path.  If run from a 32-bit process, RProvider will use the 32-bit R.DLL, and if run from a 64-bit process, it will load the 64-bit version.
+
 
  
 
