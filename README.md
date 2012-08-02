@@ -36,6 +36,8 @@ Pre-requisites
 ==============
 The R Provider requires an installation of R for Windows, downloadable from [here](http://cran.cnr.berkeley.edu/bin/windows/base/).  RProvider uses the R registry key SOFTWARE\R-core to locate the R binary directory, in order to load R.dll.  It will also locate R.dll if it is on the path.  If run from a 32-bit process, RProvider will use the 32-bit R.DLL, and if run from a 64-bit process, it will load the 64-bit version.
 
+For compilation you will need VS2012 RC (or RTM once it comes out on August 15th).  For runtime you'll need .NET 4.5.
+
 
  
 
