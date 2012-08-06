@@ -178,6 +178,13 @@ module internal RInteropInternal =
                        | Some res -> res
                        | _ ->  failwithf "No default converter registered from R %s " (sexp.Type.ToString())
         
+    [<Literal>] 
+    let RDateOffset = 25569.
+    let createDateVector (dv: seq<DateTime>) = 
+        let vec = engine.CreateNumericVector [| for x in dv -> x.ToOADate() - RDateOffset |]
+        vec.SetAttribute("class", engine.CreateCharacterVector [|"Date"|])
+        vec
+
     do
         registerToR<SymbolicExpression> (fun engine v -> v)
 
@@ -187,6 +194,7 @@ module internal RInteropInternal =
         registerToR<bool>    (fun engine v -> upcast engine.CreateLogicalVector [|v|])
         registerToR<byte>    (fun engine v -> upcast engine.CreateRawVector [|v|])
         registerToR<double>  (fun engine v -> upcast engine.CreateNumericVector [|v|])
+        registerToR<DateTime> (fun engine v -> upcast createDateVector [|v|])
         
         registerToR<string[]>  (fun engine v -> upcast engine.CreateCharacterVector v)
         registerToR<Complex[]> (fun engine v -> upcast engine.CreateComplexVector v)
@@ -194,6 +202,7 @@ module internal RInteropInternal =
         registerToR<bool[]>    (fun engine v -> upcast engine.CreateLogicalVector v)
         registerToR<byte[]>    (fun engine v -> upcast engine.CreateRawVector v)
         registerToR<double[]>  (fun engine v -> upcast engine.CreateNumericVector v)
+        registerToR<DateTime[]> (fun engine v -> upcast createDateVector v)
 
         registerToR<string[,]>  (fun engine v -> upcast engine.CreateCharacterMatrix v)
         registerToR<Complex[,]> (fun engine v -> upcast engine.CreateComplexMatrix v)
