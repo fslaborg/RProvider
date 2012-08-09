@@ -85,8 +85,13 @@ module internal RInteropInternal =
         // Set the path
         Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
 
-    let engine = REngine.CreateInstance("RProvider")
-    do engine.Initialize(null, characterDevice)
+    let engine = 
+        try
+            let engine = REngine.CreateInstance("RProvider")
+            do engine.Initialize(null, characterDevice)
+            engine
+        with
+        | e -> raise(Exception("Initialization of R.NET failed", e))
 
     let private mefContainer = 
         lazy
