@@ -163,4 +163,4 @@ pip-log.txt
 .DS_Store
 
 # For References
-!References/*.pdb
+!*/References/*.pdb
