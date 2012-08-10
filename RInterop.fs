@@ -66,6 +66,9 @@ module internal RInteropInternal =
         | Function of RParameter list * HasVarArgs
         | Value
 
+    [<Literal>] 
+    let RDateOffset = 25569.
+
     open Microsoft.Win32
 
     let characterDevice = new CharacterDeviceInterceptor()
@@ -87,11 +90,13 @@ module internal RInteropInternal =
 
     let engine = 
         try
-            let engine = REngine.CreateInstance("RProvider")
+            let engine = REngine.CreateInstance(System.AppDomain.CurrentDomain.Id.ToString())
             do engine.Initialize(null, characterDevice)
             engine
         with
         | e -> raise(Exception("Initialization of R.NET failed", e))
+
+    do System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose())
 
     let private mefContainer = 
         lazy
@@ -148,6 +153,8 @@ module internal RInteropInternal =
         | LogicalVector(v) when at = typeof<bool>           -> retype <| v.Single()
         | NumericVector(v) when at = typeof<double[]>       -> retype <| v.ToArray()
         | NumericVector(v) when at = typeof<double>         -> retype <| v.Single()        
+        | NumericVector(v) when at = typeof<DateTime[]>     -> retype <| [| for n in v -> DateTime.FromOADate(n + RDateOffset) |]
+        | NumericVector(v) when at = typeof<DateTime>       -> retype <| DateTime.FromOADate(v.Single() + RDateOffset)
         | _                                                 -> None
 
     let internal convertFromR<'outType> (sexp: SymbolicExpression) : 'outType = 
@@ -167,8 +174,11 @@ module internal RInteropInternal =
         | CharacterVector(v) ->     wrap <| v.ToArray()
         | ComplexVector(v) ->       wrap <| v.ToArray()
         | IntegerVector(v) ->       wrap <| v.ToArray()
-        | LogicalVector(v) ->       wrap <| v.ToArray()
-        | NumericVector(v) ->       wrap <| v.ToArray()
+        | LogicalVector(v) ->       wrap <| v.ToArray()        
+        | NumericVector(v) ->       match sexp.GetAttribute("class") with
+                                    | CharacterVector(cv) when cv.ToArray() = [| "Date" |] 
+                                        -> wrap <| [| for n in v -> DateTime.FromOADate(n + RDateOffset) |]
+                                    | _ -> wrap <| v.ToArray()        
         | List(v) ->                wrap <| v
         | Pairlist(pl) ->           wrap <| (pl |> Seq.map (fun sym -> sym.PrintName, sym.AsSymbol().Value))
         | Null() ->                 wrap <| null
@@ -183,8 +193,7 @@ module internal RInteropInternal =
                        | Some res -> res
                        | _ ->  failwithf "No default converter registered from R %s " (sexp.Type.ToString())
         
-    [<Literal>] 
-    let RDateOffset = 25569.
+
     let createDateVector (dv: seq<DateTime>) = 
         let vec = engine.CreateNumericVector [| for x in dv -> x.ToOADate() - RDateOffset |]
         vec.SetAttribute("class", engine.CreateCharacterVector [|"Date"|])
@@ -347,6 +356,10 @@ module RInterop =
         | RValue.Value ->
             let expr = sprintf "%s::%s" packageName funcName
             eval expr
+
+    /// Convert a value to a value in R.
+    /// Generally you shouldn't use this function - it is mainly for testing.
+    let toR (value: obj) = RInteropInternal.toR value |> snd
 
 
 [<AutoOpen>]
