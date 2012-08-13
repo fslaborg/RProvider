@@ -24,7 +24,6 @@ type IConvertFromR<'outType> =
 type IDefaultConvertFromR =     
     abstract member Convert : SymbolicExpression -> Option<obj>
 
-
 [<AutoOpen>]
 module Helpers = 
     open RDotNet.Internals
@@ -103,7 +102,8 @@ module internal RInteropInternal =
             // Look for plugins co-located with RProvider.dll
             let assem = typeof<IConvertToR<_>>.Assembly
             let catalog = new DirectoryCatalog(Path.GetDirectoryName(assem.Location),"*.Plugin.dll")
-            new CompositionContainer(catalog)
+            let assemCatalog = new AssemblyCatalog(assem)
+            new CompositionContainer(new AggregateCatalog(catalog, assemCatalog))
                 
     let internal toRConv = Collections.Generic.Dictionary<Type, REngine -> obj -> SymbolicExpression>()
 
@@ -251,11 +251,11 @@ module internal RInteropInternal =
 open RInteropInternal
 
 [<AutoOpen>]
-module RDotNetExtensions = 
+module RDotNetExtensions =
     type RDotNet.SymbolicExpression with
-        member this.Class : string[] = match this.GetAttribute("class") with 
-                                       | null -> [| |] 
-                                       | attrs -> attrs.GetValue()
+        member this.Class : string[] = match this.GetAttribute("class") with
+                                       | null -> [| |]
+                                       | attrs -> attrs.AsCharacter().ToArray()
         member this.GetValue<'a>() : 'a = convertFromR<'a> this
         member this.Value = defaultConvertFromR this
 

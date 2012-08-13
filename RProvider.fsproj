@@ -52,6 +52,7 @@
     <Compile Include="RInterop.fs" />
     <Compile Include="RProvider.fs" />
     <None Include="example.fsx" />
+    <Compile Include="converters.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
