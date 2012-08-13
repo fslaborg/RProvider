@@ -39,15 +39,12 @@ type public RProvider(cfg:TypeProviderConfig) as this =
                     match rval with
                     | RValue.Function(paramList, hasVarArgs) ->
                         let paramList = [ for p in paramList -> 
-                                                ProvidedParameter(p.Name.Replace("_","__").Replace(".", "_"),  typeof<obj>, optionalValue=null) ]
-                        
-                        let paramList = 
-                            match hasVarArgs, paramList.Length with
-                            | false, _ -> paramList
-                            | true, 0  -> [ProvidedParameter("paramArray", typeof<obj[]>, isParamArray=true)]
-                            // Since all arguments are optional, we cannot use ParamArray here
-                            | true, _  -> List.append paramList [ProvidedParameter("paramArray", typeof<obj[]>, optionalValue=null)]
+                                                ProvidedParameter(p.Name.Replace("_","__").Replace(".", "_"),  typeof<obj>, optionalValue=null)
 
+                                          if hasVarArgs then
+                                            yield ProvidedParameter("paramArray", typeof<obj[]>, optionalValue=null, isParamArray=true)
+                                        ]
+                        
                         let paramCount = paramList.Length
                         
                         let pm = ProvidedMethod(
