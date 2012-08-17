@@ -31,27 +31,27 @@ module Helpers =
     /// Construct named params to pass to function
     let namedParams (s: seq<string*_>) = dict <| Seq.map (fun (n,v) -> n, box v) s
 
-    let (|CharacterVector|_|) (sexp: SymbolicExpression)  = if sexp.Type = SymbolicExpressionType.CharacterVector then Some(sexp.AsCharacter()) else None
-    let (|ComplexVector|_|)   (sexp: SymbolicExpression)  = if sexp.Type = SymbolicExpressionType.ComplexVector   then Some(sexp.AsComplex()) else None
-    let (|IntegerVector|_|)   (sexp: SymbolicExpression)  = if sexp.Type = SymbolicExpressionType.IntegerVector   then Some(sexp.AsInteger()) else None
-    let (|LogicalVector|_|)   (sexp: SymbolicExpression)  = if sexp.Type = SymbolicExpressionType.LogicalVector   then Some(sexp.AsLogical()) else None
-    let (|NumericVector|_|)   (sexp: SymbolicExpression)  = if sexp.Type = SymbolicExpressionType.NumericVector   then Some(sexp.AsNumeric()) else None
+    let (|CharacterVector|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.CharacterVector then Some(sexp.AsCharacter()) else None
+    let (|ComplexVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.ComplexVector   then Some(sexp.AsComplex()) else None
+    let (|IntegerVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.IntegerVector   then Some(sexp.AsInteger()) else None
+    let (|LogicalVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.LogicalVector   then Some(sexp.AsLogical()) else None
+    let (|NumericVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.NumericVector   then Some(sexp.AsNumeric()) else None
 
     let (|Function|_|)        (sexp: SymbolicExpression)  = 
-        if sexp.Type = SymbolicExpressionType.BuiltinFunction || sexp.Type = SymbolicExpressionType.Closure || sexp.Type = SymbolicExpressionType.SpecialFunction then 
+        if sexp <> null && (sexp.Type = SymbolicExpressionType.BuiltinFunction || sexp.Type = SymbolicExpressionType.Closure || sexp.Type = SymbolicExpressionType.SpecialFunction) then 
             Some(sexp.AsFunction()) else None
 
-    let (|BuiltinFunction|_|) (sexp: SymbolicExpression)  = if sexp.Type = SymbolicExpressionType.BuiltinFunction then Some(sexp.AsFunction() :?> BuiltinFunction) else None
-    let (|Closure|_|)         (sexp: SymbolicExpression)  = if sexp.Type = SymbolicExpressionType.Closure then Some(sexp.AsFunction() :?> Closure) else None
-    let (|SpecialFunction|_|) (sexp: SymbolicExpression)  = if sexp.Type = SymbolicExpressionType.SpecialFunction then Some(sexp.AsFunction() :?> SpecialFunction) else None
+    let (|BuiltinFunction|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.BuiltinFunction then Some(sexp.AsFunction() :?> BuiltinFunction) else None
+    let (|Closure|_|)         (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.Closure then Some(sexp.AsFunction() :?> Closure) else None
+    let (|SpecialFunction|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.SpecialFunction then Some(sexp.AsFunction() :?> SpecialFunction) else None
 
-    let (|Environment|_|)   (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.Environment  then Some(sexp.AsEnvironment()) else None
-    let (|Expression|_|)    (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.ExpressionVector then Some(sexp.AsExpression()) else None
-    let (|Language|_|)      (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.LanguageObject then Some(sexp.AsLanguage()) else None
-    let (|List|_|)          (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.List then Some(sexp.AsList()) else None     
-    let (|Pairlist|_|)      (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.Pairlist then Some(sexp :?> Pairlist) else None     
-    let (|Null|_|)          (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.Null then Some() else None
-    let (|Symbol|_|)        (sexp: SymbolicExpression)    = if sexp.Type = SymbolicExpressionType.Symbol then Some(sexp.AsSymbol()) else None
+    let (|Environment|_|)   (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Environment  then Some(sexp.AsEnvironment()) else None
+    let (|Expression|_|)    (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.ExpressionVector then Some(sexp.AsExpression()) else None
+    let (|Language|_|)      (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.LanguageObject then Some(sexp.AsLanguage()) else None
+    let (|List|_|)          (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.List then Some(sexp.AsList()) else None     
+    let (|Pairlist|_|)      (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Pairlist then Some(sexp :?> Pairlist) else None     
+    let (|Null|_|)          (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Null then Some() else None
+    let (|Symbol|_|)        (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Symbol then Some(sexp.AsSymbol()) else None
 
 module internal RInteropInternal =
     type RParameter = {
@@ -155,6 +155,14 @@ module internal RInteropInternal =
         | NumericVector(v) when at = typeof<double>         -> retype <| v.Single()        
         | NumericVector(v) when at = typeof<DateTime[]>     -> retype <| [| for n in v -> DateTime.FromOADate(n + RDateOffset) |]
         | NumericVector(v) when at = typeof<DateTime>       -> retype <| DateTime.FromOADate(v.Single() + RDateOffset)
+        // Empty vectors in R are represented as null
+        | Null() when at = typeof<string[]>                 -> retype <| Array.empty<string>
+        | Null() when at = typeof<Complex[]>                -> retype <| Array.empty<Complex>
+        | Null() when at = typeof<int[]>                    -> retype <| Array.empty<int>
+        | Null() when at = typeof<bool[]>                   -> retype <| Array.empty<bool>
+        | Null() when at = typeof<double[]>                 -> retype <| Array.empty<double>
+        | Null() when at = typeof<DateTime[]>               -> retype <| Array.empty<DateTime>
+
         | _                                                 -> None
 
     let internal convertFromR<'outType> (sexp: SymbolicExpression) : 'outType = 
@@ -175,7 +183,7 @@ module internal RInteropInternal =
         | ComplexVector(v) ->       wrap <| v.ToArray()
         | IntegerVector(v) ->       wrap <| v.ToArray()
         | LogicalVector(v) ->       wrap <| v.ToArray()        
-        | NumericVector(v) ->       match sexp.GetAttribute("class") with
+        | NumericVector(v) ->       match v.GetAttribute("class") with
                                     | CharacterVector(cv) when cv.ToArray() = [| "Date" |] 
                                         -> wrap <| [| for n in v -> DateTime.FromOADate(n + RDateOffset) |]
                                     | _ -> wrap <| v.ToArray()        
@@ -361,6 +369,8 @@ module RInterop =
     /// Generally you shouldn't use this function - it is mainly for testing.
     let toR (value: obj) = RInteropInternal.toR value |> snd
 
+    /// Convert a symbolic expression to some default .NET representation
+    let defaultFromR (sexp: SymbolicExpression) = RInteropInternal.defaultConvertFromR sexp
 
 [<AutoOpen>]
 module RDotNetExtensions2 = 
