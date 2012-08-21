@@ -121,23 +121,28 @@ module internal RInteropInternal =
         // Get a conversion function for the type.  
         // Recurses down base types until it finds a converter, or fails.
         let rec get (vt: Type) = 
-            if vt = null then
-                failwithf "No converter registered for type %s or any of its base types" concreteType.FullName
-            
             // First we look in our dictionary of explicitly registered converters - they take precedence
             // if a plugin is also registered for the same type.  But if a plugin exists for a more specific
             // type, it will still take precedence.
             match toRConv.TryGetValue(vt) with
-            | (true, conv) -> conv
+            | (true, conv) -> Some conv
             | _ -> // No converter function is registered, so ask MEF if any plugins export the conversion interface
                    let interfaceType = gt.MakeGenericType([|vt|])
                    // If there are multiple plugins registered, we arbitrarily use the "first"
                    match mefContainer.Value.GetExports(interfaceType, null, null).FirstOrDefault() with
-                   | null -> get vt.BaseType
+                   // Nothing from MEF, try interfaces on the object
+                   | null -> match Seq.tryPick get (vt.GetInterfaces()) with
+                             | Some conv -> Some conv
+                             // Nothing on interfaces, but we have a base type, so try that
+                             | None when vt.BaseType <> null -> get vt.BaseType
+                             // Give up and go home
+                             | None -> None
                    | conv -> let convMethod = interfaceType.GetMethod("Convert")
-                             fun engine value -> convMethod.Invoke(conv.Value, [| engine; value |]) :?> SymbolicExpression
-        
-        get concreteType engine value
+                             Some(fun engine value -> convMethod.Invoke(conv.Value, [| engine; value |]) :?> SymbolicExpression )
+            
+        match get concreteType with
+        | Some conv -> conv engine value
+        | None -> failwithf "No converter registered for type %s or any of its base types" concreteType.FullName
         
     let internal convertFromRBuiltins<'outType> (sexp: SymbolicExpression) : Option<'outType> = 
         let retype (x: 'b) : Option<'a> = x |> box |> unbox |> Some
@@ -218,13 +223,13 @@ module internal RInteropInternal =
         registerToR<double>  (fun engine v -> upcast engine.CreateNumericVector [|v|])
         registerToR<DateTime> (fun engine v -> upcast createDateVector [|v|])
         
-        registerToR<string[]>  (fun engine v -> upcast engine.CreateCharacterVector v)
-        registerToR<Complex[]> (fun engine v -> upcast engine.CreateComplexVector v)
-        registerToR<int[]>     (fun engine v -> upcast engine.CreateIntegerVector v)
-        registerToR<bool[]>    (fun engine v -> upcast engine.CreateLogicalVector v)
-        registerToR<byte[]>    (fun engine v -> upcast engine.CreateRawVector v)
-        registerToR<double[]>  (fun engine v -> upcast engine.CreateNumericVector v)
-        registerToR<DateTime[]> (fun engine v -> upcast createDateVector v)
+        registerToR<string seq>  (fun engine v -> upcast engine.CreateCharacterVector v)
+        registerToR<Complex seq> (fun engine v -> upcast engine.CreateComplexVector v)
+        registerToR<int seq>     (fun engine v -> upcast engine.CreateIntegerVector v)
+        registerToR<bool seq>    (fun engine v -> upcast engine.CreateLogicalVector v)
+        registerToR<byte seq>    (fun engine v -> upcast engine.CreateRawVector v)
+        registerToR<double seq>  (fun engine v -> upcast engine.CreateNumericVector v)
+        registerToR<DateTime seq> (fun engine v -> upcast createDateVector v)
 
         registerToR<string[,]>  (fun engine v -> upcast engine.CreateCharacterMatrix v)
         registerToR<Complex[,]> (fun engine v -> upcast engine.CreateComplexMatrix v)
