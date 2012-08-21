@@ -10,17 +10,40 @@ open FsCheck
 open Swensen.Unquote.Assertions
 open System.Text
 
-[<Property>]
-let ``Date arrays round-trip``(dates: DateTime[]) =        
-    let ds = toR(dates)        
+// Generic function to test that a value round-trips
+// when SEXP is asked for the value by-type
+let testRoundTrip (x: 'a) (clsName: string) =
+    let sexp = toR(x)
+    test <@ sexp.Class = [| clsName|] @>
+    test <@ x = sexp.GetValue<'a>() @>
+
+// Generic function to test that a value round-trips
+// when SEXP is asked for the value by-type, and
+// as the default .NET representation
+let testRoundTripAndDefault (x: 'a) (clsName: string) =
+    testRoundTrip x clsName    
+    test <@ let sexp = toR(x)
+            x = unbox sexp.Value @>    
+
+(*
+let testForType (xs: 'scalarType[]) (clsName: string) =    
+    // Test arrays and lists
+    testRoundTrip (Array.toList xs) clsName
+    testRoundTripAndDefault xs clsName
+
+    // Test scalars
+    if xs.Length > 0 then
+        let 
     
-    test <@ dates = unbox ds.Value @>
-    test <@ dates = ds.GetValue<DateTime[]>() @>
+*)
 
 [<Property>]
-let ``Date arrays have class``(dates: DateTime[]) =    
-    test <@ toR(dates).Class = [| "Date" |] @>  
+// Seems to be an FsCheck in xunit bug with list arguments so I use an array here    
+let ``Date lists round-trip``(dates: DateTime[]) = testRoundTrip (Array.toList dates) "Date"
 
+[<Property>]
+let ``Date arrays round-trip``(dates: DateTime[]) = testRoundTripAndDefault dates "Date"
+    
 [<Property>]
 let ``Date arrays length <> 1 don't round-trip as dates`` (dates: DateTime[]) =
     if dates.Length <> 1 then
