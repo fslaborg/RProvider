@@ -118,29 +118,39 @@ module internal RInteropInternal =
         let concreteType = value.GetType()
         let gt = typedefof<IConvertToR<_>>
 
-        // Get a conversion function for the type.  
-        // Recurses down base types until it finds a converter, or fails.
-        let rec get (vt: Type) = 
-            // First we look in our dictionary of explicitly registered converters - they take precedence
-            // if a plugin is also registered for the same type.  But if a plugin exists for a more specific
-            // type, it will still take precedence.
-            match toRConv.TryGetValue(vt) with
-            | (true, conv) -> Some conv
-            | _ -> // No converter function is registered, so ask MEF if any plugins export the conversion interface
-                   let interfaceType = gt.MakeGenericType([|vt|])
-                   // If there are multiple plugins registered, we arbitrarily use the "first"
-                   match mefContainer.Value.GetExports(interfaceType, null, null).FirstOrDefault() with
-                   // Nothing from MEF, try interfaces on the object
-                   | null -> match Seq.tryPick get (vt.GetInterfaces()) with
-                             | Some conv -> Some conv
-                             // Nothing on interfaces, but we have a base type, so try that
-                             | None when vt.BaseType <> null -> get vt.BaseType
-                             // Give up and go home
-                             | None -> None
-                   | conv -> let convMethod = interfaceType.GetMethod("Convert")
-                             Some(fun engine value -> convMethod.Invoke(conv.Value, [| engine; value |]) :?> SymbolicExpression )
-            
-        match get concreteType with
+        // Returns an ordered sequence of types that should be considered for the purpose of converting.
+        // We look at interfaces introduced on the current type before traversing to the base type.
+        let rec types (vt: Type) = seq {
+            // First consider the type itself
+            yield vt
+
+            // Now consider interfaces implemented on this type that are not implemented on the base
+            let baseInterfaces = if vt.BaseType = null then Array.empty else vt.BaseType.GetInterfaces()
+            for iface in vt.GetInterfaces() do
+                if not(baseInterfaces.Contains(iface)) then
+                    yield iface
+
+            // Now consider the base type (plus its interfaces etc.)
+            yield! types vt.BaseType
+        }
+
+        // Try to get a converter for the given type        
+        let tryGetConverter (vt: Type) = 
+            // See if a MEF finds a converter for the type - these take precedence over built-ins
+            let interfaceType = gt.MakeGenericType([|vt|])
+
+            // If there are multiple plugins registered, we arbitrarily use the "first"
+            match mefContainer.Value.GetExports(interfaceType, null, null).FirstOrDefault() with                   
+            // Nothing from MEF, try to find a built-in
+            | null ->   match toRConv.TryGetValue(vt) with
+                        | (true, conv) -> Some conv
+                        | _ -> None
+
+            // Use MEF converter
+            | conv ->   let convMethod = interfaceType.GetMethod("Convert")
+                        Some(fun engine value -> convMethod.Invoke(conv.Value, [| engine; value |]) :?> SymbolicExpression )
+        
+        match Seq.tryPick tryGetConverter (types concreteType) with
         | Some conv -> conv engine value
         | None -> failwithf "No converter registered for type %s or any of its base types" concreteType.FullName
         
@@ -148,24 +158,36 @@ module internal RInteropInternal =
         let retype (x: 'b) : Option<'a> = x |> box |> unbox |> Some
         let at = typeof<'outType>
         match sexp with
+        | CharacterVector(v) when at = typeof<string list>  -> retype <| List.ofSeq(v)
         | CharacterVector(v) when at = typeof<string[]>     -> retype <| v.ToArray()
         | CharacterVector(v) when at = typeof<string>       -> retype <| v.Single()
+        | ComplexVector(v) when at = typeof<Complex list>   -> retype <| List.ofSeq(v)
         | ComplexVector(v) when at = typeof<Complex[]>      -> retype <| v.ToArray()
         | ComplexVector(v) when at = typeof<Complex>        -> retype <| v.Single()
+        | IntegerVector(v) when at = typeof<int list>       -> retype <| List.ofSeq(v)
         | IntegerVector(v) when at = typeof<int[]>          -> retype <| v.ToArray()
         | IntegerVector(v) when at = typeof<int>            -> retype <| v.Single()
+        | LogicalVector(v) when at = typeof<bool list>      -> retype <| List.ofSeq(v)
         | LogicalVector(v) when at = typeof<bool[]>         -> retype <| v.ToArray()
         | LogicalVector(v) when at = typeof<bool>           -> retype <| v.Single()
+        | NumericVector(v) when at = typeof<double list>    -> retype <| List.ofSeq(v)
         | NumericVector(v) when at = typeof<double[]>       -> retype <| v.ToArray()
-        | NumericVector(v) when at = typeof<double>         -> retype <| v.Single()        
+        | NumericVector(v) when at = typeof<double>         -> retype <| v.Single()
+        | NumericVector(v) when at = typeof<DateTime list>  -> retype <| [ for n in v -> DateTime.FromOADate(n + RDateOffset) ]
         | NumericVector(v) when at = typeof<DateTime[]>     -> retype <| [| for n in v -> DateTime.FromOADate(n + RDateOffset) |]
         | NumericVector(v) when at = typeof<DateTime>       -> retype <| DateTime.FromOADate(v.Single() + RDateOffset)
         // Empty vectors in R are represented as null
+        | Null() when at = typeof<string list>              -> retype <| List.empty<string>
         | Null() when at = typeof<string[]>                 -> retype <| Array.empty<string>
+        | Null() when at = typeof<Complex list>             -> retype <| List.empty<Complex>
         | Null() when at = typeof<Complex[]>                -> retype <| Array.empty<Complex>
+        | Null() when at = typeof<int list>                 -> retype <| List.empty<int>
         | Null() when at = typeof<int[]>                    -> retype <| Array.empty<int>
+        | Null() when at = typeof<bool list>                -> retype <| List.empty<bool>
         | Null() when at = typeof<bool[]>                   -> retype <| Array.empty<bool>
+        | Null() when at = typeof<double list>              -> retype <| List.empty<double>
         | Null() when at = typeof<double[]>                 -> retype <| Array.empty<double>
+        | Null() when at = typeof<DateTime list>            -> retype <| List.empty<DateTime>
         | Null() when at = typeof<DateTime[]>               -> retype <| Array.empty<DateTime>
 
         | _                                                 -> None
