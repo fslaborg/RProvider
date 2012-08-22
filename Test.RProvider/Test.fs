@@ -1,66 +1,91 @@
 ﻿module Test.RProvider
 
 open RDotNet
+open RDotNet.Internals
 open RProvider
 open RProvider.RInterop
 open RProvider.``base``
 open System
 open Xunit
 open FsCheck
-open Swensen.Unquote.Assertions
+open System.Numerics
 open System.Text
 
 // Generic function to test that a value round-trips
 // when SEXP is asked for the value by-type
-let testRoundTrip (x: 'a) (clsName: string) =
+let testRoundTrip (x: 'a) (typeof: SymbolicExpressionType) (clsName: Option<string>) =
     let sexp = toR(x)
-    test <@ sexp.Class = [| clsName|] @>
-    test <@ x = sexp.GetValue<'a>() @>
+    Assert.Equal<'a>(x, sexp.GetValue<'a>())
+    Assert.Equal(sexp.Type, typeof)
+    Assert.Equal<string[]>(sexp.Class, Option.toArray clsName)
 
 // Generic function to test that a value round-trips
 // when SEXP is asked for the value by-type, and
 // as the default .NET representation
-let testRoundTripAndDefault (x: 'a) (clsName: string) =
-    testRoundTrip x clsName    
-    test <@ let sexp = toR(x)
-            x = unbox sexp.Value @>    
+let testRoundTripAndDefault (x: 'a) (typeof: SymbolicExpressionType) (clsName: Option<string>) =
+    testRoundTrip x typeof clsName
+    let sexp = toR(x)
+    Assert.Equal<'a>(x, unbox<'a> sexp.Value)    
 
-(*
-let testForType (xs: 'scalarType[]) (clsName: string) =    
-    // Test arrays and lists
-    testRoundTrip (Array.toList xs) clsName
-    testRoundTripAndDefault xs clsName
+let testVector (xs: 'scalarType[]) (typeof: SymbolicExpressionType) (clsName: Option<string>) =    
+    // Test arrays and lists round-trip
+    testRoundTrip (Array.toList xs) typeof clsName
+    // Array is the default return type from .Value
+    testRoundTripAndDefault xs typeof clsName
+    // Can only round-trip a vector as a scalar if it is of length 1
+    if xs.Length <> 1 then
+        ignore <| Assert.Throws<InvalidOperationException>(fun () -> toR(xs).GetValue<'scalarType>() |> ignore)
 
-    // Test scalars
-    if xs.Length > 0 then
-        let 
-    
-*)
 
-[<Property>]
-// Seems to be an FsCheck in xunit bug with list arguments so I use an array here    
-let ``Date lists round-trip``(dates: DateTime[]) = testRoundTrip (Array.toList dates) "Date"
+let testScalar (x: 'scalarType) (typeof: SymbolicExpressionType) (clsName: Option<string>) = 
+    // Scalars round-trip to scalar when scalar-type is requested explicitly
+    testRoundTrip x typeof clsName
 
-[<Property>]
-let ``Date arrays round-trip``(dates: DateTime[]) = testRoundTripAndDefault dates "Date"
-    
-[<Property>]
-let ``Date arrays length <> 1 don't round-trip as dates`` (dates: DateTime[]) =
-    if dates.Length <> 1 then
-        ignore <| Assert.Throws<InvalidOperationException>(fun () -> toR(dates).GetValue<DateTime>() |> ignore)
+    // Scalars round-trip as vectors
+    let sexp = toR(x)
+    Assert.Equal<'scalarType[]>([|x|], unbox(sexp.Value))
+    Assert.Equal<'scalarType[]>([|x|], sexp.GetValue<'scalarType[]>())
 
 [<Property>]
-let ``Dates round-trip as vector`` (date: DateTime) =     
-    test <@ [|date|] = unbox(toR(date).Value) @>
-    test <@ [|date|] = toR(date).GetValue<DateTime[]>() @>
+let ``Date vector round-trip tests`` (xs: DateTime[]) = 
+    testVector xs SymbolicExpressionType.NumericVector (Some "Date")
+[<Property>]
+let ``Date scalar round-trip tests`` (x: DateTime) = 
+    testScalar x SymbolicExpressionType.NumericVector (Some "Date")
 
 [<Property>]
-let ``Dates round-trip (explicit)`` (date: DateTime) = 
-    test <@ date = toR(date).GetValue<DateTime>() @>
+let ``Int vector round-trip tests`` (xs: int[]) = 
+    testVector xs SymbolicExpressionType.IntegerVector None
+[<Property>]
+let ``Int scalar round-trip tests`` (x: int) = 
+    testScalar x SymbolicExpressionType.IntegerVector None
 
 [<Property>]
-let ``Dates have class`` (date: DateTime) = 
-    test <@ toR(date).Class = [| "Date" |] @>
+let ``Double vector round-trip tests`` (xs: double[]) = 
+    testVector xs SymbolicExpressionType.NumericVector None
+[<Property>]
+let ``Double scalar round-trip tests`` (x: double) = 
+    testScalar x SymbolicExpressionType.NumericVector None
+
+[<Property>]
+let ``Bool vector round-trip tests`` (xs: bool[]) = 
+    testVector xs SymbolicExpressionType.LogicalVector None
+[<Property>]
+let ``Bool scalar round-trip tests`` (x: bool) = 
+    testScalar x SymbolicExpressionType.LogicalVector None
+
+[<Property>]
+let ``Complex vector round-trip tests`` (ris: (double*double)[]) =
+    let xs = [| for (r,i) in ris do
+                    if not(Double.IsNaN(r) || Double.IsNaN(i)) then
+                        yield Complex(r, i) |] 
+    testVector xs SymbolicExpressionType.ComplexVector None
+
+[<Property>]
+let ``Complex scalar round-trip tests`` (r: double) (i: double) =
+    if not(Double.IsNaN(r) || Double.IsNaN(i)) then
+        let x = Complex(r, i) 
+        testScalar x SymbolicExpressionType.ComplexVector None
 
 //[<Property>]
 // Has various issues - embedded nulls, etc.
@@ -69,8 +94,8 @@ let ``String arrays round-trip``(strings: string[]) =
     if Array.forall (fun s -> s = Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(s))) strings then
         let sexp = toR(strings)
 
-        test <@ strings = unbox sexp.Value @>
-        test <@ strings = sexp.GetValue<string[]>() @>
+        Assert.Equal<string[]>(strings, unbox sexp.Value)
+        Assert.Equal<string[]>(strings, sexp.GetValue<string[]>())
 
 //[<Property>]
 // Has various issues - embedded nulls, etc.
@@ -78,15 +103,15 @@ let ``Strings round-trip``(value: string) =
     // We only want to test for ASCII strings
     //if Array.forall (fun s -> s = Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(s))) strings then
         let sexp = toR(value)    
-        test <@ value = sexp.GetValue<string>() @>
+        Assert.Equal<string>(value, sexp.GetValue<string>())
 
 let roundTripAsFactor (value:string[]) = 
     let sexp = R.as_factor(value)
-    test <@ value = sexp.GetValue<string[]>() @>
+    Assert.Equal<string[]>(value, sexp.GetValue<string[]>())
 
 let roundTripAsDataframe (value: string[]) = 
     let df = R.data_frame(namedParams [ "Column", value ]).AsDataFrame()    
-    test <@ value = df.[0].GetValue<string[]>() @>
+    Assert.Equal<string[]>(value, df.[0].GetValue<string[]>())
 
 [<Fact>]
 let ``String arrays round-trip via factors`` () = 
