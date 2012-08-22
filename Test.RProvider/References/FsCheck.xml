@@ -111,7 +111,7 @@ Check the given property using the given config, and the given test name.
 Check the given property using the given config.
 </summary>
 </member>
-<member name="M:FsCheck.Check.Method(FsCheck.Config,System.Reflection.MethodInfo)">
+<member name="M:FsCheck.Check.Method(FsCheck.Config,System.Reflection.MethodInfo,Microsoft.FSharp.Core.FSharpOption{System.Object})">
 <summary>
 Check the given property identified by the given MethodInfo.
 </summary>
@@ -282,7 +282,7 @@ that are comparable, hence the type constraints.
 <member name="">
 
 </member>
-<member name="M:FsCheck.Gen`1.Map``2(Microsoft.FSharp.Core.FSharpFunc`2{`0,``1})">
+<member name="M:FsCheck.Gen`1.Map``2(Microsoft.FSharp.Core.FSharpFunc{`0,``1})">
 <summary>
 map the given function to the value in the generator, yielding a new generator of the result type.  
 </summary>
@@ -312,7 +312,7 @@ Generator of a random value, based on a size parameter and a randomly generated 
 Called before a group of properties on a type are checked.
 </summary>
 </member>
-<member name="M:FsCheck.IRunner.OnShrink(Microsoft.FSharp.Collections.FSharpList{System.Object},Microsoft.FSharp.Core.FSharpFunc`2{Microsoft.FSharp.Collections.FSharpList{System.Object},System.String})">
+<member name="M:FsCheck.IRunner.OnShrink(Microsoft.FSharp.Collections.FSharpList{System.Object},Microsoft.FSharp.Core.FSharpFunc{Microsoft.FSharp.Collections.FSharpList{System.Object},System.String})">
 <summary>
 Called on a succesful shrink.
 </summary>
@@ -322,7 +322,7 @@ Called on a succesful shrink.
 Called whenever all tests are done, either True, False or Exhausted.
 </summary>
 </member>
-<member name="M:FsCheck.IRunner.OnArguments(System.Int32,Microsoft.FSharp.Collections.FSharpList{System.Object},Microsoft.FSharp.Core.FSharpFunc`2{System.Int32,Microsoft.FSharp.Core.FSharpFunc`2{Microsoft.FSharp.Collections.FSharpList{System.Object},System.String}})">
+<member name="M:FsCheck.IRunner.OnArguments(System.Int32,Microsoft.FSharp.Collections.FSharpList{System.Object},Microsoft.FSharp.Core.FSharpFunc{System.Int32,Microsoft.FSharp.Core.FSharpFunc{Microsoft.FSharp.Collections.FSharpList{System.Object},System.String}})">
 <summary>
 Called whenever arguments are generated and after the test is run.
 </summary>
@@ -691,7 +691,7 @@ Generate a rank 1 array.
 A collection of default generators.
 </summary>
 </member>
-<member name="M:FsCheck.Arb.mapFilter``1(Microsoft.FSharp.Core.FSharpFunc`2{``0,``0},Microsoft.FSharp.Core.FSharpFunc`2{``0,System.Boolean},FsCheck.Arbitrary{``0})">
+<member name="M:FsCheck.Arb.mapFilter``1(Microsoft.FSharp.Core.FSharpFunc{``0,``0},Microsoft.FSharp.Core.FSharpFunc{``0,System.Boolean},FsCheck.Arbitrary{``0})">
 <summary>
  Return an Arbitrary instance that is a mapped and filtered version of an existing arbitrary instance.
  The generator uses Gen.map with the given mapper and then Gen.suchThat with the given predicate, 
@@ -700,19 +700,19 @@ This is sometimes useful if using just a filter would reduce the chance of getti
 from the generator - and you can map the value instead. E.g. PositiveInt.
 </summary>
 </member>
-<member name="M:FsCheck.Arb.filter``1(Microsoft.FSharp.Core.FSharpFunc`2{``0,System.Boolean},FsCheck.Arbitrary{``0})">
+<member name="M:FsCheck.Arb.filter``1(Microsoft.FSharp.Core.FSharpFunc{``0,System.Boolean},FsCheck.Arbitrary{``0})">
 <summary>
  Return an Arbitrary instance that is a filtered version of an existing arbitrary instance.
  The generator uses Gen.suchThat, and the shrinks are filtered using Seq.filter with the given predicate.
 </summary>
 </member>
-<member name="M:FsCheck.Arb.convert``2(Microsoft.FSharp.Core.FSharpFunc`2{``0,``1},Microsoft.FSharp.Core.FSharpFunc`2{``1,``0},FsCheck.Arbitrary{``0})">
+<member name="M:FsCheck.Arb.convert``2(Microsoft.FSharp.Core.FSharpFunc{``0,``1},Microsoft.FSharp.Core.FSharpFunc{``1,``0},FsCheck.Arbitrary{``0})">
 <summary>
 Construct an Arbitrary instance for a type that can be mapped to and from another type (e.g. a wrapper),
 based on a Arbitrary instance for the source type and two mapping functions. 
 </summary>
 </member>
-<member name="M:FsCheck.Arb.fromGenShrink``1(FsCheck.Gen{``0},Microsoft.FSharp.Core.FSharpFunc`2{``0,System.Collections.Generic.IEnumerable{``0}})">
+<member name="M:FsCheck.Arb.fromGenShrink``1(FsCheck.Gen{``0},Microsoft.FSharp.Core.FSharpFunc{``0,System.Collections.Generic.IEnumerable{``0}})">
 <summary>
  Construct an Arbitrary instance from a generator and shrinker.
 </summary>
@@ -854,15 +854,21 @@ Turn a specification into a property.
 <member name="">
 
 </member>
-<member name="M:FsCheck.Common.memoize``2(Microsoft.FSharp.Core.FSharpFunc`2{``0,``1})">
+<member name="M:FsCheck.Common.memoize``2(Microsoft.FSharp.Core.FSharpFunc{``0,``1})">
 <summary>
 Memoize the given function.
 </summary>
 </member>
-<member name="M:FsCheck.Common.memoizeWith``2(System.Collections.Generic.IDictionary{``0,``1},Microsoft.FSharp.Core.FSharpFunc`2{``0,``1},``0)">
+<member name="M:FsCheck.Common.memoizeWith``2(System.Collections.Generic.IDictionary{``0,``1},Microsoft.FSharp.Core.FSharpFunc{``0,``1},``0)">
 <summary>
 Memoize the given function using the given dictionary
 </summary>
+</member>
+<member name="">
+
+</member>
+<member name="T:FsCheck.Common.Option">
+
 </member>
 <member name="T:FsCheck.Common">
 
@@ -1326,12 +1332,12 @@ Basic co-arbitrary generator transformer, which is dependent on an int.
 Only used for generating arbitrary functions.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.promote``2(Microsoft.FSharp.Core.FSharpFunc`2{``0,FsCheck.Gen{``1}})">
+<member name="M:FsCheck.Gen.promote``2(Microsoft.FSharp.Core.FSharpFunc{``0,FsCheck.Gen{``1}})">
 <summary>
 Promote the given function f to a function generator. Only used for generating arbitrary functions.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.apply``2(FsCheck.Gen{Microsoft.FSharp.Core.FSharpFunc`2{``0,``1}},FsCheck.Gen{``0})">
+<member name="M:FsCheck.Gen.apply``2(FsCheck.Gen{Microsoft.FSharp.Core.FSharpFunc{``0,``1}},FsCheck.Gen{``0})">
 <summary>
 Apply the given Gen function to the given generator, aka the applicative &lt;*&gt; operator.
 </summary>
@@ -1378,14 +1384,14 @@ Always generate v.
  size parameter.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.suchThat``1(Microsoft.FSharp.Core.FSharpFunc`2{``0,System.Boolean},FsCheck.Gen{``0})">
+<member name="M:FsCheck.Gen.suchThat``1(Microsoft.FSharp.Core.FSharpFunc{``0,System.Boolean},FsCheck.Gen{``0})">
 <summary>
 Generates a value that satisfies a predicate. Contrary to suchThatOption, this function keeps re-trying
 by increasing the size of the original generator ad infinitum.  Make sure there is a high chance that 
 the predicate is satisfied.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.suchThatOption``1(Microsoft.FSharp.Core.FSharpFunc`2{``0,System.Boolean},FsCheck.Gen{``0})">
+<member name="M:FsCheck.Gen.suchThatOption``1(Microsoft.FSharp.Core.FSharpFunc{``0,System.Boolean},FsCheck.Gen{``0})">
 <summary>
 Tries to generate a value that satisfies a predicate. This function &apos;gives up&apos; by generating None
 if the given original generator did not generate any values that satisfied the predicate, after trying to
@@ -1402,12 +1408,12 @@ Generates a list of given length, containing values generated by the given gener
 Sequence the given list of generators into a generator of a list.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.map6``7(Microsoft.FSharp.Core.FSharpFunc`2{``0,Microsoft.FSharp.Core.FSharpFunc`2{``1,Microsoft.FSharp.Core.FSharpFunc`2{``2,Microsoft.FSharp.Core.FSharpFunc`2{``3,Microsoft.FSharp.Core.FSharpFunc`2{``4,Microsoft.FSharp.Core.FSharpFunc`2{``5,``6}}}}}},FsCheck.Gen{``0},FsCheck.Gen{``1},FsCheck.Gen{``2},FsCheck.Gen{``3},FsCheck.Gen{``4},FsCheck.Gen{``5})">
+<member name="M:FsCheck.Gen.map6``7(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpFunc{``1,Microsoft.FSharp.Core.FSharpFunc{``2,Microsoft.FSharp.Core.FSharpFunc{``3,Microsoft.FSharp.Core.FSharpFunc{``4,Microsoft.FSharp.Core.FSharpFunc{``5,``6}}}}}},FsCheck.Gen{``0},FsCheck.Gen{``1},FsCheck.Gen{``2},FsCheck.Gen{``3},FsCheck.Gen{``4},FsCheck.Gen{``5})">
 <summary>
 Map the given function over values to a function over generators of those values.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.map5``6(Microsoft.FSharp.Core.FSharpFunc`2{``0,Microsoft.FSharp.Core.FSharpFunc`2{``1,Microsoft.FSharp.Core.FSharpFunc`2{``2,Microsoft.FSharp.Core.FSharpFunc`2{``3,Microsoft.FSharp.Core.FSharpFunc`2{``4,``5}}}}},FsCheck.Gen{``0},FsCheck.Gen{``1},FsCheck.Gen{``2},FsCheck.Gen{``3},FsCheck.Gen{``4})">
+<member name="M:FsCheck.Gen.map5``6(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpFunc{``1,Microsoft.FSharp.Core.FSharpFunc{``2,Microsoft.FSharp.Core.FSharpFunc{``3,Microsoft.FSharp.Core.FSharpFunc{``4,``5}}}}},FsCheck.Gen{``0},FsCheck.Gen{``1},FsCheck.Gen{``2},FsCheck.Gen{``3},FsCheck.Gen{``4})">
 <summary>
 Map the given function over values to a function over generators of those values.
 </summary>
@@ -1417,7 +1423,7 @@ Map the given function over values to a function over generators of those values
 Build a generator that generates a 4-tuple of the values generated by the given generator.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.map4``5(Microsoft.FSharp.Core.FSharpFunc`2{``0,Microsoft.FSharp.Core.FSharpFunc`2{``1,Microsoft.FSharp.Core.FSharpFunc`2{``2,Microsoft.FSharp.Core.FSharpFunc`2{``3,``4}}}},FsCheck.Gen{``0},FsCheck.Gen{``1},FsCheck.Gen{``2},FsCheck.Gen{``3})">
+<member name="M:FsCheck.Gen.map4``5(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpFunc{``1,Microsoft.FSharp.Core.FSharpFunc{``2,Microsoft.FSharp.Core.FSharpFunc{``3,``4}}}},FsCheck.Gen{``0},FsCheck.Gen{``1},FsCheck.Gen{``2},FsCheck.Gen{``3})">
 <summary>
 Map the given function over values to a function over generators of those values.
 </summary>
@@ -1427,7 +1433,7 @@ Map the given function over values to a function over generators of those values
 Build a generator that generates a 3-tuple of the values generated by the given generator.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.map3``4(Microsoft.FSharp.Core.FSharpFunc`2{``0,Microsoft.FSharp.Core.FSharpFunc`2{``1,Microsoft.FSharp.Core.FSharpFunc`2{``2,``3}}},FsCheck.Gen{``0},FsCheck.Gen{``1},FsCheck.Gen{``2})">
+<member name="M:FsCheck.Gen.map3``4(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpFunc{``1,Microsoft.FSharp.Core.FSharpFunc{``2,``3}}},FsCheck.Gen{``0},FsCheck.Gen{``1},FsCheck.Gen{``2})">
 <summary>
 Map the given function over values to a function over generators of those values.
 </summary>
@@ -1437,12 +1443,12 @@ Map the given function over values to a function over generators of those values
 Build a generator that generates a 2-tuple of the values generated by the given generator.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.map2``3(Microsoft.FSharp.Core.FSharpFunc`2{``0,Microsoft.FSharp.Core.FSharpFunc`2{``1,``2}},FsCheck.Gen{``0},FsCheck.Gen{``1})">
+<member name="M:FsCheck.Gen.map2``3(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpFunc{``1,``2}},FsCheck.Gen{``0},FsCheck.Gen{``1})">
 <summary>
 Map the given function over values to a function over generators of those values.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.frequency``1(System.Collections.Generic.IEnumerable{System.Tuple`2{System.Int32,FsCheck.Gen{``0}}})">
+<member name="M:FsCheck.Gen.frequency``1(System.Collections.Generic.IEnumerable{System.Tuple{System.Int32,FsCheck.Gen{``0}}})">
 <summary>
 Build a generator that generates a value from one of the generators in the given non-empty seq, with
 given probabilities. The sum of the probabilities must be larger than zero.
@@ -1480,12 +1486,12 @@ of generating a random value.
 Override the current size of the test. resize n g invokes generator g with size parameter n.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.sized``1(Microsoft.FSharp.Core.FSharpFunc`2{System.Int32,FsCheck.Gen{``0}})">
+<member name="M:FsCheck.Gen.sized``1(Microsoft.FSharp.Core.FSharpFunc{System.Int32,FsCheck.Gen{``0}})">
 <summary>
 Obtain the current size. sized g calls g, passing it the current size as a parameter.
 </summary>
 </member>
-<member name="M:FsCheck.Gen.map``2(Microsoft.FSharp.Core.FSharpFunc`2{``0,``1},FsCheck.Gen{``0})">
+<member name="M:FsCheck.Gen.map``2(Microsoft.FSharp.Core.FSharpFunc{``0,``1},FsCheck.Gen{``0})">
 <summary>
 Apply (&apos;map&apos;) the function f on the value in the generator, yielding a new generator.
 </summary>
@@ -1563,12 +1569,12 @@ The workflow function for generators, e.g. gen { ... }
 <member name="T:FsCheck.GenBuilder">
 
 </member>
-<member name="M:FsCheck.GenOperators.op_LessBangGreater``2(Microsoft.FSharp.Core.FSharpFunc`2{``0,``1},FsCheck.Gen{``0})">
+<member name="M:FsCheck.GenOperators.op_LessBangGreater``2(Microsoft.FSharp.Core.FSharpFunc{``0,``1},FsCheck.Gen{``0})">
 <summary>
  Like &lt;*&gt;, but puts f in a Gen first.
 </summary>
 </member>
-<member name="M:FsCheck.GenOperators.op_LessMultiplyGreater``2(FsCheck.Gen{Microsoft.FSharp.Core.FSharpFunc`2{``0,``1}},FsCheck.Gen{``0})">
+<member name="M:FsCheck.GenOperators.op_LessMultiplyGreater``2(FsCheck.Gen{Microsoft.FSharp.Core.FSharpFunc{``0,``1}},FsCheck.Gen{``0})">
 <summary>
  Lifted function application = apply f to a, all in the Gen applicative functor.
 </summary>
@@ -1624,7 +1630,7 @@ and a failure otherwise.
 Depending on the condition, return the first testable if true and the second if false.
 </summary>
 </member>
-<member name="M:FsCheck.Prop.forAll``2(FsCheck.Arbitrary{``0},Microsoft.FSharp.Core.FSharpFunc`2{``0,``1})">
+<member name="M:FsCheck.Prop.forAll``2(FsCheck.Arbitrary{``0},Microsoft.FSharp.Core.FSharpFunc{``0,``1})">
 <summary>
 Quantified property combinator. Provide a custom test data generator to a property.
 </summary>
@@ -1798,7 +1804,7 @@ Equality for generic types
 <member name="">
 
 </member>
-<member name="M:FsCheck.ReflectArbitrary.reflectGen``1(Microsoft.FSharp.Core.FSharpFunc`2{System.Type,FsCheck.Gen{System.Object}})">
+<member name="M:FsCheck.ReflectArbitrary.reflectGen``1(Microsoft.FSharp.Core.FSharpFunc{System.Type,FsCheck.Gen{System.Object}})">
 <summary>
 Builds a generator for the given type based on reflection. Currently works for record and union types.
 </summary>
