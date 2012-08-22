@@ -131,7 +131,8 @@ module internal RInteropInternal =
                     yield iface
 
             // Now consider the base type (plus its interfaces etc.)
-            yield! types vt.BaseType
+            if vt.BaseType <> null then
+                yield! types vt.BaseType
         }
 
         // Try to get a converter for the given type        
