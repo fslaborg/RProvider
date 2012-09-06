@@ -1,5 +1,6 @@
 ﻿namespace RProvider
 
+open Microsoft.FSharp.Reflection
 open System
 open System.ComponentModel.Composition
 open System.ComponentModel.Composition.Hosting
@@ -54,11 +55,7 @@ module Helpers =
     let (|Symbol|_|)        (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Symbol then Some(sexp.AsSymbol()) else None
 
 module internal RInteropInternal =
-    type RParameter = {
-        Name: string
-        Optional: bool
-    }
-
+    type RParameter = string
     type HasVarArgs = bool
 
     type RValue =
@@ -280,6 +277,8 @@ module internal RInteropInternal =
         let se = engine.SetValue(value, symbolName)
         symbolName, se
 
+    let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
+
     let eval (expr: string) = engine.Evaluate(expr)
     let evalTo   (expr: string) (symbol: string) = engine.SetSymbol(symbol, engine.Evaluate(expr))
     let exec     (expr: string) : unit = use res = engine.Evaluate(expr) in ()
@@ -303,12 +302,12 @@ module RInterop =
                 try
                     match eval("names(formals(\"" + name + "\"))").GetValue<string[]>() with
                     | null ->  []
-                    | args ->  [ for arg in args -> { Name = arg; Optional = true } ]
+                    | args ->  List.ofArray args
                 with 
                     | e ->     []
 
-            let hasVarArgs = argList |> List.exists (fun p -> p.Name = "...")
-            let argList = argList |> List.filter (fun p -> p.Name <> "...")
+            let hasVarArgs = argList |> List.exists (fun p -> p = "...")
+            let argList = argList |> List.filter (fun p -> p <> "...")
             RValue.Function(argList, hasVarArgs) 
         | "builtin" | "special" -> 
             // Don't know how to reflect on builtin or special args so just do as varargs
@@ -355,6 +354,14 @@ module RInterop =
                     | :? int | :? double    -> arg.ToString()
                     | :? string as sval     -> "\"" + sval + "\""
                     | :? bool as bval       -> if bval then "TRUE" else "FALSE"
+                    // We allow pairs to be passed, to specify parameter name
+                    | _ when arg.GetType().IsConstructedGenericType && arg.GetType().GetGenericTypeDefinition() = typedefof<_*_> 
+                                            -> match FSharpValue.GetTupleFields(arg) with
+                                               | [| name; value |] when name.GetType() = typeof<string> ->
+                                                    let name = name :?> string
+                                                    tempSymbols.Add(name, engine.SetValue(value, name))
+                                                    name
+                                               | _ -> failwithf "Pairs must be string * value"
                     | _                     -> let sym,se = toR arg
                                                tempSymbols.Add(sym, se)
                                                sym
@@ -362,7 +369,7 @@ module RInterop =
             let argList = [|
                 // Pass the named arguments as name=val pairs
                 for kvp in argsByName do
-                    if not(kvp.Value :? Missing) then
+                    if not(kvp.Value = null || kvp.Value :? Missing) then
                         yield kvp.Key + "=" + passArg kvp.Value
                             
                 // Now yield any varargs
@@ -371,15 +378,15 @@ module RInterop =
                         passArg argVal
             |]
 
-            loadPackage packageName
-
             let expr = sprintf "%s::%s(%s)" packageName funcName (String.Join(", ", argList))
             eval expr
         
     let call (packageName: string) (funcName: string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
+        loadPackage packageName
+
         match bindingInfo funcName with
         | RValue.Function(rparams, hasVarArg) ->
-            let argNames = [| for arg in rparams -> arg.Name |]
+            let argNames = rparams
             let namedArgCount = argNames.Length
             
 (*            // TODO: Pass this in so it is robust to change

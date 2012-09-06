@@ -35,11 +35,11 @@ type public RProvider(cfg:TypeProviderConfig) as this =
                 let titles = lazy getFunctionDescriptions package
 
                 for name, rval in Map.toSeq bindings do
-                    let memberName = name.Replace("_","__").Replace(".", "_")
+                    let memberName = makeSafeName name
                     match rval with
                     | RValue.Function(paramList, hasVarArgs) ->
                         let paramList = [ for p in paramList -> 
-                                                ProvidedParameter(p.Name.Replace("_","__").Replace(".", "_"),  typeof<obj>, optionalValue=null)
+                                                ProvidedParameter(makeSafeName p,  typeof<obj>, optionalValue=null)
 
                                           if hasVarArgs then
                                             yield ProvidedParameter("paramArray", typeof<obj[]>, optionalValue=null, isParamArray=true)
@@ -95,11 +95,6 @@ type public RProvider(cfg:TypeProviderConfig) as this =
                       
             this.AddNamespace(pns, [ pty ])
 
-    // Expose all functions
-    let ty = ProvidedTypeDefinition(asm, ns, "Session", Some(typeof<obj>))
-
-    // add the type to the namespace
-    do this.AddNamespace(ns, [ty])
 
 [<TypeProviderAssembly>]
 do()
