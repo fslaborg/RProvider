@@ -42,10 +42,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet">
-      <HintPath>..\..\Sierra\3rdParty\RProvider\RDotNet.dll</HintPath>
+      <HintPath>..\References\RDotNet.dll</HintPath>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>..\..\Sierra\3rdParty\RProvider\RDotNet.NativeLibrary.dll</HintPath>
+      <HintPath>..\References\RDotNet.NativeLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
