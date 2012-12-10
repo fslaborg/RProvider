@@ -42,7 +42,14 @@ let adf = R.adf_test(msft)
 
 //lets look at some pair plots
 let tickers = [ "MSFT"; "AAPL"; "X"; "VXX"; "SPX"; "GLD" ]
-let data = [ for t in tickers -> t, getStockPrices t 255 |> R.log |> R.diff ]
+
+//This line below corrected as it generated an error. This is my 3rd F# program and first R program, so please say if I got this wrong-SoulFireMage
+//But I got the plots to appear in R from it, running in interactive!
+//let data = [ for t in tickers -> t, getStockPrices t 255 |> R.log |> R.diff ]
+let data = [
+    for ticker in [ "MSFT"; "AAPL"; "VXX"; "SPX"; "GLD" ] ->
+        ticker, getStockPrices ticker 255 |> R.log |> R.diff ]
 let df = R.data_frame(namedParams data)
+
 R.pairs(df)
 
