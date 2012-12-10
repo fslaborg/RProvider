@@ -352,7 +352,8 @@ module RInterop =
                 match arg with
                     | :? Missing            -> failwithf "Cannot pass Missing value"
                     | :? int | :? double    -> arg.ToString()
-                    | :? string as sval     -> "\"" + sval + "\""
+                    //  This doesn't handle escaping so we fall through to using toR 
+                    //| :? string as sval     -> "\"" + sval + "\""
                     | :? bool as bval       -> if bval then "TRUE" else "FALSE"
                     // We allow pairs to be passed, to specify parameter name
                     | _ when arg.GetType().IsConstructedGenericType && arg.GetType().GetGenericTypeDefinition() = typedefof<_*_> 
