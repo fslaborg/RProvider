@@ -3,8 +3,6 @@ F# R Provider
 =======
 An F# type provider for interoperating with [R](http://www.r-project.org/).
 
-NB: Currently the RProvider does not work correctly with R 2.15 or later, due to a change in the C API of R.  This will likely need a change to R.NET to fix it.
-
 What does it do?
 ================
 The R Provider discovers R packages that are available in your R installation and makes them available as .NET namespaces underneath the parent namespace RProvider.  For example, the stats package is available as RProvider.stats.  If you open the namespaces you want to use, functions and values will be available as R.name.  For example, consider this F# interactive script:
@@ -37,7 +35,5 @@ The library uses [RDotNet](http://rdotnet.codeplex.com/) which is also covered b
 Pre-requisites
 ==============
 The R Provider requires an installation of R for Windows, downloadable from [here](http://cran.cnr.berkeley.edu/bin/windows/base/).  RProvider uses the R registry key SOFTWARE\R-core to locate the R binary directory, in order to load R.dll.  It will also locate R.dll if it is on the path.  If run from a 32-bit process, RProvider will use the 32-bit R.DLL, and if run from a 64-bit process, it will load the 64-bit version.
-
-Currently the RProvider does not work correctly with R 2.15 or later, due to a change in the C API of R.  This will likely need a change to R.NET to fix it.
 
 For compilation you will need VS2012 RC (or RTM once it comes out on August 15th).  For runtime you'll need .NET 4.5.
