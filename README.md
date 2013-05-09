@@ -24,6 +24,8 @@ And because type providers are used by the Visual Studio IDE, you will get intel
 
 How to use it
 =============
+Install using the [NuGet package](https://nuget.org/packages/RProvider/). 
+
 There is a lot of info on how to use the provider on our [how to page](https://github.com/BlueMountainCapital/FSharpRProvider/wiki/How-To).
 
 For other information, check out the other pages on the [wiki](https://github.com/BlueMountainCapital/FSharpRProvider/wiki).
