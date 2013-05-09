@@ -53,6 +53,7 @@
     <Compile Include="RProvider.fs" />
     <None Include="example.fsx" />
     <Compile Include="converters.fs" />
+    <Compile Include="AssemblyInfo.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

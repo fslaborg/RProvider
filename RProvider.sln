@@ -5,6 +5,13 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider", "RProvider.fspr
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RWrapperGenerator", "RWrapperGenerator\RWrapperGenerator.fsproj", "{66A390A5-526A-4BD1-B876-E7425B643C70}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FA7D1AD-DEDA-4553-81D1-6E4728386A2F}"
+	ProjectSection(SolutionItems) = preProject
+		Build.bat = Build.bat
+		Build.fsx = Build.fsx
+		RProvider.nuspec = RProvider.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
