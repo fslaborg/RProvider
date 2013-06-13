@@ -28,10 +28,6 @@ There is a lot of info on how to use the provider on our [how to page](https://g
 
 For other information, check out the other pages on the [wiki](https://github.com/BlueMountainCapital/FSharpRProvider/wiki).
 
-Limitations
-===========
-If you are using R 2.15 or later, you should not try to load the RProvider inside a script that is passed to FSI via the --use flag.  It seems that something about the way R initializes causes it to hang in that context.  Works fine if you load later.
-
 License
 =======
 FSharpRProvider is covered by the BSD license.
@@ -42,6 +38,6 @@ Pre-requisites
 ==============
 The R Provider requires an installation of R for Windows, downloadable from [here](http://cran.cnr.berkeley.edu/bin/windows/base/).  RProvider uses the R registry key SOFTWARE\R-core to locate the R binary directory, in order to load R.dll.  It will also locate R.dll if it is on the path.  If run from a 32-bit process, RProvider will use the 32-bit R.DLL, and if run from a 64-bit process, it will load the 64-bit version.
 
-Currently the RProvider does not work correctly with R 2.15 or later, due to a change in the C API of R.  This will likely need a change to R.NET to fix it.
+If you are using R 2.15 or later, you should not try to load the RProvider inside a script that is passed to FSI via the --use flag.  It seems that something about the way R initializes causes it to hang in that context.  Works fine if you load later.
 
-For compilation you will need VS2012 RC (or RTM once it comes out on August 15th).  For runtime you'll need .NET 4.5.
+For compilation you will need VS2012 / F# 3.0 or later.  For runtime you'll need .NET 4.5.
