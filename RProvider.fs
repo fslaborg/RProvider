@@ -11,7 +11,6 @@ open Microsoft.FSharp.Core.CompilerServices
 open RDotNet
 open RInteropInternal
 open RInterop
-open Microsoft.Win32
 
 [<TypeProvider>]
 type public RProvider(cfg:TypeProviderConfig) as this =
@@ -19,22 +18,10 @@ type public RProvider(cfg:TypeProviderConfig) as this =
 
     // R potentially may be not installed - handle this in static constructor for improved diag (G.B.)
     static do
-        // If the registry is set up, use that for configuring the path
-        let rCore =
-            match Registry.LocalMachine.OpenSubKey(@"SOFTWARE\R-core"), Registry.CurrentUser.OpenSubKey(@"SOFTWARE\R-core") with
-            | null, null -> failwithf "Reg key Software\R-core does not exist; R is likely not installed on this computer"
-            | null, x -> x
-            | x, null -> x
-            | _ as x, _ -> x
-            
         let is64bit = Environment.Is64BitProcess
-        let subKeyName = if is64bit then "R64" else "R"
-        let key = rCore.OpenSubKey(subKeyName)
-        if key = null then
-            failwithf "SOFTWARE\R-core exists but subkey %s does not exist" subKeyName
-
-        let installPath = key.GetValue("InstallPath") :?> string
-        let binPath = Path.Combine(installPath, "bin", if is64bit then "x64" else "i386")
+        let binPath = Path.Combine(selectRLocation is64bit, "bin", if is64bit then "x64" else "i386")
+        if not (Path.Combine(binPath, "R.dll") |> File.Exists) then
+            failwithf "No R engine at %s" binPath
 
         // Set the path
         Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
