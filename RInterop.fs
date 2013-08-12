@@ -65,24 +65,7 @@ module internal RInteropInternal =
     [<Literal>] 
     let RDateOffset = 25569.
 
-    open Microsoft.Win32
-
     let characterDevice = new CharacterDeviceInterceptor()
-
-    // If the registry is set up, use that for configuring the path
-    let rCore = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\R-core")
-    if rCore <> null then
-        let is64bit = Environment.Is64BitProcess
-        let subKeyName = if is64bit then "R64" else "R"
-        let key = rCore.OpenSubKey(subKeyName)
-        if key = null then
-            failwithf "SOFTWARE\R-core exists but subkey %s does not exist" subKeyName
-
-        let installPath = key.GetValue("InstallPath") :?> string
-        let binPath = Path.Combine(installPath, "bin", if is64bit then "x64" else "i386")
-
-        // Set the path
-        Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
 
     let engine = 
         try
