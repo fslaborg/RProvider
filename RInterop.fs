@@ -54,6 +54,28 @@ module Helpers =
     let (|Null|_|)          (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Null then Some() else None
     let (|Symbol|_|)        (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Symbol then Some(sexp.AsSymbol()) else None
 
+    open Microsoft.Win32
+    open System.IO
+    let selectRLocation is64bit =
+        let locateRfromRegistry is64bit =
+            let rCore =
+                match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
+                | null, null -> failwithf "Reg key Software\R-core does not exist; R is likely not installed on this computer"
+                | null, x -> x
+                | x, null -> x
+                | _ as x, _ -> x
+            
+            let subKeyName = if is64bit then "R64" else "R"
+            let key = rCore.OpenSubKey subKeyName
+            if key = null then
+                failwithf "SOFTWARE\R-core exists but subkey %s does not exist" subKeyName
+
+            key.GetValue "InstallPath" |> unbox
+
+        match Environment.GetEnvironmentVariable "R_HOME" with
+        | null -> locateRfromRegistry is64bit
+        | rPath -> rPath 
+
 module internal RInteropInternal =
     type RParameter = string
     type HasVarArgs = bool
