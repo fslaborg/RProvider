@@ -384,7 +384,7 @@ module RInterop =
                         passArg argVal
             |]
 
-            let expr = sprintf "%s::%s(%s)" packageName funcName (String.Join(", ", argList))
+            let expr = sprintf "%s::`%s`(%s)" packageName funcName (String.Join(", ", argList))
             eval expr
         
     let call (packageName: string) (funcName: string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
