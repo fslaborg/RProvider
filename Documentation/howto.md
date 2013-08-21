@@ -1,0 +1,123 @@
+    [hide]
+    open RProvider
+    open RProvider.``base``
+    open RDotNet
+    
+# How to
+
+## Packages
+
+### How do I Load a Package?
+
+RProvider discovers the packages installed in your R installation and makes them available as packages under the RProvider root namespace.  The actual package is lazily loaded the first time you access it.  
+
+### How do I install a new Package?
+
+Currently you need to load up a real R session, then install the package via install.packages, or the Packages/Install Packages... menu.  You will then need to restart Visual Studio because the set of installed packages is cached inside the RProvider.
+
+#### I have a package installed and it is not showing up
+The most likely cause is that RProvider is using a different R installation from the one you updated.  When you install R, you get the option to update the registry key `HKEY_LOCAL_MACHINE\SOFTWARE\R-core` to point to the version you are installing.  This is what RProvider uses.  If you are running in a 32-bit process, RProvider uses `HKEY_LOCAL_MACHINE\SOFTWARE\R-core\R\InstallPath` to determine the path.  For 64-bit, it reads `HKEY_LOCAL_MACHINE\SOFTWARE\R-core\R64\InstallPath`.  When you install a package in a given version of R, it should be available in both the 32-bit and 64-bit versions.
+
+## Function and Package names
+There are a couple of mismatches between allowed identifiers between R and F#:
+### Dots in names
+It is pretty common in R to use a dot character in a name, because the character has no special meaning.  We remap dots to underscore, and underscore to a double-underscore.  So for example, data.frame() becomes R.data_frame().
+
+### Names that are reserved F# keywords
+Some package and function names are reserved words in F#.  For these, you will need to quote them using double-backquotes.  Typically, the IDE will do this for you.  A good example is the base package, which will require an open statement where "base" is double-back-quoted.
+
+## Passing Parameters
+
+### Parameter Passing Conventions
+
+R supports various kinds of parameters, which we try to map onto equivalent F# parameter types:
+
+ * All R formal parameters have names, and you can always pass their values either by name or positionally.  If you pass by name, you can skip arguments in your actual argument list.  We simply map these onto F# arguments, which you can also pass by name or positionally.
+
+ * In R, essentially all arguments are optional (even if no default value is specified in the function argument list).  It's up to the receiving function to determine whether to error if the value is missing.   So we make all arguments optional.
+
+ * R functions support ... (varargs/paramarray).  We map this onto a .NET ParamArray, which allows an arbitrary number of arguments to be passed.  However, there are a couple of kinks with this:
+
+    * R allows named arguments to appear _after_ the ... argument, whereas .NET requires the ParamArray argument to be at the end.  Some R functions use this convention because their primary arguments are passed in the ... argument and the named arguments will sometimes be used to modify the behavior of the function.  From the RProvider you will to supply values for the positional arguments before you can pass to the ... argument.  If you don't want to supply a value to one of these arguments, you can explicitly pass System.Reflection.Missing.
+
+    * Parameters passed to the R ... argument can also be passed using a name.  Those names are accessible to the calling function.  Example are list and dataframe construction (R.list, and R.data_frame).  To pass arguments this way, you can use the overload of each function that takes an IDictionary<string, obj>, either directly, or using the namedParams function.  For example:
+
+        R.data_frame(namedParams [ "A", [|1;2;3|]; "B", [|4;5;6|] ])
+
+### Parameter Types
+
+Since all arguments to functions are of type obj, it is not necessarily obvious what you can pass.  Ultimately, you will need to know what the underlying function is expecting, but here is a table to help you.  When reading this, remember that for most types, R supports only vector types.  There are no scalar string, int, bool etc. types.
+
+<table>
+<tr><th>R Type</th><th>F#/.NET Type</th></tr>
+<tr><td>character</td><td>string or string[]</td></tr>
+<tr><td>complex</td><td>System.Numerics.Complex or Complex[]</td></tr>
+<tr><td>integer</td><td>int or int[]</td></tr>
+<tr><td>logical</td><td>bool or bool[]</td></tr>
+<tr><td>numeric</td><td>double or double[]</td></tr>
+<tr><td>list</td><td>Call R.list, passing the values as separate arguments</td><tr>
+<tr><td>dataframe</td><td>Call R.data_frame, passing column vectors in a dictionary</td><tr>
+</table>
+
+**NB**: For any input, you can also pass a SymbolicExpression instance you received as the result of calling another R function.  Doing so it a very efficient way of passing data from one function to the next, since there is no marshalling between .NET and R types in that case.
+
+## Accessing results
+
+Functions exposed by the RProvider return an instance of `RDotNet.SymbolicExpression`.  This keeps all return data inside R data structures, so does not impose any data marshalling overhead.  If you want to pass the value in as an argument to another R function, you can simply do so.
+
+In order to access the result in .NET code, you have three routes:
+
+### Convert the data into a specified .NET type via GetValue<type>()
+
+RProvider adds a generic `GetValue<'T>` extension method to `SymbolicExpression`.  This supports conversions from certain R values to specific .NET types.  Here are the currently supported conversions:
+
+<table>
+<tr><th>R Type</th><th>Requested F#/.NET Type</th></tr>
+<tr><td>character (when vector is length 1)</td><td>string</td></tr>
+<tr><td>character</td><td>string[]</td></tr>
+<tr><td>complex (when vector is length 1)</td><td>Complex</td></tr>
+<tr><td>complex</td><td>Complex[]</td></tr>
+<tr><td>integer (when vector is length 1)</td><td>int</td></tr>
+<tr><td>integer</td><td>int[]</td></tr>
+<tr><td>logical (when vector is length 1)</td><td>bool</td></tr>
+<tr><td>logical</td><td>bool[]</td></tr>
+<tr><td>numeric (when vector is length 1)</td><td>double</td></tr>
+<tr><td>numeric</td><td>double[]</td></tr>
+</table>
+
+Custom conversions can be supported through [plugins](plugins.html).
+
+### Convert the data into the default .NET type the .Value property
+
+We also expose an extension property called Value that performs a _default_ conversion of a SymbolicExpresion to a .NET type.  These are the current conversions:
+
+<table>
+<tr><th>R Type</th><th>F#/.NET Type</th></tr>
+<tr><td>character</td><td>string[]</td></tr>
+<tr><td>complex</td><td>Complex[]</td></tr>
+<tr><td>integer</td><td>int[]</td></tr>
+<tr><td>logical</td><td>bool[]</td></tr>
+<tr><td>numeric</td><td>double[]</td></tr>
+</table>
+
+Again, custom conversions can be supported through [plugins](plugins.html).
+
+### Explicitly access the data in the SymbolicExpression
+
+If there are no supported conversions, you can access the data through the RDotNet object model.  RDotNet exposes properties, members and extension members (available only if you open the RDotNet namespace) that allow you to access the underlying data directly.  So, for example:
+
+    let res = R.sum([|1;2;3;4|])
+    if res.Type = RDotNet.Internals.SymbolicExpressionType.IntegerVector then res.AsInteger().[0]
+    else failwithf "Expecting a Numeric but got a %A" res.Type
+
+To make this easier, we have defined some active patterns, under the RProvider.Helpers namespace, which is auto-opened when you open the RProvider namespace.  These combine the type tests and conversion.  An equivalent example:
+
+    match R.sum([|1;2;3;4|]) with 
+    | IntegerVector(iv) -> iv.[0]
+    | _                 -> failwithf "Expecting a Numeric but got a %A" res.Type
+
+## What if I commonly need an argument or result conversion that RProvider does not support?
+
+If you believe the argument conversion is universally appropriate and should be available to everybody, please fork the repo and submit a pull request.
+
+RProvider also supports custom conversions to/from your own data types using [plugins](plugins.html).

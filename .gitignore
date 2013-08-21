@@ -164,3 +164,6 @@ pip-log.txt
 
 # For References
 !*/References/*.pdb
+
+# Generated documentation files
+Documentation/Output/*.html
