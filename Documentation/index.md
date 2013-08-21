@@ -1,7 +1,7 @@
+<img src="https://www.bluemountaincapital.com/media/logo.gif" style="float:right" />
+
 F# R Provider
 =======
-
-<img src="https://www.bluemountaincapital.com/media/logo.gif" style="float:right" />
 
 An F# type provider for interoperating with [R](http://www.r-project.org/).
 
