@@ -14,7 +14,7 @@ let sources  = __SOURCE_DIRECTORY__ ++ "../Documentation"
 let output   = __SOURCE_DIRECTORY__ ++ "../Documentation/output"
 
 // Root URL for the generated HTML
-let root = "file:///C:\Tomas\Projects\RProvider\Documentation\output" // "http://fsharp.github.com/FSharp.Data"
+let root = "http://tpetricek.github.io/FSharp.RProvider/" // TODO: Move under Blue Mountain!
 
 let references = 
   [ __SOURCE_DIRECTORY__ ++ "../bin/Debug/RDotNet.dll"
