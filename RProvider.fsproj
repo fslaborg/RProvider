@@ -14,6 +14,8 @@
     </TargetFrameworkProfile>
     <Name>RProvider</Name>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,21 +56,25 @@
     <None Include="example.fsx" />
     <Compile Include="converters.fs" />
     <Compile Include="AssemblyInfo.fs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" />
     <Reference Include="RDotNet">
-      <HintPath>References\RDotNet.dll</HintPath>
+      <HintPath>packages\R.NET.1.5.4\lib\net40\RDotNet.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>References\RDotNet.NativeLibrary.dll</HintPath>
+      <HintPath>packages\R.NET.1.5.4\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.
 	<Target Name="BeforeBuild">

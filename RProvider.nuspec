@@ -9,6 +9,9 @@
     <summary>@summary@</summary>
     <projectUrl>https://github.com/BlueMountainCapital/FSharpRProvider</projectUrl>
     <licenseUrl>https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/LICENSE.md</licenseUrl>
-    <tags>F# R TypeProvider</tags>    
+    <tags>F# R TypeProvider</tags>
+    <dependencies>
+      <dependency id="R.NET" version="1.5.4" />
+    </dependencies>    
   </metadata>
 </package>

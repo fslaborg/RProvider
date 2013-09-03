@@ -6,7 +6,7 @@ open Fake.AssemblyInfoFile
 // Assembly / NuGet package properties
 let projectName = "RProvider"
 let companyName = "Blue Mountain Capital"
-let version = "1.0.0"
+let version = "1.0.1"
 let projectSummary = "An F# Type Provider providing strongly typed access to the R statistical package."
 let projectDescription = "An F# type provider for interoperating with R"
 let authors = ["Blue Mountain Capital"]
@@ -15,6 +15,13 @@ let authors = ["Blue Mountain Capital"]
 let buildDir = @".\build\"
 let nugetDir = @".\nuget\"
 
+// Restore NuGet packages
+!+ "./**/packages.config"
+  ++ "./packages.config"
+    |> ScanImmediately
+    |> Seq.iter (RestorePackage (fun p -> 
+        {p with 
+            ToolPath = "./.nuget/NuGet.exe"}))
 // Targets
 
 // Update assembly info
@@ -57,7 +64,8 @@ Target "CreateNuGet" (fun _ ->
                 Description = projectDescription
                 Summary = projectSummary
                 NoPackageAnalysis = true
-                ToolPath = @".\tools\Nuget\Nuget.exe" 
+                ToolPath = @".\.nuget\Nuget.exe" 
+                WorkingDir = nugetDir
                 OutputPath = nugetDir })
 )
 
