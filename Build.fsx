@@ -52,15 +52,23 @@ Target "CleanNuGet" (fun _ ->
 )
 
 // Create NuGet package
-Target "CreateNuGet" (fun _ ->     
+Target "CreateNuGet" (fun _ ->
+    System.IO.Directory.CreateDirectory(nugetDir @@ "tools") |> ignore
+    System.IO.File.Copy(@".\init.ps1", nugetDir @@ "tools\init.ps1")
+
     XCopy @".\build\" (nugetDir @@ "lib")
+    !+ @"nuget/lib/*.*"
+      -- @"nuget/lib/RProvider*.*"
+        |> ScanImmediately
+        |> Seq.iter (System.IO.File.Delete)
+
 
     "RProvider.nuspec"
       |> NuGet (fun p -> 
             {p with
                 Project = projectName
                 Authors = authors
-                Version = version
+                Version = version + "-beta" // package for pre-release channel
                 Description = projectDescription
                 Summary = projectSummary
                 NoPackageAnalysis = true
