@@ -68,7 +68,7 @@ Target "CreateNuGet" (fun _ ->
             {p with
                 Project = projectName
                 Authors = authors
-                Version = version + "-beta" // package for pre-release channel
+                Version = version
                 Description = projectDescription
                 Summary = projectSummary
                 NoPackageAnalysis = true
