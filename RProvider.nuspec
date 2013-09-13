@@ -12,6 +12,7 @@
     <tags>F# R TypeProvider</tags>
     <dependencies>
       <dependency id="R.NET" version="1.5.4" />
+      <dependency id="RDotNet.FSharp" version="0.1.2" />
     </dependencies>    
   </metadata>
 </package>

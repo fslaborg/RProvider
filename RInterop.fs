@@ -12,6 +12,7 @@ open System.Threading
 open System.Collections.Generic
 open System.Linq
 open RDotNet
+open RDotNet.ActivePatterns
 
 /// Interface to use via MEF
 type IConvertToR<'inType> =     
@@ -27,32 +28,19 @@ type IDefaultConvertFromR =
 
 [<AutoOpen>]
 module Helpers = 
-    open RDotNet.Internals
-
     /// Construct named params to pass to function
     let namedParams (s: seq<string*_>) = dict <| Seq.map (fun (n,v) -> n, box v) s
 
-    let (|CharacterVector|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.CharacterVector then Some(sexp.AsCharacter()) else None
-    let (|ComplexVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.ComplexVector   then Some(sexp.AsComplex()) else None
-    let (|IntegerVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.IntegerVector   then Some(sexp.AsInteger()) else None
-    let (|LogicalVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.LogicalVector   then Some(sexp.AsLogical()) else None
-    let (|NumericVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.NumericVector   then Some(sexp.AsNumeric()) else None
+module internal RInteropInternal =
+    type RParameter = string
+    type HasVarArgs = bool
 
-    let (|Function|_|)        (sexp: SymbolicExpression)  = 
-        if sexp <> null && (sexp.Type = SymbolicExpressionType.BuiltinFunction || sexp.Type = SymbolicExpressionType.Closure || sexp.Type = SymbolicExpressionType.SpecialFunction) then 
-            Some(sexp.AsFunction()) else None
+    type RValue =
+        | Function of RParameter list * HasVarArgs
+        | Value
 
-    let (|BuiltinFunction|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.BuiltinFunction then Some(sexp.AsFunction() :?> BuiltinFunction) else None
-    let (|Closure|_|)         (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.Closure then Some(sexp.AsFunction() :?> Closure) else None
-    let (|SpecialFunction|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.SpecialFunction then Some(sexp.AsFunction() :?> SpecialFunction) else None
-
-    let (|Environment|_|)   (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Environment  then Some(sexp.AsEnvironment()) else None
-    let (|Expression|_|)    (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.ExpressionVector then Some(sexp.AsExpression()) else None
-    let (|Language|_|)      (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.LanguageObject then Some(sexp.AsLanguage()) else None
-    let (|List|_|)          (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.List then Some(sexp.AsList()) else None     
-    let (|Pairlist|_|)      (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Pairlist then Some(sexp :?> Pairlist) else None     
-    let (|Null|_|)          (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Null then Some() else None
-    let (|Symbol|_|)        (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Symbol then Some(sexp.AsSymbol()) else None
+    [<Literal>] 
+    let RDateOffset = 25569.
 
     open Microsoft.Win32
     open System.IO
@@ -75,17 +63,6 @@ module Helpers =
         match Environment.GetEnvironmentVariable "R_HOME" with
         | null -> locateRfromRegistry is64bit
         | rPath -> rPath 
-
-module internal RInteropInternal =
-    type RParameter = string
-    type HasVarArgs = bool
-
-    type RValue =
-        | Function of RParameter list * HasVarArgs
-        | Value
-
-    [<Literal>] 
-    let RDateOffset = 25569.
 
     let characterDevice = new CharacterDeviceInterceptor()
 
