@@ -1,5 +1,8 @@
 param($installPath, $toolsPath, $package)
 
+if ($installPath.EndsWith("packages"))
+     {$installPath = $toolsPath + "\..\"}
+
 $destPath = $installPath + "\lib\"
 Foreach($p in $package.DependencySets.Dependencies)
 {
