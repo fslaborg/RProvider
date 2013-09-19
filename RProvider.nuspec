@@ -11,8 +11,8 @@
     <licenseUrl>https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/LICENSE.md</licenseUrl>
     <tags>F# R TypeProvider</tags>
     <dependencies>
-      <dependency id="R.NET" version="1.5.4" />
-      <dependency id="RDotNet.FSharp" version="0.1.2" />
+      <dependency id="R.NET" version="1.5.5" />
+      <dependency id="RDotNet.FSharp" version="0.1.2.1" />
     </dependencies>    
   </metadata>
 </package>
