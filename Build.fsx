@@ -42,7 +42,7 @@ Target "Clean" (fun _ ->
 // Build RProvider
 Target "BuildRProvider" (fun _ ->
     !! @"rprovider.fsproj"
-      |> MSBuildRelease buildDir "Build"
+      |> MSBuildRelease buildDir "ReBuild"
       |> Log "AppBuild-Output: "
 )
 
@@ -61,7 +61,6 @@ Target "CreateNuGet" (fun _ ->
       -- @"nuget/lib/RProvider*.*"
         |> ScanImmediately
         |> Seq.iter (System.IO.File.Delete)
-
 
     "RProvider.nuspec"
       |> NuGet (fun p -> 
