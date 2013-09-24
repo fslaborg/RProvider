@@ -7,14 +7,14 @@ What does it do?
 ================
 The R Provider discovers R packages that are available in your R installation and makes them available as .NET namespaces underneath the parent namespace RProvider.  For example, the stats package is available as RProvider.stats.  If you open the namespaces you want to use, functions and values will be available as R.name.  For example, consider this F# interactive script:
 
-````
+```fsharp
 #r "RProvider.dll"
 
 open RProvider
 open RProvider.``base``
 
 let v = R.c(1,2,3)
-````
+```
 
 This creates an R numeric vector containing 1,2,3, and names it v.  Note that we had to open the base namespace, since the function 'c' is part of that namespace.  You should also open namespace RProvider, because it contains some helper functions.
 
