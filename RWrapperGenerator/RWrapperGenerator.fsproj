@@ -11,6 +11,8 @@
     <AssemblyName>RWrapperGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Name>RWrapperGenerator</Name>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,10 +44,16 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet">
-      <HintPath>..\References\RDotNet.dll</HintPath>
+      <HintPath>..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RDotNet.FSharp">
+      <HintPath>..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>..\References\RDotNet.NativeLibrary.dll</HintPath>
+      <HintPath>..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -67,11 +75,13 @@
       <Link>RInterop.fs</Link>
     </Compile>
     <Compile Include="Program.fs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

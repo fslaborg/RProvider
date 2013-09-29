@@ -12,6 +12,7 @@ open System.Threading
 open System.Collections.Generic
 open System.Linq
 open RDotNet
+open RDotNet.ActivePatterns
 
 /// Interface to use via MEF
 type IConvertToR<'inType> =     
@@ -27,32 +28,8 @@ type IDefaultConvertFromR =
 
 [<AutoOpen>]
 module Helpers = 
-    open RDotNet.Internals
-
     /// Construct named params to pass to function
     let namedParams (s: seq<string*_>) = dict <| Seq.map (fun (n,v) -> n, box v) s
-
-    let (|CharacterVector|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.CharacterVector then Some(sexp.AsCharacter()) else None
-    let (|ComplexVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.ComplexVector   then Some(sexp.AsComplex()) else None
-    let (|IntegerVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.IntegerVector   then Some(sexp.AsInteger()) else None
-    let (|LogicalVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.LogicalVector   then Some(sexp.AsLogical()) else None
-    let (|NumericVector|_|)   (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.NumericVector   then Some(sexp.AsNumeric()) else None
-
-    let (|Function|_|)        (sexp: SymbolicExpression)  = 
-        if sexp <> null && (sexp.Type = SymbolicExpressionType.BuiltinFunction || sexp.Type = SymbolicExpressionType.Closure || sexp.Type = SymbolicExpressionType.SpecialFunction) then 
-            Some(sexp.AsFunction()) else None
-
-    let (|BuiltinFunction|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.BuiltinFunction then Some(sexp.AsFunction() :?> BuiltinFunction) else None
-    let (|Closure|_|)         (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.Closure then Some(sexp.AsFunction() :?> Closure) else None
-    let (|SpecialFunction|_|) (sexp: SymbolicExpression)  = if sexp <> null && sexp.Type = SymbolicExpressionType.SpecialFunction then Some(sexp.AsFunction() :?> SpecialFunction) else None
-
-    let (|Environment|_|)   (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Environment  then Some(sexp.AsEnvironment()) else None
-    let (|Expression|_|)    (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.ExpressionVector then Some(sexp.AsExpression()) else None
-    let (|Language|_|)      (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.LanguageObject then Some(sexp.AsLanguage()) else None
-    let (|List|_|)          (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.List then Some(sexp.AsList()) else None     
-    let (|Pairlist|_|)      (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Pairlist then Some(sexp :?> Pairlist) else None     
-    let (|Null|_|)          (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Null then Some() else None
-    let (|Symbol|_|)        (sexp: SymbolicExpression)    = if sexp <> null && sexp.Type = SymbolicExpressionType.Symbol then Some(sexp.AsSymbol()) else None
 
 module internal RInteropInternal =
     type RParameter = string
@@ -65,24 +42,7 @@ module internal RInteropInternal =
     [<Literal>] 
     let RDateOffset = 25569.
 
-    open Microsoft.Win32
-
     let characterDevice = new CharacterDeviceInterceptor()
-
-    // If the registry is set up, use that for configuring the path
-    let rCore = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\R-core")
-    if rCore <> null then
-        let is64bit = Environment.Is64BitProcess
-        let subKeyName = if is64bit then "R64" else "R"
-        let key = rCore.OpenSubKey(subKeyName)
-        if key = null then
-            failwithf "SOFTWARE\R-core exists but subkey %s does not exist" subKeyName
-
-        let installPath = key.GetValue("InstallPath") :?> string
-        let binPath = Path.Combine(installPath, "bin", if is64bit then "x64" else "i386")
-
-        // Set the path
-        Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
 
     let engine = 
         try
@@ -379,7 +339,7 @@ module RInterop =
                         passArg argVal
             |]
 
-            let expr = sprintf "%s::%s(%s)" packageName funcName (String.Join(", ", argList))
+            let expr = sprintf "%s::`%s`(%s)" packageName funcName (String.Join(", ", argList))
             eval expr
         
     let call (packageName: string) (funcName: string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =

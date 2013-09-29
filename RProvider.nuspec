@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <description>R Type Provider</description>
+    <id>RProvider</id>
+    <version>0.1.2</version>
+    <authors>@authors@</authors>
+    <language>en-US</language>
+    <summary>@summary@</summary>
+    <projectUrl>https://github.com/BlueMountainCapital/FSharpRProvider</projectUrl>
+    <licenseUrl>https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/LICENSE.md</licenseUrl>
+    <tags>F# R TypeProvider</tags>
+    <dependencies>
+      <dependency id="R.NET" version="1.5.5" />
+      <dependency id="RDotNet.FSharp" version="0.1.2.1" />
+    </dependencies>    
+  </metadata>
+</package>

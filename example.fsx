@@ -1,4 +1,4 @@
-﻿#r @"References/RDotNet.dll"
+﻿#r @"bin/Debug/RDotNet.dll"
 #r @"bin/Debug/RProvider.dll"
  
 open RDotNet
