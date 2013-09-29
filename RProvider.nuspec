@@ -10,6 +10,7 @@
     <projectUrl>https://github.com/BlueMountainCapital/FSharpRProvider</projectUrl>
     <licenseUrl>https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/LICENSE.md</licenseUrl>
     <tags>F# R TypeProvider</tags>
+    <iconUrl>https://raw.github.com/BlueMountainCapital/FSharpRProvider/master/Documentation/misc/logo.png</iconUrl>
     <dependencies>
       <dependency id="R.NET" version="1.5.5" />
       <dependency id="RDotNet.FSharp" version="0.1.2.1" />
