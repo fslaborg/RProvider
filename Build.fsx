@@ -6,10 +6,10 @@ open Fake.AssemblyInfoFile
 // Assembly / NuGet package properties
 let projectName = "RProvider"
 let companyName = "Blue Mountain Capital"
-let version = "1.0.2"
+let version = "1.0.3"
 let projectSummary = "An F# Type Provider providing strongly typed access to the R statistical package."
 let projectDescription = "An F# type provider for interoperating with R"
-let authors = ["Blue Mountain Capital"]
+let authors = ["BlueMountain Capital"]
 
 // Folders
 let buildDir = @".\build\"
