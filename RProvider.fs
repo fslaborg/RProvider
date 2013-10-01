@@ -27,11 +27,32 @@ module internal ProviderUtils =
                 | _ as x, _ -> x
             
             let subKeyName = if is64bit then "R64" else "R"
-            let key = rCore.OpenSubKey subKeyName
-            if key = null then
+            let rRuntime = rCore.OpenSubKey subKeyName
+            if rRuntime = null then
                 failwithf "SOFTWARE\R-core exists but subkey %s does not exist" subKeyName
 
-            key.GetValue "InstallPath" |> unbox
+            let currentVersion =
+                match rRuntime.GetValue "Current Version" with
+                | null -> 
+                    // We need to guess latest version
+                    rRuntime.GetSubKeyNames()
+                    |> Array.map (fun name ->
+                        name, (name.Split([|'.'|]) |> Array.map (Convert.ToInt32)))
+                    |> Array.sortBy snd
+                    |> Array.rev
+                    |> Seq.head
+                    |> fst
+                | version -> unbox version 
+
+            let rVersion = rRuntime.OpenSubKey currentVersion
+            if rVersion = null then
+                failwithf "SOFTWARE\R-core\%s exists but subkey %s does not exist" subKeyName currentVersion
+
+            let installPath = rVersion.GetValue "InstallPath" 
+            if installPath = null then
+                failwithf "SOFTWARE\R-core\%s\%s\InstallPath does not exist" subKeyName currentVersion
+
+            unbox installPath
 
         match Environment.GetEnvironmentVariable "R_HOME" with
         | null -> locateRfromRegistry is64bit
