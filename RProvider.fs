@@ -26,7 +26,7 @@ module internal ProviderUtils =
                 | x, null -> x
                 | _ as x, _ -> x
             
-            let subKeyName = if is64bit then "R64" else "R"
+            let subKeyName = "R"
             let key = rCore.OpenSubKey subKeyName
             if key = null then
                 failwithf "SOFTWARE\R-core exists but subkey %s does not exist" subKeyName
