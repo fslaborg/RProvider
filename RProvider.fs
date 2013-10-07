@@ -17,24 +17,22 @@ open System.IO
 module internal ProviderUtils =
     // Have to be careful that this code is in its own module
     // If it is in some other module, which might be initialized before the PATH is set, we will get initialization exceptions
-    let selectRLocation is64bit =
-        let locateRfromRegistry is64bit =
+    let rLocation =
+        let locateRfromRegistry () =
             let rCore =
                 match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
                 | null, null -> failwithf "Reg key Software\R-core does not exist; R is likely not installed on this computer"
                 | null, x -> x
-                | x, null -> x
-                | _ as x, _ -> x
+                | x, _ -> x
             
-            let subKeyName = if is64bit then "R64" else "R"
-            let key = rCore.OpenSubKey subKeyName
+            let key = rCore.OpenSubKey "R"
             if key = null then
-                failwithf "SOFTWARE\R-core exists but subkey %s does not exist" subKeyName
+                failwith "SOFTWARE\R-core exists but subkey R does not exist"
 
             key.GetValue "InstallPath" |> unbox
 
         match Environment.GetEnvironmentVariable "R_HOME" with
-        | null -> locateRfromRegistry is64bit
+        | null -> locateRfromRegistry()
         | rPath -> rPath 
 
 
@@ -44,8 +42,7 @@ type public RProvider(cfg:TypeProviderConfig) as this =
 
     // R potentially may be not installed - handle this in static constructor for improved diag (G.B.)
     static do
-        let is64bit = Environment.Is64BitProcess
-        let binPath = Path.Combine(ProviderUtils.selectRLocation is64bit, "bin", if is64bit then "x64" else "i386")
+        let binPath = Path.Combine(ProviderUtils.rLocation, "bin", if Environment.Is64BitProcess then "x64" else "i386")
         if not (Path.Combine(binPath, "R.dll") |> File.Exists) then
             failwithf "No R engine at %s" binPath
 
