@@ -17,8 +17,8 @@ open System.IO
 module internal ProviderUtils =
     // Have to be careful that this code is in its own module
     // If it is in some other module, which might be initialized before the PATH is set, we will get initialization exceptions
-    let selectRLocation =
-        let locateRfromRegistry =
+    let rLocation =
+        let locateRfromRegistry () =
             let rCore =
                 match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
                 | null, null -> failwithf "Reg key Software\R-core does not exist; R is likely not installed on this computer"
@@ -32,7 +32,7 @@ module internal ProviderUtils =
             key.GetValue "InstallPath" |> unbox
 
         match Environment.GetEnvironmentVariable "R_HOME" with
-        | null -> locateRfromRegistry
+        | null -> locateRfromRegistry()
         | rPath -> rPath 
 
 
@@ -42,7 +42,7 @@ type public RProvider(cfg:TypeProviderConfig) as this =
 
     // R potentially may be not installed - handle this in static constructor for improved diag (G.B.)
     static do
-        let binPath = Path.Combine(ProviderUtils.selectRLocation, "bin", if Environment.Is64BitProcess then "x64" else "i386")
+        let binPath = Path.Combine(ProviderUtils.rLocation, "bin", if Environment.Is64BitProcess then "x64" else "i386")
         if not (Path.Combine(binPath, "R.dll") |> File.Exists) then
             failwithf "No R engine at %s" binPath
 
