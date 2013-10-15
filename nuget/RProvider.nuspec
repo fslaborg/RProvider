@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>@project@</id>
+    <version>@build.number@</version>
+    <authors>@authors@</authors>
+    <owners>@authors@</owners>
+    <projectUrl>https://github.com/BlueMountainCapital/FSharpRProvider</projectUrl>
+    <licenseUrl>https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/LICENSE.md</licenseUrl>
+    <iconUrl>https://raw.github.com/BlueMountainCapital/FSharpRProvider/master/Documentation/misc/logo.png</iconUrl>
+    <summary>@summary@</summary>
+    <description>@description@</description>
+    <releaseNotes>@releaseNotes@</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>@tags@</tags>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="R.NET" version="1.5.5" />
+      <dependency id="RDotNet.FSharp" version="0.1.2.1" />
+    </dependencies>    
+  </metadata>
+  <files>
+    <file src="..\build\RProvider.dll" target="lib" />
+	<file src="..\build\RProvider.pdb" target="lib" />
+    <file src="init.ps1" target="tools" />
+  </files>
+</package>
+
