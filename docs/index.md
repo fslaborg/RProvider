@@ -1,6 +1,8 @@
 F# R Type Provider
 =======
 
+<img src="http://www.bluemountaincapital.com/media/logo.gif" style="float:right;margin:10px;margin-top:0px;" />
+
 The F# Type Provider is a mechanism that enables smooth interoperability
 between F# and [R](http://www.r-project.org/). 
 The Type Provider discovers R packages that are available 
@@ -69,8 +71,6 @@ For compilation you will need VS2012 / F# 3.0 or later.  For runtime you'll need
 
 Contributing and copyright
 --------------------------
-
-<img src="http://www.bluemountaincapital.com/media/logo.gif" style="float:right;margin:10px;margin-top:0px;" />
 
 The project has been developed by [BlueMountain Capital](https://www.bluemountaincapital.com/)
 and contributors. It is available under the BSD license. The library uses
