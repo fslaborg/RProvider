@@ -8,6 +8,7 @@ open RProvider.``base``
 open System
 open Xunit
 open FsCheck
+open FsCheck.Xunit
 open System.Numerics
 open System.Text
 

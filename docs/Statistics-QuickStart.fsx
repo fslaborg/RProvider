@@ -1,4 +1,9 @@
-﻿(** 
+﻿(*** hide ***)
+// Include the right directories so that the documentation tool tips work
+#I "../packages/FSharp.Data.1.1.10/lib/net40/"
+#I "../build/"
+
+(** 
 # Quickstart: Using Statistical Packages
 
 R is a programming language designed for statistics and data mining.
@@ -18,10 +23,11 @@ Assuming you installed the R Type Provider in your project from NuGet,
 you can reference the required libraries and packages this way:
 *)
 
-#r @"..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll"
-#r @"..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll"
-#r @"..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll"
-#r @"..\packages\RProvider.1.0.3\lib\RProvider.dll"
+#I "../packages/RProvider.1.0.3/lib"
+#r "RDotNet.dll"
+#r "RDotNet.FSharp.dll"
+#r "RDotNet.NativeLibrary.dll"
+#r "RProvider.dll"
 
 open System
 open RDotNet
@@ -65,7 +71,7 @@ let dataset =
         "X1", box X1s;
         "X2", box X2s; ]
     |> R.data_frame
-	
+
 (**
 We can now use R to perform a linear regression.
 We call the [R.lm function](http://stat.ethz.ch/R-manual/R-patched/library/stats/html/lm.html),

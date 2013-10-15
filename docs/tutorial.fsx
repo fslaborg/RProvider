@@ -1,4 +1,9 @@
-﻿(** 
+﻿(*** hide ***)
+// Include the right directories so that the documentation tool tips work
+#I "../packages/FSharp.Data.1.1.10/lib/net40/"
+#I "../build/"
+
+(** 
 # R Provider Tutorial
 
 ## Referencing the provider
@@ -7,8 +12,11 @@ In order to use the R provider, you need to reference the `RDotNet.dll` library
 (which is a .NET connector for R) and the `RProvider.dll` itself. For this tutorial,
 we use `open` to reference a number of packages including `stats`, `tseries` and `zoo`:
 *)
-#r @"..\bin\Debug\RProvider.dll"
-#r @"..\bin\Debug\RDotNet.dll"
+#I "../packages/RProvider.1.0.3/lib"
+#r "RDotNet.dll"
+#r "RDotNet.FSharp.dll"
+#r "RDotNet.NativeLibrary.dll"
+#r "RProvider.dll"
  
 open RDotNet
 open RProvider
@@ -35,7 +43,7 @@ The following snippet uses the CSV type provider to generate a type `Stocks` tha
 used for parsing CSV data from Yahoo. Then it defines a function `getStockPrices` that returns
 array with prices for the specified stock and a specified number of days:
 *)
-#r "lib/FSharp.Data.dll"
+#r "FSharp.Data.dll"
 open FSharp.Data
 
 type Stocks = CsvProvider<"http://ichart.finance.yahoo.com/table.csv?s=SPX">

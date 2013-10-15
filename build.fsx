@@ -82,6 +82,10 @@ Target "Build" (fun _ ->
 
 // --------------------------------------------------------------------------------------
 // Run the unit tests using test runner & kill test runner when complete
+//
+// TODO: The tests are using xUnit, so tests are not run as part of FAKE currently :-(
+//
+(*
 
 Target "RunTests" (fun _ ->
     let nunitVersion = GetPackageVersion "packages" "NUnit.Runners"
@@ -101,6 +105,8 @@ Target "RunTests" (fun _ ->
 FinalTarget "CloseTestRunner" (fun _ ->  
     ProcessHelper.killProcess "nunit-agent.exe"
 )
+*)
+Target "RunTests" DoNothing
 
 // --------------------------------------------------------------------------------------
 // Build a NuGet package
@@ -138,10 +144,10 @@ Target "GenerateDocs" DoNothing
 // --------------------------------------------------------------------------------------
 // Release Scripts
 
-let gitHome = "https://github.com/BlueMountainCapital"
+let gitHome = "https://github.com/tpetricek" // TODO: Use "BlueMountainCapital"
 
 Target "ReleaseDocs" (fun _ ->
-    Repository.clone "" (gitHome + "/FSharp.DataFrame.git") "gh-pages"
+    Repository.clone "" (gitHome + "/FSharp.RProvider.git") "gh-pages" // TODO: Use "FSharpRProvider"
     Branches.checkoutBranch "gh-pages" "gh-pages"
     CopyRecursive "docs" "gh-pages" true |> printfn "%A"
     CommandHelper.runSimpleGitCommand "gh-pages" "add ." |> printfn "%s"
@@ -151,10 +157,9 @@ Target "ReleaseDocs" (fun _ ->
 )
 
 Target "ReleaseBinaries" (fun _ ->
-    Repository.clone "" (gitHome + "/FSharp.DataFrame.git") "release"
+    Repository.clone "" (gitHome + "/FSharp.RProvider.git") "release" // dtto.
     Branches.checkoutBranch "release" "release"
-    CopyRecursive "bin" "release/bin" true |> printfn "%A"
-    MoveFile "./release/" "./release/bin/FSharp.DataFrame.fsx"
+    CopyRecursive "build" "release" true |> printfn "%A"
     let cmd = sprintf """commit -a -m "Update binaries for version %s""" versionNuGet
     CommandHelper.runSimpleGitCommand "release" cmd |> printfn "%s"
     Branches.push "release"

@@ -1,8 +1,3 @@
-    [hide]
-    open RProvider
-    open RProvider.``base``
-    open RDotNet
-    
 # How to
 
 ## Packages

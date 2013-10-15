@@ -44,10 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">
-      <HintPath>References\FsCheck.dll</HintPath>
+      <HintPath>..\..\packages\FsCheck.0.9.1.0\lib\net40-Client\FsCheck.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="FsCheck.Xunit">
-      <HintPath>References\FsCheck.Xunit.dll</HintPath>
+      <HintPath>..\..\packages\FsCheck.Xunit.0.4.0.1\lib\net40-Client\FsCheck.Xunit.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -61,11 +63,15 @@
       <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RProvider">
+      <HintPath>..\..\build\RProvider.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="xunit">
-      <HintPath>References\xunit.dll</HintPath>
+      <HintPath>..\..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

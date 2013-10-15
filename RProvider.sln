@@ -5,7 +5,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider", "src\RProvider\
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RWrapperGenerator", "src\RWrapperGenerator\RWrapperGenerator.fsproj", "{66A390A5-526A-4BD1-B876-E7425B643C70}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FA7D1AD-DEDA-4553-81D1-6E4728386A2F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{5FA7D1AD-DEDA-4553-81D1-6E4728386A2F}"
 	ProjectSection(SolutionItems) = preProject
 		build.cmd = build.cmd
 		build.fsx = build.fsx
@@ -16,6 +16,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6D45A3
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{B34F96AE-40C8-44AC-8D82-5196202C080E}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Charts-QuickStart.fsx = docs\Charts-QuickStart.fsx
+		docs\howto.md = docs\howto.md
+		docs\index.md = docs\index.md
+		docs\internals.md = docs\internals.md
+		docs\passing-data.md = docs\passing-data.md
+		docs\plugins.md = docs\plugins.md
+		docs\Statistics-QuickStart.fsx = docs\Statistics-QuickStart.fsx
+		docs\tutorial.fsx = docs\tutorial.fsx
+		docs\whatwhy.md = docs\whatwhy.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{9C22FF03-BB06-4332-8104-20AB4959BABA}"
+	ProjectSection(SolutionItems) = preProject
+		tools\build.fsx = tools\build.fsx
+		tools\template.html = tools\template.html
 	EndProjectSection
 EndProject
 Global
@@ -35,5 +54,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9C22FF03-BB06-4332-8104-20AB4959BABA} = {B34F96AE-40C8-44AC-8D82-5196202C080E}
 	EndGlobalSection
 EndGlobal
