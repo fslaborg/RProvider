@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Debug\RWrapperGenerator.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\RWrapperGenerator.xml</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
     <StartArguments>/outFile=c:\temp\out.cs /packges=base,stats,graphics,grDevices,tseries,zoo</StartArguments>
   </PropertyGroup>
@@ -35,7 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Release\RWrapperGenerator.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\RWrapperGenerator.xml</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -44,15 +44,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet">
-      <HintPath>..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.FSharp">
-      <HintPath>..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
+      <HintPath>..\..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -62,16 +62,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="..\ProvidedTypes-0.2.fsi">
+    <Compile Include="..\Common\AssemblyInfo.fs">
+      <Link>AssemblyInfo.fs</Link>
+    </Compile>
+    <Compile Include="..\Common\ProvidedTypes-0.2.fsi">
       <Link>ProvidedTypes-0.2.fsi</Link>
     </Compile>
-    <Compile Include="..\ProvidedTypes-0.2.fs">
+    <Compile Include="..\Common\ProvidedTypes-0.2.fs">
       <Link>ProvidedTypes-0.2.fs</Link>
     </Compile>
-    <Compile Include="..\CharacterDeviceInterceptor.fs">
+    <Compile Include="..\RProvider\CharacterDeviceInterceptor.fs">
       <Link>CharacterDeviceInterceptor.fs</Link>
     </Compile>
-    <Compile Include="..\RInterop.fs">
+    <Compile Include="..\RProvider\RInterop.fs">
       <Link>RInterop.fs</Link>
     </Compile>
     <Compile Include="Program.fs" />

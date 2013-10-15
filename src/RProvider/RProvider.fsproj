@@ -14,7 +14,7 @@
     </TargetFrameworkProfile>
     <Name>RProvider</Name>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -48,8 +48,15 @@
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ProvidedTypes-0.2.fsi" />
-    <Compile Include="ProvidedTypes-0.2.fs" />
+    <Compile Include="..\Common\AssemblyInfo.fs">
+      <Link>AssemblyInfo.fs</Link>
+    </Compile>
+    <Compile Include="..\Common\ProvidedTypes-0.2.fsi">
+      <Link>ProvidedTypes-0.2.fsi</Link>
+    </Compile>
+    <Compile Include="..\Common\ProvidedTypes-0.2.fs">
+      <Link>ProvidedTypes-0.2.fs</Link>
+    </Compile>
     <Compile Include="CharacterDeviceInterceptor.fs" />
     <Compile Include="RInterop.fs" />
     <Compile Include="RProvider.fs" />
@@ -62,15 +69,15 @@
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" />
     <Reference Include="RDotNet">
-      <HintPath>packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.FSharp">
-      <HintPath>packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
+      <HintPath>..\..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
