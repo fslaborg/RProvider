@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Test.RProvider", "Test.RProvider.fsproj", "{A371037F-5B03-4C6C-91D3-5DFD494E0BFB}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Test.RProvider", "tests\Test.RProvider\Test.RProvider.fsproj", "{A371037F-5B03-4C6C-91D3-5DFD494E0BFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

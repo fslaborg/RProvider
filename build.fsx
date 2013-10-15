@@ -1,93 +1,184 @@
-﻿// include Fake lib
-#r @"tools\FAKE\tools\FakeLib.dll"
+﻿// --------------------------------------------------------------------------------------
+// FAKE build script 
+// --------------------------------------------------------------------------------------
+
+#r "tools/FAKE/tools/FakeLib.dll"
+open System
+open System.IO
 open Fake 
+open Fake.Git
 open Fake.AssemblyInfoFile
 
-// Assembly / NuGet package properties
+Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+
+let files includes = 
+  { BaseDirectories = [__SOURCE_DIRECTORY__]
+    Includes = includes
+    Excludes = [] } |> Scan
+
+// Information about the project to be used at NuGet and in AssemblyInfo files
 let projectName = "RProvider"
-let companyName = "Blue Mountain Capital"
-let version = "1.0.3"
 let projectSummary = "An F# Type Provider providing strongly typed access to the R statistical package."
-let projectDescription = "An F# type provider for interoperating with R"
+let projectDescription = """
+  An F# Type Provider providing strongly typed access to the R statistical package.
+  The type provider automatically discovers available R packages and makes them 
+  easily accessible from F#, so you can easily call powerful packages and 
+  visualization libraries from code running on the .NET platform."""
 let authors = ["BlueMountain Capital"]
+let companyName = "BlueMountain Capital"
+let tags = "F# fsharp R TypeProvider visualization statistics"
 
-// Folders
-let buildDir = @".\build\"
-let nugetDir = @".\nuget\"
+// Read additional information from the release notes document
+// Expected format: "0.9.0-beta - Foo bar." or just "0.9.0 - Foo bar."
+// (We need to extract just the number for AssemblyInfo & all version for NuGet
+let versionAsm, versionNuGet, releaseNotes = 
+    let lastItem = File.ReadLines "RELEASE_NOTES.md" |> Seq.last
+    let firstDash = lastItem.IndexOf(" - ")
+    let notes = lastItem.Substring(firstDash + 2).Trim()
+    let version = lastItem.Substring(0, firstDash).Trim([|'*'|]).Trim()
+    // Get just numeric version, if it contains dash
+    let versionDash = version.IndexOf('-')
+    if versionDash = -1 then version, version, notes
+    else version.Substring(0, versionDash), version, notes
 
-// Restore NuGet packages
-!+ "./**/packages.config"
-  ++ "./packages.config"
-    |> ScanImmediately
-    |> Seq.iter (RestorePackage (fun p -> 
-        {p with 
-            ToolPath = "./.nuget/NuGet.exe"}))
-// Targets
+// --------------------------------------------------------------------------------------
+// Generate assembly info files with the right version & up-to-date information
 
-// Update assembly info
-Target "UpdateAssemblyInfo" (fun _ ->
-    CreateFSharpAssemblyInfo ".\AssemblyInfo.fs"
-        [ Attribute.Product projectName
-          Attribute.Title projectName
-          Attribute.Description projectDescription
-          Attribute.Company companyName
-          Attribute.Version version ]
+Target "AssemblyInfo" (fun _ ->
+  let fileName = "src/Common/AssemblyInfo.fs"
+  CreateFSharpAssemblyInfo fileName
+      [ Attribute.Title projectName
+        Attribute.Company companyName
+        Attribute.Product projectName
+        Attribute.Description projectSummary
+        Attribute.Version versionAsm
+        Attribute.FileVersion versionAsm ] 
 )
 
-// Clean build directory
+// --------------------------------------------------------------------------------------
+// Clean build results & restore NuGet packages
+
+Target "RestorePackages" (fun _ ->
+    !! "./**/packages.config"
+    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" }))
+)
+
 Target "Clean" (fun _ ->
-    CleanDir buildDir
+    CleanDirs ["build"; "gh-pages"; "release" ]
 )
 
-// Build RProvider
-Target "BuildRProvider" (fun _ ->
-    !! @"rprovider.fsproj"
-      |> MSBuildRelease buildDir "ReBuild"
-      |> Log "AppBuild-Output: "
+Target "CleanDocs" (fun _ ->
+    CleanDirs ["generated"]
 )
 
-// Clean NuGet directory
-Target "CleanNuGet" (fun _ ->
-    CleanDir nugetDir
+// --------------------------------------------------------------------------------------
+// Build library & test project
+
+Target "Build" (fun _ ->
+    (files ["RProvider.sln"; "RProvider.Tests.sln"])
+    |> MSBuildRelease "" "Rebuild"
+    |> Log "AppBuild-Output: "
 )
 
-// Create NuGet package
-Target "CreateNuGet" (fun _ ->
-    System.IO.Directory.CreateDirectory(nugetDir @@ "tools") |> ignore
-    System.IO.File.Copy(@".\init.ps1", nugetDir @@ "tools\init.ps1")
+// --------------------------------------------------------------------------------------
+// Run the unit tests using test runner & kill test runner when complete
 
-    XCopy @".\build\" (nugetDir @@ "lib")
-    !+ @"nuget/lib/*.*"
-      -- @"nuget/lib/RProvider*.*"
-        |> ScanImmediately
-        |> Seq.iter (System.IO.File.Delete)
+Target "RunTests" (fun _ ->
+    let nunitVersion = GetPackageVersion "packages" "NUnit.Runners"
+    let nunitPath = sprintf "packages/NUnit.Runners.%s/Tools" nunitVersion
 
-    "RProvider.nuspec"
-      |> NuGet (fun p -> 
-            {p with
-                Project = projectName
-                Authors = authors
-                Version = version
-                Description = projectDescription
-                Summary = projectSummary
-                NoPackageAnalysis = true
-                ToolPath = @".\.nuget\Nuget.exe" 
-                WorkingDir = nugetDir
-                OutputPath = nugetDir })
+    ActivateFinalTarget "CloseTestRunner"
+
+    (files ["tests/*/bin/Release/Test.RProvider.dll"])
+    |> NUnit (fun p ->
+        { p with
+            ToolPath = nunitPath
+            DisableShadowCopy = true
+            TimeOut = TimeSpan.FromMinutes 20.
+            OutputFile = "TestResults.xml" })
 )
 
-// Default target
-Target "Default" (fun _ ->
-    trace "Building R Provider"
+FinalTarget "CloseTestRunner" (fun _ ->  
+    ProcessHelper.killProcess "nunit-agent.exe"
 )
 
-// Dependencies
-"UpdateAssemblyInfo"
-  ==> "Clean"
-  ==> "BuildRProvider"
-  ==> "CleanNuGet"
-  ==> "CreateNuGet"
-  ==> "Default"
+// --------------------------------------------------------------------------------------
+// Build a NuGet package
 
-// start build
-Run "Default"
+Target "NuGet" (fun _ ->
+    // Format the description to fit on a single line (remove \r\n and double-spaces)
+    let projectDescription = projectDescription.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
+    let nugetPath = ".nuget/nuget.exe"
+    NuGet (fun p -> 
+        { p with   
+            Authors = authors
+            Project = projectName
+            Summary = projectSummary
+            Description = projectDescription
+            Version = versionNuGet
+            ReleaseNotes = releaseNotes
+            Tags = tags
+            OutputPath = "build"
+            ToolPath = nugetPath
+            AccessKey = getBuildParamOrDefault "nugetkey" ""
+            Publish = hasBuildParam "nugetkey" })
+        "nuget/RProvider.nuspec"
+)
+
+// --------------------------------------------------------------------------------------
+// Generate the documentation
+
+Target "JustGenerateDocs" (fun _ ->
+    executeFSI "tools" "build.fsx" [] |> ignore
+)
+
+Target "GenerateDocs" DoNothing
+"CleanDocs" ==> "JustGenerateDocs" ==> "GenerateDocs"
+
+// --------------------------------------------------------------------------------------
+// Release Scripts
+
+let gitHome = "https://github.com/BlueMountainCapital"
+
+Target "ReleaseDocs" (fun _ ->
+    Repository.clone "" (gitHome + "/FSharp.DataFrame.git") "gh-pages"
+    Branches.checkoutBranch "gh-pages" "gh-pages"
+    CopyRecursive "docs" "gh-pages" true |> printfn "%A"
+    CommandHelper.runSimpleGitCommand "gh-pages" "add ." |> printfn "%s"
+    let cmd = sprintf """commit -a -m "Update generated documentation for version %s""" versionNuGet
+    CommandHelper.runSimpleGitCommand "gh-pages" cmd |> printfn "%s"
+    Branches.push "gh-pages"
+)
+
+Target "ReleaseBinaries" (fun _ ->
+    Repository.clone "" (gitHome + "/FSharp.DataFrame.git") "release"
+    Branches.checkoutBranch "release" "release"
+    CopyRecursive "bin" "release/bin" true |> printfn "%A"
+    MoveFile "./release/" "./release/bin/FSharp.DataFrame.fsx"
+    let cmd = sprintf """commit -a -m "Update binaries for version %s""" versionNuGet
+    CommandHelper.runSimpleGitCommand "release" cmd |> printfn "%s"
+    Branches.push "release"
+)
+
+Target "Release" DoNothing
+
+// --------------------------------------------------------------------------------------
+// Run all targets by default. Invoke 'build <Target>' to override
+
+Target "All" DoNothing
+
+"Clean"
+  ==> "RestorePackages"
+  ==> "AssemblyInfo"
+  ==> "Build"
+  ==> "GenerateDocs"
+  ==> "RunTests"
+  ==> "All"
+
+"All" 
+  ==> "ReleaseDocs"
+  ==> "ReleaseBinaries"
+  ==> "NuGet"
+  ==> "Release"
+
+RunTargetOrDefault "All"
