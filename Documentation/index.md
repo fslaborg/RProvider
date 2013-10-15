@@ -1,28 +1,45 @@
 <img src="https://www.bluemountaincapital.com/media/logo.gif" style="float:right" />
 
-F# R Provider
+F# R Type Provider
 =======
 
-An F# type provider for interoperating with [R](http://www.r-project.org/).
+The F# Type Provider is a mechanism that enables smooth interoperability
+between F# and [R](http://www.r-project.org/). 
+The Type Provider discovers R packages that are available 
+in your R installation and makes them available as .NET namespaces 
+underneath the parent namespace `RProvider`. 
 
-### What does it do?
+The Type Provider makes it possible to use 
+all of R capabilities, from the F# interactive environment. 
+It enables on-the-fly charting and data analysis using R packages, 
+with the added benefit of IntelliSense over R, 
+and compile-time type-checking that the R functions you are using exist. 
+It allows you to leverage all of .NET libraries,
+as well as F# unique capabilities to access and manipulate data 
+from a wide variety of sources via Type Providers.
 
-The R Provider discovers R packages that are available in your R installation and makes them
-available as .NET namespaces underneath the parent namespace `RProvider`.  For example, the
-stats package is available as `RProvider.stats`.  If you open the namespaces you want to use,
-functions and values will be available as R.name.  For example, consider this F# interactive script:
+## A Quick Demo
 
-    open RProvider
-    open RProvider.``base``
+<iframe width="420" height="315" src="//www.youtube.com/embed/_BOST3W88-Y" frameborder="0" allowfullscreen></iframe>
 
-    let v = R.c(1,2,3)
+## What are R and F#?
 
-This creates an R numeric vector containing 1,2,3, and names it `v`.  Note that we had to
-open the `base` namespace, since the function `c` is part of that namespace.  You should also
-open namespace `RProvider`, because it contains some helper functions.
+[F#](http://msdn.microsoft.com/en-us/vstudio/hh388569) is a mixed-paradigm language 
+that supports functional, object-oriented and imperative programming, 
+with the emphasis on functional. F# runs on the .NET runtime and is a compiled, 
+statically typed language with a strong type system and type inference. 
+F# is a general purpose programming language, 
+and is particularly well-suited for scientific/numerical computing.
 
-And because type providers are used by the Visual Studio IDE, you will get intellisense for R
-functions.  You will also get compile-time type-checking that the function exists.
+[R](http://www.r-project.org/) is an Open Source language for statistical computing. 
+R offers a wide range of high-quality, community-developed packages, 
+covering virtually every area of statistics, econometrics or machine learning. 
+It is also famous for its charting capabilities, making it a great tool 
+to produce publication-quality graphics. 
+R is an interpreted, dynamically typed language that is typically used 
+from its GUI, [RStudio](http://www.rstudio.com/), or command line interactive environment.
+
+## Using the R Type Provider
 
 <div class="row">
   <div class="span1"></div>
@@ -36,22 +53,7 @@ functions.  You will also get compile-time type-checking that the function exist
   <div class="span1"></div>
 </div>
 
-How to use it
--------------
-
- * There is a lot of info on how to use the provider on our 
-   [how to page](howto.html).
-
- * The [tutorial page](tutorial.html) demonstrates how to use the R provider to 
-   analyze financial data using R libraries from F#.
-
- * For information on what the RProvider is and why you might want 
-   to use it, take a look at the [Whats and Whys page](whatwhy.html).
-
- * For some details of how the RProvider works, check out [How does it work?](internals.html).
-
-
-### Pre-requisites
+## Pre-requisites
 
 The R Provider requires an installation of R for Windows, downloadable from 
 [here](http://cran.cnr.berkeley.edu/bin/windows/base/).  RProvider uses the R registry key 
@@ -76,7 +78,6 @@ Acknowledgements
 
 Many thanks to Mathias Brandewinder for producing the [FAKE](https://github.com/fsharp/FAKE) script 
 to build the NuGet package, and to Steffen Forkman for writing [FAKE](https://github.com/fsharp/FAKE).
-
 
 
 
