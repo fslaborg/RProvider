@@ -22,7 +22,7 @@
   <files>
     <file src="..\build\RProvider.dll" target="lib" />
 	<file src="..\build\RProvider.pdb" target="lib" />
-    <file src="init.ps1" target="tools" />
+    <file src="..\nuget\init.ps1" target="tools" />
   </files>
 </package>
 

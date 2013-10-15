@@ -149,7 +149,7 @@ let gitHome = "https://github.com/tpetricek" // TODO: Use "BlueMountainCapital"
 Target "ReleaseDocs" (fun _ ->
     Repository.clone "" (gitHome + "/FSharp.RProvider.git") "gh-pages" // TODO: Use "FSharpRProvider"
     Branches.checkoutBranch "gh-pages" "gh-pages"
-    CopyRecursive "docs" "gh-pages" true |> printfn "%A"
+    CopyRecursive "generated" "gh-pages" true |> printfn "%A"
     CommandHelper.runSimpleGitCommand "gh-pages" "add ." |> printfn "%s"
     let cmd = sprintf """commit -a -m "Update generated documentation for version %s""" versionNuGet
     CommandHelper.runSimpleGitCommand "gh-pages" cmd |> printfn "%s"
