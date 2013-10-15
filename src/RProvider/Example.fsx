@@ -1,5 +1,5 @@
-﻿#r @"bin/Debug/RDotNet.dll"
-#r @"bin/Debug/RProvider.dll"
+﻿#r @"../../build/RDotNet.dll"
+#r @"../../build/RProvider.dll"
  
 open RDotNet
 open RProvider
