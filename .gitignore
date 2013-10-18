@@ -4,7 +4,9 @@
 
 tools/
 packages/
-nuget/
+gh-pages/
+release/
+generated/
 *.DotSettings
 
 #################
@@ -173,3 +175,6 @@ pip-log.txt
 
 # For References
 !*/References/*.pdb
+
+# Generated documentation files
+Documentation/Output/*.html
