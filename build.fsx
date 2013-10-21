@@ -51,7 +51,7 @@ Target "RestorePackages" (fun _ ->
 )
 
 Target "Clean" (fun _ ->
-    CleanDirs ["bin"; "temp/gh-pages"; "temp/release" ]
+    CleanDirs ["bin"; "temp" ]
 )
 
 Target "CleanDocs" (fun _ ->
@@ -114,7 +114,7 @@ Target "NuGet" (fun _ ->
             Version = release.NugetVersion
             ReleaseNotes = String.concat " " release.Notes
             Tags = tags
-            OutputPath = "build"
+            OutputPath = "bin"
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })

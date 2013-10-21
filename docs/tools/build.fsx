@@ -12,6 +12,7 @@ open FSharp.Literate
 let (++) a b = Path.Combine(a, b)
 let template = __SOURCE_DIRECTORY__ ++ "template.html"
 let sources  = __SOURCE_DIRECTORY__ ++ "../content"
+let files = __SOURCE_DIRECTORY__ ++ "../files"
 let output   = __SOURCE_DIRECTORY__ ++ "../output"
 
 // Root URL for the generated HTML
@@ -23,8 +24,8 @@ let root = "http://bluemountaincapital.github.io/FSharpRProvider"
 let build () =
   // Copy all sample data files to the "data" directory
   let copy = [ sources ++ "../../packages/FSharp.Formatting.2.0.1/literate/content", output ++ "content"
-               sources ++ "img", output ++ "img"
-               sources ++ "misc", output ++ "misc" ]
+               files ++ "img", output ++ "img"
+               files ++ "misc", output ++ "misc" ]
   for source, target in copy do
     if Directory.Exists target then Directory.Delete(target, true)
     Directory.CreateDirectory target |> ignore

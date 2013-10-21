@@ -7,7 +7,7 @@
     <owners>@authors@</owners>
     <projectUrl>https://github.com/BlueMountainCapital/FSharpRProvider</projectUrl>
     <licenseUrl>https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/LICENSE.md</licenseUrl>
-    <iconUrl>https://raw.github.com/BlueMountainCapital/FSharpRProvider/master/Documentation/misc/logo.png</iconUrl>
+    <iconUrl>https://raw.github.com/BlueMountainCapital/FSharpRProvider/master/docs/files/misc/logo.png</iconUrl>
     <summary>@summary@</summary>
     <description>@description@</description>
     <releaseNotes>@releaseNotes@</releaseNotes>
@@ -20,8 +20,8 @@
     </dependencies>    
   </metadata>
   <files>
-    <file src="..\build\RProvider.dll" target="lib" />
-	<file src="..\build\RProvider.pdb" target="lib" />
+    <file src="..\bin\RProvider.dll" target="lib" />
+	<file src="..\bin\RProvider.pdb" target="lib" />
     <file src="..\nuget\init.ps1" target="tools" />
   </files>
 </package>

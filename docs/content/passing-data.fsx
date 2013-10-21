@@ -1,6 +1,6 @@
 (*** hide ***)
-#I "../packages/FSharp.Data.1.1.10/lib/net40/"
-#I "../build/"
+#I "../../packages/FSharp.Data.1.1.10/lib/net40/"
+#I "../../bin/"
 #r "RDotNet.dll"
 #r "RDotNet.FSharp.dll"
 #r "RProvider.dll"
