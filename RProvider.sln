@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{B34F96AE-4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9C22FF03-BB06-4332-8104-20AB4959BABA}"
 	ProjectSection(SolutionItems) = preProject
-		docs\tools\build.fsx = docs\tools\build.fsx
+		docs\tools\generate.fsx = docs\tools\generate.fsx
 		docs\tools\template.html = docs\tools\template.html
 	EndProjectSection
 EndProject

@@ -125,7 +125,7 @@ Target "NuGet" (fun _ ->
 // Generate the documentation
 
 Target "JustGenerateDocs" (fun _ ->
-    executeFSI "docs/tools" "build.fsx" [] |> ignore
+    executeFSI "docs/tools" "generate.fsx" [] |> ignore
 )
 
 Target "GenerateDocs" DoNothing
