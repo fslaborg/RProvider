@@ -2,7 +2,7 @@
 // FAKE build script 
 // --------------------------------------------------------------------------------------
 
-#r "tools/FAKE/tools/FakeLib.dll"
+#r "packages/FAKE/tools/FakeLib.dll"
 open System
 open System.IO
 open Fake 
@@ -10,11 +10,6 @@ open Fake.Git
 open Fake.AssemblyInfoFile
 
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
-
-let files includes = 
-  { BaseDirectories = [__SOURCE_DIRECTORY__]
-    Includes = includes
-    Excludes = [] } |> Scan
 
 // Information about the project to be used at NuGet and in AssemblyInfo files
 let projectName = "RProvider"
@@ -28,18 +23,10 @@ let authors = ["BlueMountain Capital"]
 let companyName = "BlueMountain Capital"
 let tags = "F# fsharp R TypeProvider visualization statistics"
 
-// Read additional information from the release notes document
-// Expected format: "0.9.0-beta - Foo bar." or just "0.9.0 - Foo bar."
-// (We need to extract just the number for AssemblyInfo & all version for NuGet
-let versionAsm, versionNuGet, releaseNotes = 
-    let lastItem = File.ReadLines "RELEASE_NOTES.md" |> Seq.last
-    let firstDash = lastItem.IndexOf(" - ")
-    let notes = lastItem.Substring(firstDash + 2).Trim()
-    let version = lastItem.Substring(0, firstDash).Trim([|'*'|]).Trim()
-    // Get just numeric version, if it contains dash
-    let versionDash = version.IndexOf('-')
-    if versionDash = -1 then version, version, notes
-    else version.Substring(0, versionDash), version, notes
+// Read release notes & version info from RELEASE_NOTES.md
+let release =
+  File.ReadLines "RELEASE_NOTES.md"
+  |> ReleaseNotesHelper.parseReleaseNotes
 
 // --------------------------------------------------------------------------------------
 // Generate assembly info files with the right version & up-to-date information
@@ -51,8 +38,8 @@ Target "AssemblyInfo" (fun _ ->
         Attribute.Company companyName
         Attribute.Product projectName
         Attribute.Description projectSummary
-        Attribute.Version versionAsm
-        Attribute.FileVersion versionAsm ] 
+        Attribute.Version release.AssemblyVersion
+        Attribute.FileVersion release.AssemblyVersion ] 
 )
 
 // --------------------------------------------------------------------------------------
@@ -64,18 +51,21 @@ Target "RestorePackages" (fun _ ->
 )
 
 Target "Clean" (fun _ ->
-    CleanDirs ["build"; "gh-pages"; "release" ]
+    CleanDirs ["bin"; "temp/gh-pages"; "temp/release" ]
 )
 
 Target "CleanDocs" (fun _ ->
-    CleanDirs ["generated"]
+    CleanDirs ["docs/output"]
 )
 
 // --------------------------------------------------------------------------------------
 // Build library & test project
 
 Target "Build" (fun _ ->
-    (files ["RProvider.sln"; "RProvider.Tests.sln"])
+    { BaseDirectories = [__SOURCE_DIRECTORY__]
+      Includes = ["RProvider.sln"; "RProvider.Tests.sln"]
+      Excludes = [] } 
+    |> Scan
     |> MSBuildRelease "" "Rebuild"
     |> Log "AppBuild-Output: "
 )
@@ -121,8 +111,8 @@ Target "NuGet" (fun _ ->
             Project = projectName
             Summary = projectSummary
             Description = projectDescription
-            Version = versionNuGet
-            ReleaseNotes = releaseNotes
+            Version = release.NugetVersion
+            ReleaseNotes = String.concat " " release.Notes
             Tags = tags
             OutputPath = "build"
             ToolPath = nugetPath
@@ -135,7 +125,7 @@ Target "NuGet" (fun _ ->
 // Generate the documentation
 
 Target "JustGenerateDocs" (fun _ ->
-    executeFSI "tools" "build.fsx" [] |> ignore
+    executeFSI "docs/tools" "build.fsx" [] |> ignore
 )
 
 Target "GenerateDocs" DoNothing
@@ -144,25 +134,25 @@ Target "GenerateDocs" DoNothing
 // --------------------------------------------------------------------------------------
 // Release Scripts
 
-let gitHome = "https://github.com/tpetricek" // TODO: Use "BlueMountainCapital"
+let gitHome = "https://github.com/BlueMountainCapital"
 
 Target "ReleaseDocs" (fun _ ->
-    Repository.clone "" (gitHome + "/FSharp.RProvider.git") "gh-pages" // TODO: Use "FSharpRProvider"
-    Branches.checkoutBranch "gh-pages" "gh-pages"
-    CopyRecursive "generated" "gh-pages" true |> printfn "%A"
-    CommandHelper.runSimpleGitCommand "gh-pages" "add ." |> printfn "%s"
-    let cmd = sprintf """commit -a -m "Update generated documentation for version %s""" versionNuGet
-    CommandHelper.runSimpleGitCommand "gh-pages" cmd |> printfn "%s"
-    Branches.push "gh-pages"
+    Repository.clone "" (gitHome + "/FSharpRProvider.git") "temp/gh-pages"
+    Branches.checkoutBranch "temp/gh-pages" "gh-pages"
+    CopyRecursive "docs/output" "temp/gh-pages" true |> printfn "%A"
+    CommandHelper.runSimpleGitCommand "temp/gh-pages" "add ." |> printfn "%s"
+    let cmd = sprintf """commit -a -m "Update generated documentation for version %s""" release.NugetVersion
+    CommandHelper.runSimpleGitCommand "temp/gh-pages" cmd |> printfn "%s"
+    Branches.push "temp/gh-pages"
 )
 
 Target "ReleaseBinaries" (fun _ ->
-    Repository.clone "" (gitHome + "/FSharp.RProvider.git") "release" // dtto.
-    Branches.checkoutBranch "release" "release"
-    CopyRecursive "build" "release" true |> printfn "%A"
-    let cmd = sprintf """commit -a -m "Update binaries for version %s""" versionNuGet
-    CommandHelper.runSimpleGitCommand "release" cmd |> printfn "%s"
-    Branches.push "release"
+    Repository.clone "" (gitHome + "/FSharpRProvider.git") "temp/release" 
+    Branches.checkoutBranch "temp/release" "release"
+    CopyRecursive "bin" "temp/release" true |> printfn "%A"
+    let cmd = sprintf """commit -a -m "Update binaries for version %s""" release.NugetVersion
+    CommandHelper.runSimpleGitCommand "temp/release" cmd |> printfn "%s"
+    Branches.push "temp/release"
 )
 
 Target "Release" DoNothing

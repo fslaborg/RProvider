@@ -2,11 +2,9 @@
 ## Custom
 #################
 
-tools/
 packages/
-gh-pages/
-release/
-generated/
+temp/
+docs/output/
 *.DotSettings
 
 #################

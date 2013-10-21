@@ -3,7 +3,7 @@
 // (the documentation is stored in the 'docs' directory)
 // --------------------------------------------------------------------------------------
 
-#I "../packages/FSharp.Formatting.2.0.1/lib/net40"
+#I "../../packages/FSharp.Formatting.2.0.1/lib/net40"
 #r "FSharp.Literate.dll"
 #r "FSharp.CodeFormat.dll"
 open System.IO
@@ -11,18 +11,18 @@ open FSharp.Literate
 
 let (++) a b = Path.Combine(a, b)
 let template = __SOURCE_DIRECTORY__ ++ "template.html"
-let sources  = __SOURCE_DIRECTORY__ ++ "../docs"
-let output   = __SOURCE_DIRECTORY__ ++ "../generated"
+let sources  = __SOURCE_DIRECTORY__ ++ "../content"
+let output   = __SOURCE_DIRECTORY__ ++ "../output"
 
 // Root URL for the generated HTML
-let root = "http://tpetricek.github.io/FSharp.RProvider" // TODO: Move under Blue Mountain!
+let root = "http://bluemountaincapital.github.io/FSharpRProvider" 
 // Root URL for local testing
 // let root = "file://C:\dev\FSharp.RProvider\generated"
 
 // Generate HTML from all FSX files in samples & subdirectories
 let build () =
   // Copy all sample data files to the "data" directory
-  let copy = [ sources ++ "../packages/FSharp.Formatting.2.0.1/literate/content", output ++ "content"
+  let copy = [ sources ++ "../../packages/FSharp.Formatting.2.0.1/literate/content", output ++ "content"
                sources ++ "img", output ++ "img"
                sources ++ "misc", output ++ "misc" ]
   for source, target in copy do
