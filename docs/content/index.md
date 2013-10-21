@@ -21,7 +21,7 @@ from a wide variety of sources via Type Providers.
 ### A Quick Demo
 
 <div style="text-align:center;">
-<iframe style="margin-left:auto;margin-right:auto;" width="420" height="315" src="http://www.youtube.com/embed/_BOST3W88-Y" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="//www.youtube.com/embed/cCuGgA9Yqrs?rel=0" frameborder="0" allowfullscreen></iframe>
 </div>
 
 ## What are R and F#?
