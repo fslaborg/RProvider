@@ -21,7 +21,7 @@
   </metadata>
   <files>
     <file src="..\bin\RProvider.dll" target="lib" />
-	<file src="..\bin\RProvider.pdb" target="lib" />
+	  <file src="..\bin\RProvider.pdb" target="lib" />
     <file src="..\nuget\init.ps1" target="tools" />
   </files>
 </package>

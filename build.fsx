@@ -4,14 +4,15 @@
 
 #r "packages/FAKE/tools/FakeLib.dll"
 open System
-open System.IO
 open Fake 
 open Fake.Git
 open Fake.AssemblyInfoFile
+open Fake.ReleaseNotesHelper
 
-Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
-
+// --------------------------------------------------------------------------------------
 // Information about the project to be used at NuGet and in AssemblyInfo files
+// --------------------------------------------------------------------------------------
+
 let projectName = "RProvider"
 let projectSummary = "An F# Type Provider providing strongly typed access to the R statistical package."
 let projectDescription = """
@@ -23,14 +24,19 @@ let authors = ["BlueMountain Capital"]
 let companyName = "BlueMountain Capital"
 let tags = "F# fsharp R TypeProvider visualization statistics"
 
-// Read release notes & version info from RELEASE_NOTES.md
-let release =
-  File.ReadLines "RELEASE_NOTES.md"
-  |> ReleaseNotesHelper.parseReleaseNotes
+let gitHome = "https://github.com/BlueMountainCapital"
+let gitName = "FSharpRProvider"
+let testAssemblies = []
 
 // --------------------------------------------------------------------------------------
-// Generate assembly info files with the right version & up-to-date information
+// The rest of the code is standard F# build script 
+// --------------------------------------------------------------------------------------
 
+// Read release notes & version info from RELEASE_NOTES.md
+Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+let release = IO.File.ReadLines "RELEASE_NOTES.md" |> parseReleaseNotes
+
+// Generate assembly info files with the right version & up-to-date information
 Target "AssemblyInfo" (fun _ ->
   let fileName = "src/Common/AssemblyInfo.fs"
   CreateFSharpAssemblyInfo fileName
@@ -124,20 +130,15 @@ Target "NuGet" (fun _ ->
 // --------------------------------------------------------------------------------------
 // Generate the documentation
 
-Target "JustGenerateDocs" (fun _ ->
-    executeFSI "docs/tools" "generate.fsx" [] |> ignore
+Target "GenerateDocs" (fun _ ->
+    executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"] [] |> ignore
 )
-
-Target "GenerateDocs" DoNothing
-"CleanDocs" ==> "JustGenerateDocs" ==> "GenerateDocs"
 
 // --------------------------------------------------------------------------------------
 // Release Scripts
 
-let gitHome = "https://github.com/BlueMountainCapital"
-
 Target "ReleaseDocs" (fun _ ->
-    Repository.clone "" (gitHome + "/FSharpRProvider.git") "temp/gh-pages"
+    Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/gh-pages"
     Branches.checkoutBranch "temp/gh-pages" "gh-pages"
     CopyRecursive "docs/output" "temp/gh-pages" true |> printfn "%A"
     CommandHelper.runSimpleGitCommand "temp/gh-pages" "add ." |> printfn "%s"
@@ -147,7 +148,7 @@ Target "ReleaseDocs" (fun _ ->
 )
 
 Target "ReleaseBinaries" (fun _ ->
-    Repository.clone "" (gitHome + "/FSharpRProvider.git") "temp/release" 
+    Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/release" 
     Branches.checkoutBranch "temp/release" "release"
     CopyRecursive "bin" "temp/release" true |> printfn "%A"
     let cmd = sprintf """commit -a -m "Update binaries for version %s""" release.NugetVersion
@@ -166,11 +167,12 @@ Target "All" DoNothing
   ==> "RestorePackages"
   ==> "AssemblyInfo"
   ==> "Build"
-  ==> "GenerateDocs"
   ==> "RunTests"
   ==> "All"
 
 "All" 
+  ==> "CleanDocs"
+  ==> "GenerateDocs"
   ==> "ReleaseDocs"
   ==> "ReleaseBinaries"
   ==> "NuGet"

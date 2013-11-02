@@ -85,7 +85,7 @@ After running the first snippet, a window similar to the following should appear
 it might not appear as a top-most window).
 
 <div style="text-align:center">
-<img src="img/acf.png" />
+<img src="images/acf.png" />
 </div>
 
 Finally, we can obtain data for multiple different indicators and use the `R.pairs` function
@@ -108,7 +108,7 @@ R.pairs(df)
 As a result, you should see a window showing results similar to these:
 
 <div style="text-align:center">
-<img src="img/pairs.png" />
+<img src="images/pairs.png" />
 </div>
 
 *)
