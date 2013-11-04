@@ -26,6 +26,25 @@ type IConvertFromR<'outType> =
 type IDefaultConvertFromR =     
     abstract member Convert : SymbolicExpression -> Option<obj>
 
+module Logging = 
+  let logf fmt = 
+    fmt |> Printf.kprintf (fun str -> 
+      try
+        let file = 
+          let appd = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+          if not (Directory.Exists(appd + "\\RLogs")) then 
+            Directory.CreateDirectory(appd + "\\RLogs") |> ignore
+          appd + "\\RLogs\\log.txt"
+        use fs = new FileStream(file, FileMode.OpenOrCreate, Security.AccessControl.FileSystemRights.AppendData, FileShare.Write, 4096, FileOptions.None)
+        use writer = new StreamWriter(fs)
+        writer.AutoFlush <- true
+      
+        let pid = Process.GetCurrentProcess().Id
+        let tid = System.Threading.Thread.CurrentThread.ManagedThreadId
+        let apid = System.AppDomain.CurrentDomain.Id
+        writer.WriteLine(sprintf "[%s] [Pid:%d, Tid:%d, Apid:%d] %s" (System.DateTime.Now.ToString("G")) pid tid apid str)
+      with _ -> (*silently ignoring logging errors*) () )
+
 [<AutoOpen>]
 module Helpers = 
     /// Construct named params to pass to function
@@ -46,11 +65,16 @@ module internal RInteropInternal =
 
     let engine = 
         try
+            Logging.logf "Creating instance" 
             let engine = REngine.CreateInstance(System.AppDomain.CurrentDomain.Id.ToString())
+            Logging.logf "Intializing instance"
             do engine.Initialize(null, characterDevice)
+            Logging.logf "Created & initialized instance"
             engine
         with
-        | e -> raise(Exception("Initialization of R.NET failed", e))
+        | e -> 
+            Logging.logf "Creating instance failed:\r\n  %O" e
+            raise(Exception("Initialization of R.NET failed", e))
 
     do System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose())
 
@@ -239,7 +263,19 @@ module internal RInteropInternal =
 
     let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
 
-    let eval (expr: string) = engine.Evaluate(expr)
+    let eval (expr: string) = 
+      try 
+        Logging.logf "eval(%s)" expr
+        let res = engine.Evaluate(expr)
+        Logging.logf "eval(%s) finished" expr
+        res
+      with e -> 
+        Logging.logf "eval(%s) failed:\r\n  %O" expr e
+        //System.Diagnostics.Debugger.Break()
+        System.Diagnostics.Debug.Write(e)
+        System.Diagnostics.Debug.Write(expr)
+        reraise()
+
     let evalTo   (expr: string) (symbol: string) = engine.SetSymbol(symbol, engine.Evaluate(expr))
     let exec     (expr: string) : unit = use res = engine.Evaluate(expr) in ()
 
@@ -256,6 +292,7 @@ module RDotNetExtensions =
 
 module RInterop =
     let internal bindingInfo (name: string) : RValue = 
+        Logging.logf "Getting bindingInfo: %s" name
         match eval("typeof(get(\"" + name + "\"))").GetValue() with
         | "closure" ->
             let argList = 
