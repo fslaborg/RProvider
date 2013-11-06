@@ -14,47 +14,20 @@ open RInterop
 open Microsoft.Win32
 open System.IO
 
-module internal ProviderUtils =
-    // Have to be careful that this code is in its own module
-    // If it is in some other module, which might be initialized before the PATH is set, we will get initialization exceptions
-    let rLocation =
-        let locateRfromRegistry () =
-            let rCore =
-                match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
-                | null, null -> failwithf "Reg key Software\R-core does not exist; R is likely not installed on this computer"
-                | null, x -> x
-                | x, _ -> x
-            
-            let key = rCore.OpenSubKey "R"
-            if key = null then
-                failwith "SOFTWARE\R-core exists but subkey R does not exist"
-
-            key.GetValue "InstallPath" |> unbox
-
-        match Environment.GetEnvironmentVariable "R_HOME" with
-        | null -> locateRfromRegistry()
-        | rPath -> rPath 
-
-
 [<TypeProvider>]
 type public RProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
-    // R potentially may be not installed - handle this in static constructor for improved diag (G.B.)
-    static do
-        let binPath = Path.Combine(ProviderUtils.rLocation, "bin", if Environment.Is64BitProcess then "x64" else "i386")
-        if not (Path.Combine(binPath, "R.dll") |> File.Exists) then
-            failwithf "No R engine at %s" binPath
+    // Set the R 'R_CStackLimit' variable to -1 when initializing the R engine
+    // (the engine is initialized lazily, so the initialization always happens
+    // after the static constructor is called - by doing this in the static constructor
+    // we make sure that this is *not* set in the normal execution)
+    static do RInit.DisableStackChecking <- true
 
-        // Set the path
-        Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
-
-    // Get the assembly and namespace used to house the provided types
-    let asm = System.Reflection.Assembly.GetExecutingAssembly()
-    let ns = "RProvider"
-
-    // Expose all available packages as namespaces
-    do
+    /// Assuming initialization worked correctly, generate the types using R engine
+    let generateTypes ns asm =
+        // Expose all available packages as namespaces
+        Logging.logf "generateTypes: getting packages"
         for package in getPackages() do
             let pns = ns + "." + package
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
@@ -69,6 +42,11 @@ type public RProvider(cfg:TypeProviderConfig) as this =
 
                 for name, rval in Map.toSeq bindings do
                     let memberName = makeSafeName name
+
+                    // Serialize RValue to a string, so that we can include it in the 
+                    // compiled quotation (and do not have to get the info again at runtime)
+                    let serializedRVal = RInterop.serializeRValue rval
+
                     match rval with
                     | RValue.Function(paramList, hasVarArgs) ->
                         let paramList = [ for p in paramList -> 
@@ -81,41 +59,40 @@ type public RProvider(cfg:TypeProviderConfig) as this =
                         let paramCount = paramList.Length
                         
                         let pm = ProvidedMethod(
-                                     methodName = memberName,
-                                     parameters = paramList,
-                                     returnType = typeof<SymbolicExpression>,
-                                     IsStaticMethod = true,
-                                     InvokeCode = fun args -> if args.Length <> paramCount then
-                                                                failwithf "Expected %d arguments and received %d" paramCount args.Length
-                                                 
-                                                              if hasVarArgs then
-                                                                let namedArgs = 
-                                                                    Array.sub (Array.ofList args) 0 (paramCount-1)
-                                                                    |> List.ofArray
-                                                                let namedArgs = Quotations.Expr.NewArray(typeof<obj>, namedArgs)
-                                                                let varArgs = args.[paramCount-1]
-                                                                <@@ RInterop.call package name %%namedArgs %%varArgs @@>                                                 
-                                                              else
-                                                                let namedArgs = Quotations.Expr.NewArray(typeof<obj>, args)                                            
-                                                                <@@ RInterop.call package name %%namedArgs [||] @@> )
+                                      methodName = memberName,
+                                      parameters = paramList,
+                                      returnType = typeof<SymbolicExpression>,
+                                      IsStaticMethod = true,
+                                      InvokeCode = fun args -> if args.Length <> paramCount then
+                                                                 failwithf "Expected %d arguments and received %d" paramCount args.Length
+                                                               if hasVarArgs then
+                                                                 let namedArgs = 
+                                                                     Array.sub (Array.ofList args) 0 (paramCount-1)
+                                                                     |> List.ofArray
+                                                                 let namedArgs = Quotations.Expr.NewArray(typeof<obj>, namedArgs)
+                                                                 let varArgs = args.[paramCount-1]
+                                                                 <@@ RInterop.call package name serializedRVal %%namedArgs %%varArgs @@>                                                 
+                                                               else
+                                                                 let namedArgs = Quotations.Expr.NewArray(typeof<obj>, args)                                            
+                                                                 <@@ RInterop.call package name serializedRVal %%namedArgs [||] @@> )
 
                         pm.AddXmlDocDelayed (fun () -> match titles.Value.TryFind name with 
-                                                       | Some docs -> docs 
-                                                       | None -> "No documentation available")                                    
+                                                        | Some docs -> docs 
+                                                        | None -> "No documentation available")                                    
                         
                         yield pm :> MemberInfo
 
                         // Yield an additional overload that takes a Dictionary<string, object>
                         // This variant is more flexible for constructing lists, data frames etc.
                         let pdm = ProvidedMethod(
-                                     methodName = memberName,
-                                     parameters = [ ProvidedParameter("paramsByName",  typeof<IDictionary<string,obj>>) ],
-                                     returnType = typeof<SymbolicExpression>,
-                                     IsStaticMethod = true,
-                                     InvokeCode = fun args -> if args.Length <> 1 then
-                                                                failwithf "Expected 1 argument and received %d" args.Length
-                                                              let argsByName = args.[0]
-                                                              <@@   let vals = %%argsByName: IDictionary<string,obj>
+                                      methodName = memberName,
+                                      parameters = [ ProvidedParameter("paramsByName",  typeof<IDictionary<string,obj>>) ],
+                                      returnType = typeof<SymbolicExpression>,
+                                      IsStaticMethod = true,
+                                      InvokeCode = fun args -> if args.Length <> 1 then
+                                                                 failwithf "Expected 1 argument and received %d" args.Length
+                                                               let argsByName = args.[0]
+                                                               <@@  let vals = %%argsByName: IDictionary<string,obj>
                                                                     let valSeq = vals :> seq<KeyValuePair<string, obj>>
                                                                     RInterop.callFunc package name valSeq null @@> )
                         yield pdm :> MemberInfo                                    
@@ -124,10 +101,39 @@ type public RProvider(cfg:TypeProviderConfig) as this =
                                 propertyName = memberName,
                                 propertyType = typeof<SymbolicExpression>,
                                 IsStatic = true,
-                                GetterCode = fun _ -> <@@ RInterop.call package name [| |] [| |] @@>) :> MemberInfo  ] )
+                                GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
                       
             this.AddNamespace(pns, [ pty ])
+    
+    /// Check if R is installed - if no, generate type with properties displaying
+    /// the error message, otherwise go ahead and use 'generateTypes'!
+    let initAndGenerate () =
 
+        // Get the assembly and namespace used to house the provided types
+        Logging.logf "initAndGenerate: starting"
+        let asm = System.Reflection.Assembly.GetExecutingAssembly()
+        let ns = "RProvider"
+
+        match RInit.initResult.Value with
+        | RInit.RInitError error ->
+            // add an error static property (shown when typing `R.`)
+            let pty = ProvidedTypeDefinition(asm, ns, "R", Some(typeof<obj>))
+            let prop = ProvidedProperty("<Error>", typeof<string>, IsStatic = true, GetterCode = fun _ -> <@@ error @@>)
+            prop.AddXmlDoc error
+            pty.AddMember prop
+            this.AddNamespace(ns, [ pty ])
+            // add an error namespace (shown when typing `open RProvider.`)
+            this.AddNamespace(ns + ".Error: " + error, [ pty ])
+        | _ -> 
+            generateTypes ns asm        
+        Logging.logf "initAndGenerate: finished"
+
+
+    // Generate all the types and log potential errors
+    do  try initAndGenerate() 
+        with e ->
+          Logging.logf "RProvider constructor failed: %O" e
+          reraise()
 
 [<TypeProviderAssembly>]
 do()

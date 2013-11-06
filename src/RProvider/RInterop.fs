@@ -13,6 +13,7 @@ open System.Collections.Generic
 open System.Linq
 open RDotNet
 open RDotNet.ActivePatterns
+open RProvider.RInit
 
 /// Interface to use via MEF
 type IConvertToR<'inType> =     
@@ -41,18 +42,6 @@ module internal RInteropInternal =
 
     [<Literal>] 
     let RDateOffset = 25569.
-
-    let characterDevice = new CharacterDeviceInterceptor()
-
-    let engine = 
-        try
-            let engine = REngine.CreateInstance(System.AppDomain.CurrentDomain.Id.ToString())
-            do engine.Initialize(null, characterDevice)
-            engine
-        with
-        | e -> raise(Exception("Initialization of R.NET failed", e))
-
-    do System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose())
 
     let private mefContainer = 
         lazy
@@ -188,8 +177,8 @@ module internal RInteropInternal =
         
 
     let createDateVector (dv: seq<DateTime>) = 
-        let vec = engine.CreateNumericVector [| for x in dv -> x.ToOADate() - RDateOffset |]
-        vec.SetAttribute("class", engine.CreateCharacterVector [|"Date"|])
+        let vec = engine.Value.CreateNumericVector [| for x in dv -> x.ToOADate() - RDateOffset |]
+        vec.SetAttribute("class", engine.Value.CreateCharacterVector [|"Date"|])
         vec
 
     do
@@ -221,7 +210,7 @@ module internal RInteropInternal =
     type RDotNet.REngine with
         member this.SetValue(value: obj, ?symbolName: string) : SymbolicExpression =            
             let se = convertToR this value
-            if symbolName.IsSome then engine.SetSymbol(symbolName.Value, se)
+            if symbolName.IsSome then engine.Value.SetSymbol(symbolName.Value, se)
             se
 
     let mutable symbolNum = 0
@@ -234,14 +223,25 @@ module internal RInteropInternal =
     
     let toR (value: obj) =
         let symbolName = getNextSymbolName()
-        let se = engine.SetValue(value, symbolName)
+        let se = engine.Value.SetValue(value, symbolName)
         symbolName, se
 
     let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
 
-    let eval (expr: string) = engine.Evaluate(expr)
-    let evalTo   (expr: string) (symbol: string) = engine.SetSymbol(symbol, engine.Evaluate(expr))
-    let exec     (expr: string) : unit = use res = engine.Evaluate(expr) in ()
+    let eval (expr: string) = 
+        Logging.logWithOutput characterDevice (fun () ->
+            Logging.logf "eval(%s)" expr
+            engine.Value.Evaluate(expr) )
+
+    let evalTo (expr: string) (symbol: string) = 
+        Logging.logWithOutput characterDevice (fun () ->
+            Logging.logf "evalto(%s, %s)" expr symbol
+            engine.Value.SetSymbol(symbol, engine.Value.Evaluate(expr)) )
+    
+    let exec (expr: string) : unit = 
+        Logging.logWithOutput characterDevice (fun () ->
+            Logging.logf "exec(%s)" expr 
+            use res = engine.Value.Evaluate(expr) in () )
 
 open RInteropInternal
 
@@ -256,6 +256,7 @@ module RDotNetExtensions =
 
 module RInterop =
     let internal bindingInfo (name: string) : RValue = 
+        Logging.logf "Getting bindingInfo: %s" name
         match eval("typeof(get(\"" + name + "\"))").GetValue() with
         | "closure" ->
             let argList = 
@@ -320,7 +321,7 @@ module RInterop =
                                             -> match FSharpValue.GetTupleFields(arg) with
                                                | [| name; value |] when name.GetType() = typeof<string> ->
                                                     let name = name :?> string
-                                                    tempSymbols.Add(name, engine.SetValue(value, name))
+                                                    tempSymbols.Add(name, engine.Value.SetValue(value, name))
                                                     name
                                                | _ -> failwithf "Pairs must be string * value"
                     | _                     -> let sym,se = toR arg
@@ -341,11 +342,27 @@ module RInterop =
 
             let expr = sprintf "%s::`%s`(%s)" packageName funcName (String.Join(", ", argList))
             eval expr
-        
-    let call (packageName: string) (funcName: string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
-        loadPackage packageName
 
-        match bindingInfo funcName with
+    /// Turn an `RValue` (which captures type information of a value or function)
+    /// into a serialized string that can be spliced in a quotation 
+    let internal serializeRValue = function
+      | RValue.Value -> ""
+      | RValue.Function(pars, hasVar) -> 
+          let prefix = if hasVar then "1" else "0"
+          prefix + (String.concat ";" pars)
+
+    /// Given a string produced by `serializeRValue`, reconstruct the original RValue object 
+    let internal deserializeRValue serialized = 
+      if serialized = null then invalidArg "serialized" "Unexpected null string"
+      elif serialized = "" then RValue.Value
+      else 
+        let hasVar = match serialized.[0] with '1' -> true | '0' -> false | _ -> invalidArg "serialized" "Should start with a flag"
+        RValue.Function(List.ofSeq (serialized.Substring(1).Split(';')), hasVar)
+        
+    let call (packageName: string) (funcName: string) (serializedRVal:string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
+        //loadPackage packageName
+
+        match deserializeRValue serializedRVal with
         | RValue.Function(rparams, hasVarArg) ->
             let argNames = rparams
             let namedArgCount = argNames.Length
@@ -374,5 +391,6 @@ module RDotNetExtensions2 =
         /// Call the R print function and return output as a string
         member this.Print() : string = 
             characterDevice.BeginCapture()
-            RInterop.call "base" "print" [| this |] [| |] |> ignore
+            let rvalStr = RValue.Function(["x"], true) |> RInterop.serializeRValue
+            RInterop.call "base" "print" rvalStr [| this |] [| |] |> ignore
             characterDevice.EndCapture()

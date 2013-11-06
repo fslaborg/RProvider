@@ -49,6 +49,20 @@ Target "AssemblyInfo" (fun _ ->
 )
 
 // --------------------------------------------------------------------------------------
+// Update the assembly version numbers in the script file.
+
+open System.IO
+
+Target "UpdateFsxVersions" (fun _ ->
+    let pattern = "packages/RProvider.(.*)/lib"
+    let replacement = sprintf "packages/RProvider.%s/lib" release.NugetVersion
+    let path = "./src/RProvider/RProvider.fsx"
+    let text = File.ReadAllText(path)
+    let text = Text.RegularExpressions.Regex.Replace(text, pattern, replacement)
+    File.WriteAllText(path, text)
+)
+
+// --------------------------------------------------------------------------------------
 // Clean build results & restore NuGet packages
 
 Target "RestorePackages" (fun _ ->
