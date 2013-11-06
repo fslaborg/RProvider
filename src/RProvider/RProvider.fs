@@ -24,12 +24,8 @@ type public RProvider(cfg:TypeProviderConfig) as this =
     // we make sure that this is *not* set in the normal execution)
     static do RInit.DisableStackChecking <- true
 
-    let generateTypes () =
-        // Get the assembly and namespace used to house the provided types
-        Logging.logf "generateTypes: starting"
-        let asm = System.Reflection.Assembly.GetExecutingAssembly()
-        let ns = "RProvider"
-
+    /// Assuming initialization worked correctly, generate the types using R engine
+    let generateTypes ns asm =
         // Expose all available packages as namespaces
         Logging.logf "generateTypes: getting packages"
         for package in getPackages() do
@@ -108,15 +104,36 @@ type public RProvider(cfg:TypeProviderConfig) as this =
                                 GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
                       
             this.AddNamespace(pns, [ pty ])
-        Logging.logf "generateTypes: finished"
+    
+    /// Check if R is installed - if no, generate type with properties displaying
+    /// the error message, otherwise go ahead and use 'generateTypes'!
+    let initAndGenerate () =
+
+        // Get the assembly and namespace used to house the provided types
+        Logging.logf "initAndGenerate: starting"
+        let asm = System.Reflection.Assembly.GetExecutingAssembly()
+        let ns = "RProvider"
+
+        match RInit.initResult.Value with
+        | RInit.RInitError error ->
+            // add an error static property (shown when typing `R.`)
+            let pty = ProvidedTypeDefinition(asm, ns, "R", Some(typeof<obj>))
+            let prop = ProvidedProperty("<Error>", typeof<string>, IsStatic = true, GetterCode = fun _ -> <@@ error @@>)
+            prop.AddXmlDoc error
+            pty.AddMember prop
+            this.AddNamespace(ns, [ pty ])
+            // add an error namespace (shown when typing `open RProvider.`)
+            this.AddNamespace(ns + ".Error: " + error, [ pty ])
+        | _ -> 
+            generateTypes ns asm        
+        Logging.logf "initAndGenerate: finished"
 
 
     // Generate all the types and log potential errors
-    do  try generateTypes() 
+    do  try initAndGenerate() 
         with e ->
           Logging.logf "RProvider constructor failed: %O" e
           reraise()
-
 
 [<TypeProviderAssembly>]
 do()

@@ -23,39 +23,46 @@ open RDotNet
 /// *after* this variable is set in the static constructor of the RProvider
 let mutable DisableStackChecking = false
 
+/// Represents R value used in initialization or information about failure
+type internal RInitResult<'T> =
+  | RInitResult of 'T
+  | RInitError of string
+
 /// Find the R installation. First check "R_HOME" environment variable, then look 
 /// at the SOFTWARE\R-core\R\InstallPath value (using HKCU or, as a second try HKLM root)
 let private getRLocation () =
-    let locateRfromRegistry () =
-        let rCore =
-            match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
-            | null, null -> failwithf "Reg key Software\R-core does not exist; R is likely not installed on this computer"
-            | null, x -> x
-            | x, _ -> x
-            
+    let getRLocationFromRCoreKey (rCore:RegistryKey) =
         let key = rCore.OpenSubKey "R"
-        if key = null then
-            failwith "SOFTWARE\R-core exists but subkey R does not exist"
+        if key = null then RInitError "SOFTWARE\R-core exists but subkey R does not exist"
+        else key.GetValue "InstallPath" |> unbox<string> |> RInitResult
 
-        key.GetValue "InstallPath" |> unbox
+    let locateRfromRegistry () =
+        match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
+        | null, null -> RInitError "Reg key Software\R-core does not exist; R is likely not installed on this computer"
+        | null, x 
+        | x, _ -> getRLocationFromRCoreKey x
 
     Logging.logf "getRLocation"
     match Environment.GetEnvironmentVariable "R_HOME" with
     | null -> locateRfromRegistry()
-    | rPath -> rPath 
+    | rPath -> RInitResult rPath 
 
 /// Find the R installation using 'getRLocation' and add the directory to the
 /// current environment varibale PATH (so that later loading can find 'R.dll')
 let private setupPathVariable () =
     try
       Logging.logf "setupPathVariable"
-      let binPath = Path.Combine(getRLocation(), "bin", if Environment.Is64BitProcess then "x64" else "i386")
-      if not (Path.Combine(binPath, "R.dll") |> File.Exists) then
-          failwithf "No R engine at %s" binPath
-
-      // Set the path
-      Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
-      Logging.logf "setupPathVariable completed"
+      match getRLocation() with
+      | RInitError error -> RInitError error
+      | RInitResult location ->
+          let binPath = Path.Combine(location, "bin", if Environment.Is64BitProcess then "x64" else "i386")
+          if not (Path.Combine(binPath, "R.dll") |> File.Exists) then
+              RInitError (sprintf "No R engine at %s" binPath)
+          else
+              // Set the path
+              Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
+              Logging.logf "setupPathVariable completed"
+              RInitResult ()
     with e ->
       Logging.logf "setupPathVariable failed: %O" e
       reraise()
@@ -63,13 +70,17 @@ let private setupPathVariable () =
 /// Global interceptor that captures R console output
 let characterDevice = new CharacterDeviceInterceptor()
 
+/// Lazily initialized value that, when evaluated, sets the PATH variable
+/// to include the R location, or fails and returns RInitError
+let initResult = Lazy<_>.Create(fun () -> setupPathVariable())
+
 /// Lazily initialized R engine. When 'DisableStackChecking' has been set prior
 /// to the initialization (in the static constructor of RProvider), then 
 /// set the 'R_CStackLimit' variable to -1.
 let engine = Lazy<_>.Create(fun () ->
     try
         Logging.logf "engine: Creating instance" 
-        setupPathVariable ()
+        initResult.Force() |> ignore
         let engine = REngine.CreateInstance(System.AppDomain.CurrentDomain.Id.ToString())
         Logging.logf "engine: Intializing instance"
         engine.Initialize(null, characterDevice)
