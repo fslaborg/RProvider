@@ -2,13 +2,18 @@
 
 open RDotNet
 open RProvider
+open RInteropInternal
 open System.ComponentModel.Composition
 open System.Linq
 
 // Contains higher-level converters
 
 module Factor = 
-    let getLevels sexp = (RInterop.call "base" "levels" [| sexp |] [| |]).AsCharacter().ToArray()
+    let getLevels sexp = 
+        let rvalStr = RInterop.serializeRValue (RValue.Function(["x"], false))
+        let symexpr = RInterop.call "base" "levels" rvalStr [| sexp |] [| |]
+        symexpr.AsCharacter().ToArray()
+
     let tryConvert sexp = 
         match sexp with
         | IntegerVector(nv) when sexp.Class = [| "factor" |] ->                

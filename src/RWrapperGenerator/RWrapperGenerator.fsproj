@@ -74,6 +74,12 @@
     <Compile Include="..\RProvider\CharacterDeviceInterceptor.fs">
       <Link>CharacterDeviceInterceptor.fs</Link>
     </Compile>
+	<Compile Include="..\RProvider\Logging.fs">
+      <Link>Logging.fs</Link>
+    </Compile>
+    <Compile Include="..\RProvider\RInit.fs">
+      <Link>RInit.fs</Link>
+    </Compile>    
     <Compile Include="..\RProvider\RInterop.fs">
       <Link>RInterop.fs</Link>
     </Compile>

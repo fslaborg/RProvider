@@ -25,10 +25,6 @@
     <OutputPath>../../bin</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <StartAction>Program</StartAction>
-    <StartProgram>C:\Program Files\Microsoft SDKs\F#\3.0\Framework\v4.0\Fsi.exe</StartProgram>
-    <StartArguments>"..\..\test.fsx"</StartArguments>
-    <StartWorkingDirectory>C:\Users\hmansell\SkyDrive\Visual Studio\Projects\RFSharp\RProvider\bin\Debug\</StartWorkingDirectory>
     <OtherFlags>
     </OtherFlags>
   </PropertyGroup>
@@ -57,11 +53,16 @@
       <Link>ProvidedTypes-0.2.fs</Link>
     </Compile>
     <Compile Include="CharacterDeviceInterceptor.fs" />
+    <Compile Include="Logging.fs" />
+    <Compile Include="RInit.fs" />
     <Compile Include="RInterop.fs" />
     <Compile Include="RProvider.fs" />
     <None Include="example.fsx" />
     <Compile Include="converters.fs" />
     <None Include="packages.config" />
+    <None Include="RProvider.fsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
