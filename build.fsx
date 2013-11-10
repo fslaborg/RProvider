@@ -179,6 +179,7 @@ Target "All" DoNothing
 
 "Clean"
   ==> "RestorePackages"
+  ==> "UpdateFsxVersions"
   ==> "AssemblyInfo"
   ==> "Build"
   ==> "RunTests"
