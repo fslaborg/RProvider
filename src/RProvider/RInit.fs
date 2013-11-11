@@ -55,12 +55,22 @@ let private setupPathVariable () =
       match getRLocation() with
       | RInitError error -> RInitError error
       | RInitResult location ->
-          let binPath = Path.Combine(location, "bin", if Environment.Is64BitProcess then "x64" else "i386")
-          if not (Path.Combine(binPath, "R.dll") |> File.Exists) then
+          let islinux = 
+              let p=int Environment.OSVersion.Platform 
+              p=4||p=6||p=128 //from www.mono-project.com/FAQ:_Technical
+          let binPath = 
+              if islinux then 
+                  Path.Combine(location, "lib") 
+              else
+                  Path.Combine(location, "bin", if  Environment.Is64BitProcess  then "x64" else "i386")
+          // Set the path
+          if not ((Path.Combine(binPath, "libR.so") |> File.Exists) || (Path.Combine(binPath,"R.dll") |> File.Exists)) then
               RInitError (sprintf "No R engine at %s" binPath)
           else
               // Set the path
-              Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + binPath)
+              let pathsepchar = if islinux then ":" else ";"
+              Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + pathsepchar + binPath)
+              printfn "found R"
               Logging.logf "setupPathVariable completed"
               RInitResult ()
     with e ->
