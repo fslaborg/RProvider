@@ -1,12 +1,12 @@
-﻿#nowarn "211"
+#nowarn "211"
 // Try including various folders where RProvider might be (version updated by FAKE)
 #I "../../bin"
 #I "../bin"
 #I "bin"
 #I "lib"
-#I "../packages/RProvider.1.0.3/lib"
-#I "../../packages/RProvider.1.0.3/lib"
-#I "../../../packages/RProvider.1.0.3/lib"
+#I "../packages/RProvider.1.0.4/lib"
+#I "../../packages/RProvider.1.0.4/lib"
+#I "../../../packages/RProvider.1.0.4/lib"
 // Reference RProvider and RDotNet (which should be copied to the same directory)
 #r "RDotNet.dll"
 #r "RProvider.dll"
