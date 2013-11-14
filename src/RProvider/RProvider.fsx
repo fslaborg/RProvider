@@ -4,9 +4,10 @@
 #I "../bin"
 #I "bin"
 #I "lib"
-#I "../packages/RProvider.1.0.4/lib"
-#I "../../packages/RProvider.1.0.4/lib"
-#I "../../../packages/RProvider.1.0.4/lib"
+#I "packages/RProvider.1.0.5/lib"
+#I "../packages/RProvider.1.0.5/lib"
+#I "../../packages/RProvider.1.0.5/lib"
+#I "../../../packages/RProvider.1.0.5/lib"
 // Reference RProvider and RDotNet (which should be copied to the same directory)
 #r "RDotNet.dll"
 #r "RProvider.dll"
