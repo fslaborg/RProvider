@@ -70,7 +70,6 @@ let private setupPathVariable () =
               // Set the path
               let pathsepchar = if islinux then ":" else ";"
               Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + pathsepchar + binPath)
-              printfn "found R"
               Logging.logf "setupPathVariable completed"
               RInitResult ()
     with e ->
