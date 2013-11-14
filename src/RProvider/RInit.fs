@@ -55,21 +55,23 @@ let private setupPathVariable () =
       match getRLocation() with
       | RInitError error -> RInitError error
       | RInitResult location ->
-          let islinux = 
-              let p=int Environment.OSVersion.Platform 
-              p=4||p=6||p=128 //from www.mono-project.com/FAQ:_Technical
+          let isLinux = 
+              let platform = Environment.OSVersion.Platform 
+              // The guide at www.mono-project.com/FAQ:_Technical says to also check for the
+              // value 128, but that is only relevant to old versions of Mono without F# support
+              platform = PlatformID.MacOSX || platform = PlatformID.Unix              
           let binPath = 
-              if islinux then 
+              if isLinux then 
                   Path.Combine(location, "lib") 
               else
-                  Path.Combine(location, "bin", if  Environment.Is64BitProcess  then "x64" else "i386")
+                  Path.Combine(location, "bin", if Environment.Is64BitProcess then "x64" else "i386")
           // Set the path
           if not ((Path.Combine(binPath, "libR.so") |> File.Exists) || (Path.Combine(binPath,"R.dll") |> File.Exists)) then
               RInitError (sprintf "No R engine at %s" binPath)
           else
               // Set the path
-              let pathsepchar = if islinux then ":" else ";"
-              Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + pathsepchar + binPath)
+              let pathSepChar = if isLinux then ":" else ";"
+              Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + pathSepChar + binPath)
               Logging.logf "setupPathVariable completed"
               RInitResult ()
     with e ->
