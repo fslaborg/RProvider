@@ -47,6 +47,14 @@ Since all arguments to functions are of type obj, it is not necessarily obvious 
 
 **NB**: For any input, you can also pass a SymbolicExpression instance you received as the result of calling another R function.  Doing so it a very efficient way of passing data from one function to the next, since there is no marshalling between .NET and R types in that case.
 
+### Creating and passing an R function
+R has some high-level functions (e.g. sapply) that require a function parameter. Although F# has first-class support of functional programming and provides better functionality and syntax for apply-like operations, which often makes it sub-optimal to call apply-like high-level functions in R, the need for parallel computing in R, which is not yet directly supported by F# parallelism to R functions, requires users to pass a function as parameter. Here is an example way to create and pass an R function:
+
+    let fun1 = R.eval(R.parse(text="function(i) {mean(rnorm(i))}"))
+    let nums = R.sapply(R.c(1,2,3),fun1)
+
+The same usage also applies to parallel apply functions in parallel package.
+
 ## Accessing results
 
 Functions exposed by the RProvider return an instance of `RDotNet.SymbolicExpression`.  This keeps all return data inside R data structures, so does not impose any data marshalling overhead.  If you want to pass the value in as an argument to another R function, you can simply do so.
