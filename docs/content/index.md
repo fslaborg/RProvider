@@ -62,6 +62,8 @@ The R Provider requires an installation of R for Windows, downloadable from
 `SOFTWARE\R-core` to locate the R binary directory, in order to load `R.dll`.  It will also
 locate `R.dll` if it is on the path.  If run from a 32-bit process, RProvider will use
 the 32-bit `R.dll`, and if run from a 64-bit process, it will load the 64-bit version.
+(Note that VS runs in 32-bit process, so you must have installed 32-bit version of R for 
+Windows if you want IntelliSense to work)
 
 If you are using R 2.15 or later, you should not try to load the RProvider inside a script
 that is passed to FSI via the `--use` flag.  It seems that something about the way R
