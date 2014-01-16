@@ -60,7 +60,7 @@ module internal RInteropInternal =
         let conv' rengine (value: obj) = unbox value |> conv rengine 
         toRConv.[typeof<'inType>] <- conv'
 
-    let internal convertToR<'inType> (engine: REngine) (value: obj) =
+    let internal convertToR (engine: REngine) (value: obj) =
         let concreteType = value.GetType()
         let gt = typedefof<IConvertToR<_>>
 
