@@ -1,4 +1,4 @@
-﻿module internal RProvider.Logging
+﻿module RInterop.Logging
 
 open System
 open System.IO
