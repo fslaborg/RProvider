@@ -100,12 +100,12 @@
   <ItemGroup>
     <ProjectReference Include="..\RInterop\RInterop.fsproj">
       <Name>RInterop</Name>
-      <Project>{3d1104d1-5a1f-44aa-8f8f-8251c4f91a00}</Project>
+      <Project>{fbe4dd45-328e-4a64-9999-061248a4e99d}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\RProviderServer\RProviderServer.fsproj">
       <Name>RProviderServer</Name>
-      <Project>{3d2ef139-7265-46c5-b8bb-1c8582da9ed9}</Project>
+      <Project>{323f7dfc-a550-45b0-a226-12c29dba5c8c}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
