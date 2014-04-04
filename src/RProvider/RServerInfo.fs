@@ -42,7 +42,7 @@ let GetServer() =
         server
 
 AppDomain.CurrentDomain.add_AssemblyResolve(ResolveEventHandler(fun _ args ->
-    if args.Name = typeof<RProviderServer>.Assembly.FullName then
-        typeof<RProviderServer>.Assembly
-    else
-        null))
+    match args.Name with
+    | (argName) when argName = typeof<RProviderServer>.Assembly.FullName -> typeof<RProviderServer>.Assembly
+    | (argName) when argName = typeof<RInterop.RInteropInternal.RValue>.Assembly.FullName -> typeof<RInterop.RInteropInternal.RValue>.Assembly
+    | _ -> null))
