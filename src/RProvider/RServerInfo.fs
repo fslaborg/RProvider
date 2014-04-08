@@ -42,7 +42,11 @@ let GetServer() =
         server
 
 AppDomain.CurrentDomain.add_AssemblyResolve(ResolveEventHandler(fun _ args ->
-    match args.Name with
-    | (argName) when argName = typeof<RProviderServer>.Assembly.FullName -> typeof<RProviderServer>.Assembly
-    | (argName) when argName = typeof<RInterop.RInteropInternal.RValue>.Assembly.FullName -> typeof<RInterop.RInteropInternal.RValue>.Assembly
-    | _ -> null))
+    let name = System.Reflection.AssemblyName(args.Name)
+    let existingAssembly =
+        System.AppDomain.CurrentDomain.GetAssemblies()
+        |> Seq.tryFind(fun a -> System.Reflection.AssemblyName.ReferenceMatchesDefinition(name, a.GetName()))
+    match existingAssembly with
+    | Some a -> a
+    | None -> null
+    ))
