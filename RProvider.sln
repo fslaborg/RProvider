@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{5FA7D1AD-DEDA-4553-81D1-6E4728386A2F}"
 	ProjectSection(SolutionItems) = preProject
 		build.cmd = build.cmd
@@ -40,12 +42,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{33FD
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider", "src\RProvider\RProvider.fsproj", "{5624F098-BE3F-4C8E-B50F-1CFC9E1E0708}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7A8B90CB-3663-4B63-949E-9D86117E110E} = {7A8B90CB-3663-4B63-949E-9D86117E110E}
+	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RWrapperGenerator", "src\RWrapperGenerator\RWrapperGenerator.fsproj", "{66A390A5-526A-4BD1-B876-E7425B643C70}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RInterop", "src\RInterop\RInterop.fsproj", "{FBE4DD45-328E-4A64-9999-061248A4E99D}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProviderServer", "src\RProviderServer\RProviderServer.fsproj", "{323F7DFC-A550-45B0-A226-12C29DBA5C8C}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProviderServer4_3_1", "src\RProviderServer4_3_1\RProviderServer4_3_1.fsproj", "{7A8B90CB-3663-4B63-949E-9D86117E110E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +76,10 @@ Global
 		{323F7DFC-A550-45B0-A226-12C29DBA5C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{323F7DFC-A550-45B0-A226-12C29DBA5C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{323F7DFC-A550-45B0-A226-12C29DBA5C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A8B90CB-3663-4B63-949E-9D86117E110E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A8B90CB-3663-4B63-949E-9D86117E110E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A8B90CB-3663-4B63-949E-9D86117E110E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A8B90CB-3663-4B63-949E-9D86117E110E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

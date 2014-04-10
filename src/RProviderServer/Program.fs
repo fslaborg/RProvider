@@ -1,21 +1,16 @@
 ﻿module RProviderServer
 
-open System
-open System.Collections.Generic
-open System.Reflection
-open System.IO
-open System.Diagnostics
-open System.Threading
 open Microsoft.FSharp.Core.CompilerServices
+open Microsoft.Win32
 open RDotNet
 open RInterop
 open RInterop.RInteropInternal
-open Microsoft.Win32
-open System.IO
+open System
 
 type RProviderServer() =
     inherit MarshalByRefObject()
     static do RInit.DisableStackChecking <- true
+    let enginelock = "enginelock"
 
     let initResultValue = RInit.initResult.Force()
 
@@ -28,27 +23,37 @@ type RProviderServer() =
         | _ -> None
 
     member x.GetPackages() =
-        RInterop.getPackages()
+        lock enginelock (fun () -> RInterop.getPackages())
 
     member x.LoadPackage(package) =
-        RInterop.loadPackage package
+        lock enginelock (fun () ->
+            RInterop.loadPackage package
+        )
 
     member x.GetBindings(package) =
-        RInterop.getBindings package
+        lock enginelock (fun () ->
+            RInterop.getBindings package
+        )
 
     member x.GetFunctionDescriptions(package:string) =
-        RInterop.getFunctionDescriptions package
+        lock enginelock (fun () ->
+            RInterop.getFunctionDescriptions package
+        )
 
     member x.SerializeRValue(rval) =
         RInterop.serializeRValue rval
-
+        
     member x.GetPackageDescription(package) =
-        RInterop.getPackageDescription package
+        lock enginelock (fun () ->
+            RInterop.getPackageDescription package
+        )
 
     member x.MakeSafeName(name) =
         makeSafeName name
 
 module Main =
+    open System
+    open System.Diagnostics
     open System.Runtime.Remoting
     open System.Runtime.Remoting.Channels
     open System.Threading
