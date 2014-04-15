@@ -33,6 +33,9 @@ module Helpers =
     let namedParams (s: seq<string*_>) = dict <| Seq.map (fun (n,v) -> n, box v) s
 
 module RInteropInternal =
+    let RSafe f =
+        lock engine f
+
     type RParameter = string
     type HasVarArgs = bool
 
@@ -177,9 +180,10 @@ module RInteropInternal =
         
 
     let createDateVector (dv: seq<DateTime>) = 
-        let vec = engine.Value.CreateNumericVector [| for x in dv -> x.ToOADate() - RDateOffset |]
-        vec.SetAttribute("class", engine.Value.CreateCharacterVector [|"Date"|])
-        vec
+        RSafe <| fun () ->
+            let vec = engine.Value.CreateNumericVector [| for x in dv -> x.ToOADate() - RDateOffset |]
+            vec.SetAttribute("class", engine.Value.CreateCharacterVector [|"Date"|])
+            vec
 
     do
         registerToR<SymbolicExpression> (fun engine v -> v)
@@ -209,39 +213,46 @@ module RInteropInternal =
 
     type RDotNet.REngine with
         member this.SetValue(value: obj, ?symbolName: string) : SymbolicExpression =            
-            let se = convertToR this value
-            if symbolName.IsSome then engine.Value.SetSymbol(symbolName.Value, se)
-            se
+            RSafe <| fun () ->
+                let se = convertToR this value
+                if symbolName.IsSome then engine.Value.SetSymbol(symbolName.Value, se)
+                se
 
     let mutable symbolNum = 0
     let pid = System.Diagnostics.Process.GetCurrentProcess().Id;
 
     /// Get next symbol name
     let getNextSymbolName() : string =
-        symbolNum <- symbolNum + 1
-        sprintf "fsr_%d_%d" pid symbolNum
+        // this should probably be threadsafe, too
+        RSafe <| fun () ->
+            symbolNum <- symbolNum + 1
+            sprintf "fsr_%d_%d" pid symbolNum
     
     let toR (value: obj) =
-        let symbolName = getNextSymbolName()
-        let se = engine.Value.SetValue(value, symbolName)
-        symbolName, se
+        RSafe <| fun () ->
+            let symbolName = getNextSymbolName()
+            let se = engine.Value.SetValue(value, symbolName)
+            symbolName, se
 
     let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
 
     let eval (expr: string) = 
-        Logging.logWithOutput characterDevice (fun () ->
-            Logging.logf "eval(%s)" expr
-            engine.Value.Evaluate(expr) )
+        RSafe <| fun () ->
+            Logging.logWithOutput characterDevice (fun () ->
+                Logging.logf "eval(%s)" expr
+                engine.Value.Evaluate(expr) )
 
     let evalTo (expr: string) (symbol: string) = 
-        Logging.logWithOutput characterDevice (fun () ->
-            Logging.logf "evalto(%s, %s)" expr symbol
-            engine.Value.SetSymbol(symbol, engine.Value.Evaluate(expr)) )
+        RSafe <| fun () ->
+            Logging.logWithOutput characterDevice (fun () ->
+                Logging.logf "evalto(%s, %s)" expr symbol
+                engine.Value.SetSymbol(symbol, engine.Value.Evaluate(expr)) )
     
     let exec (expr: string) : unit = 
-        Logging.logWithOutput characterDevice (fun () ->
-            Logging.logf "exec(%s)" expr 
-            use res = engine.Value.Evaluate(expr) in () )
+        RSafe <| fun () ->
+            Logging.logWithOutput characterDevice (fun () ->
+                Logging.logf "exec(%s)" expr 
+                use res = engine.Value.Evaluate(expr) in () )
 
 open RInteropInternal
 
@@ -305,6 +316,7 @@ module RInterop =
         |> Map.ofSeq
 
     let callFunc (packageName: string) (funcName: string) (argsByName: seq<KeyValuePair<string, obj>>) (varArgs: obj[]) : SymbolicExpression =
+        RSafe <| fun () ->
             // We make sure we keep a reference to any temporary symbols until after exec is called, 
             // so that the binding is kept alive in R
             // TODO: We need to figure out how to unset the symvol

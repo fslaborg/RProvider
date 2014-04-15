@@ -31,24 +31,24 @@ type public RProvider(cfg:TypeProviderConfig) as this =
     let generateTypes ns asm =
         // Expose all available packages as namespaces
         logf "generateTypes: getting packages"
-        for package in server.GetPackages() do
+        for package in RInterop.getPackages() do
             let pns = ns + "." + package
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
-            pty.AddXmlDocDelayed <| fun () -> server.GetPackageDescription package
+            pty.AddXmlDocDelayed <| fun () -> RInterop.getPackageDescription package
             pty.AddMembersDelayed( fun () -> 
-              [ server.LoadPackage package
-                let bindings = server.GetBindings package
+              [ RInterop.loadPackage package
+                let bindings = RInterop.getBindings package
 
                 // We get the function descriptions for R the first time they are needed
-                let titles = lazy server.GetFunctionDescriptions package
+                let titles = lazy RInterop.getFunctionDescriptions package
 
                 for name, rval in Map.toSeq bindings do
-                    let memberName = server.MakeSafeName name
+                    let memberName = makeSafeName name
 
                     // Serialize RValue to a string, so that we can include it in the 
                     // compiled quotation (and do not have to get the info again at runtime)
-                    let serializedRVal = server.SerializeRValue rval
+                    let serializedRVal = RInterop.serializeRValue rval
 
                     match rval with
                     | RInteropInternal.RValue.Function(paramList, hasVarArgs) ->
@@ -119,6 +119,7 @@ type public RProvider(cfg:TypeProviderConfig) as this =
 
         //match RInit.initResult.Value with
         match GetServer().RInitValue with
+        //| RInit.RInitError error ->
         | Some error ->
             // add an error static property (shown when typing `R.`)
             let pty = ProvidedTypeDefinition(asm, ns, "R", Some(typeof<obj>))

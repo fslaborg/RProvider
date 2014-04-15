@@ -9,9 +9,13 @@ open System
 
 type RProviderServer() =
     inherit MarshalByRefObject()
+    
+    // Set the R 'R_CStackLimit' variable to -1 when initializing the R engine
+    // (the engine is initialized lazily, so the initialization always happens
+    // after the static constructor is called - by doing this in the static constructor
+    // we make sure that this is *not* set in the normal execution)
     static do RInit.DisableStackChecking <- true
-    let enginelock = "enginelock"
-
+    
     let initResultValue = RInit.initResult.Force()
 
     member x.Engine =
@@ -23,31 +27,23 @@ type RProviderServer() =
         | _ -> None
 
     member x.GetPackages() =
-        lock enginelock (fun () -> RInterop.getPackages())
+         RInterop.getPackages()
 
     member x.LoadPackage(package) =
-        lock enginelock (fun () ->
-            RInterop.loadPackage package
-        )
-
+        RInterop.loadPackage package
+        
     member x.GetBindings(package) =
-        lock enginelock (fun () ->
-            RInterop.getBindings package
-        )
-
+        RInterop.getBindings package
+        
     member x.GetFunctionDescriptions(package:string) =
-        lock enginelock (fun () ->
-            RInterop.getFunctionDescriptions package
-        )
-
+        RInterop.getFunctionDescriptions package
+        
     member x.SerializeRValue(rval) =
         RInterop.serializeRValue rval
         
     member x.GetPackageDescription(package) =
-        lock enginelock (fun () ->
-            RInterop.getPackageDescription package
-        )
-
+        RInterop.getPackageDescription package
+        
     member x.MakeSafeName(name) =
         makeSafeName name
 
@@ -61,6 +57,7 @@ module Main =
     [<STAThreadAttribute>]
     [<EntryPoint>]
     let main argv =
+        Debugger.Launch() |> ignore
         let channelName = argv.[0]
         let event = EventWaitHandle.OpenExisting(name = channelName)
         let chan = new Ipc.IpcChannel(channelName)
