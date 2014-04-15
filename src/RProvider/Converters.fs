@@ -2,7 +2,8 @@
 
 open RDotNet
 open RProvider
-open RInteropInternal
+open RInterop
+open RInterop.RInteropInternal
 open System.ComponentModel.Composition
 open System.Linq
 

@@ -1,5 +1,5 @@
-﻿open RProvider.RInterop
-open RProvider.RInteropInternal
+﻿open RInterop
+open RInterop.RInteropInternal
 open System.IO
 open System
 open System.Collections.Generic
@@ -71,9 +71,9 @@ let generatePackage (writer: TextWriter) (exposedNames: HashSet<string>) (packag
     //fprintfn writer "\tpublic class %s {" (safeName packageName)
     //fprintfn writer "\t\tprivate static object[] emptyArr = new object[0];"
 
-    loadPackage packageName
+    RInterop.loadPackage packageName
 
-    for name, rval in Map.toSeq (getBindings packageName) do
+    for name, rval in Map.toSeq (RInterop.getBindings packageName) do
         let name = if exposedNames.Contains(name) then packageName + "." + name else name
                 
         match rval with

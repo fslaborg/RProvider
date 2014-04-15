@@ -2,8 +2,8 @@
 
 open RDotNet
 open RDotNet.Internals
+open RInterop
 open RProvider
-open RProvider.RInterop
 open RProvider.``base``
 open System
 open Xunit
@@ -15,7 +15,7 @@ open System.Text
 // Generic function to test that a value round-trips
 // when SEXP is asked for the value by-type
 let testRoundTrip (x: 'a) (typeof: SymbolicExpressionType) (clsName: Option<string>) =
-    let sexp = toR(x)
+    let sexp = RInterop.toR(x)
     Assert.Equal<'a>(x, sexp.GetValue<'a>())
     Assert.Equal(sexp.Type, typeof)
     Assert.Equal<string[]>(sexp.Class, Option.toArray clsName)
@@ -25,7 +25,7 @@ let testRoundTrip (x: 'a) (typeof: SymbolicExpressionType) (clsName: Option<stri
 // as the default .NET representation
 let testRoundTripAndDefault (x: 'a) (typeof: SymbolicExpressionType) (clsName: Option<string>) =
     testRoundTrip x typeof clsName
-    let sexp = toR(x)
+    let sexp = RInterop.toR(x)
     Assert.Equal<'a>(x, unbox<'a> sexp.Value)    
 
 let testVector (xs: 'scalarType[]) (typeof: SymbolicExpressionType) (clsName: Option<string>) =    
@@ -35,7 +35,7 @@ let testVector (xs: 'scalarType[]) (typeof: SymbolicExpressionType) (clsName: Op
     testRoundTripAndDefault xs typeof clsName
     // Can only round-trip a vector as a scalar if it is of length 1
     if xs.Length <> 1 then
-        ignore <| Assert.Throws<InvalidOperationException>(fun () -> toR(xs).GetValue<'scalarType>() |> ignore)
+        ignore <| Assert.Throws<InvalidOperationException>(fun () -> RInterop.toR(xs).GetValue<'scalarType>() |> ignore)
 
 
 let testScalar (x: 'scalarType) (typeof: SymbolicExpressionType) (clsName: Option<string>) = 
@@ -43,7 +43,7 @@ let testScalar (x: 'scalarType) (typeof: SymbolicExpressionType) (clsName: Optio
     testRoundTrip x typeof clsName
 
     // Scalars round-trip as vectors
-    let sexp = toR(x)
+    let sexp = RInterop.toR(x)
     Assert.Equal<'scalarType[]>([|x|], unbox(sexp.Value))
     Assert.Equal<'scalarType[]>([|x|], sexp.GetValue<'scalarType[]>())
 
@@ -93,7 +93,7 @@ let ``Complex scalar round-trip tests`` (r: double) (i: double) =
 let ``String arrays round-trip``(strings: string[]) =
     // We only want to test for ASCII strings
     if Array.forall (fun s -> s = Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(s))) strings then
-        let sexp = toR(strings)
+        let sexp = RInterop.toR(strings)
 
         Assert.Equal<string[]>(strings, unbox sexp.Value)
         Assert.Equal<string[]>(strings, sexp.GetValue<string[]>())
@@ -103,9 +103,9 @@ let ``String arrays round-trip``(strings: string[]) =
 let ``Strings round-trip``(value: string) =
     // We only want to test for ASCII strings
     //if Array.forall (fun s -> s = Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(s))) strings then
-        let sexp = toR(value)    
+        let sexp = RInterop.toR(value)    
         Assert.Equal<string>(value, sexp.GetValue<string>())
-
+(*
 let roundTripAsFactor (value:string[]) = 
     let sexp = R.as_factor(value)
     Assert.Equal<string[]>(value, sexp.GetValue<string[]>())
@@ -114,10 +114,11 @@ let roundTripAsDataframe (value: string[]) =
     let df = R.data_frame(namedParams [ "Column", value ]).AsDataFrame()    
     Assert.Equal<string[]>(value, df.[0].GetValue<string[]>())
 
-[<Fact>]
+//[<Fact>]
 let ``String arrays round-trip via factors`` () = 
     roundTripAsFactor [| "foo"; "bar"; "foo"; "bar" |]
 
-[<Fact>]
+//[<Fact>]
 let ``String arrays round-trip via DataFrame`` () = 
     roundTripAsDataframe [| "foo"; "bar"; "foo"; "bar" |]
+    *)

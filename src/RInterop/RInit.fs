@@ -1,4 +1,4 @@
-﻿module internal RProvider.RInit
+﻿module RInterop.RInit
 
 open System
 open System.IO
@@ -24,7 +24,7 @@ open RDotNet
 let mutable DisableStackChecking = false
 
 /// Represents R value used in initialization or information about failure
-type internal RInitResult<'T> =
+type RInitResult<'T> =
   | RInitResult of 'T
   | RInitError of string
 

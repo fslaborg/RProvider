@@ -5,25 +5,25 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>a371037f-5b03-4c6c-91d3-5dfd494e0bfb</ProjectGuid>
+    <ProjectGuid>fbe4dd45-328e-4a64-9999-061248a4e99d</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Test.RProvider</RootNamespace>
-    <AssemblyName>Test.RProvider</AssemblyName>
+    <RootNamespace>RInterop</RootNamespace>
+    <AssemblyName>RInterop</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <Name>Test.RProvider</Name>
+    <Name>RInterop</Name>
+    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>../../bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\Test.RProvider.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\RInterop.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Test.RProvider.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\RInterop.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -50,21 +50,18 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
-    <Compile Include="Test.fs" />
+    <Compile Include="..\Common\AssemblyInfo.fs">
+      <Link>AssemblyInfo.fs</Link>
+    </Compile>
+    <Compile Include="CharacterDeviceInterceptor.fs" />
+    <Compile Include="Logging.fs" />
+    <Compile Include="RInit.fs" />
+    <Compile Include="RInterop.fs" />
+    <None Include="RInterop.fsx" />
     <None Include="packages.config" />
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FsCheck">
-      <HintPath>..\..\packages\FsCheck.0.9.2.0\lib\net40-Client\FsCheck.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FsCheck.Xunit">
-      <HintPath>..\..\packages\FsCheck.Xunit.0.4.0.2\lib\net40-Client\FsCheck.Xunit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
@@ -74,27 +71,25 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.FSharp">
-      <HintPath>..\..\bin\RDotNet.FSharp.dll</HintPath>
+      <HintPath>..\..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
       <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RInterop">
-      <HintPath>..\..\bin\RInterop.dll</HintPath>
-    </Reference>
-    <Reference Include="RProvider">
-      <HintPath>..\..\bin\RProvider.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="xunit">
-      <HintPath>..\..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

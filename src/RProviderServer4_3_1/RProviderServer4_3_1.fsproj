@@ -1,29 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>a371037f-5b03-4c6c-91d3-5dfd494e0bfb</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Test.RProvider</RootNamespace>
-    <AssemblyName>Test.RProvider</AssemblyName>
+    <ProjectGuid>7a8b90cb-3663-4b63-949e-9d86117e110e</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RProviderServer4_3_1</RootNamespace>
+    <AssemblyName>RProviderServer4_3_1</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <Name>Test.RProvider</Name>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
+    <Name>RProviderServer4_3_1</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>../../bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\Test.RProvider.XML</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Debug\RProviderServer4_3_1.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,68 +33,57 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Test.RProvider.XML</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Release\RProviderServer4_3_1.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '11.0'">
-      <PropertyGroup>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
         <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
       </PropertyGroup>
     </When>
     <Otherwise>
-      <PropertyGroup>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
         <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
       </PropertyGroup>
     </Otherwise>
   </Choose>
-  <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="Test.fs" />
-    <None Include="packages.config" />
-    <None Include="app.config" />
+    <Compile Include="..\RProviderServer\Program.fs">
+      <Link>Program.fs</Link>
+    </Compile>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FsCheck">
-      <HintPath>..\..\packages\FsCheck.0.9.2.0\lib\net40-Client\FsCheck.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FsCheck.Xunit">
-      <HintPath>..\..\packages\FsCheck.Xunit.0.4.0.2\lib\net40-Client\FsCheck.Xunit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
-    <Reference Include="mscorlib" />
     <Reference Include="RDotNet">
-      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\bin\RDotNet.dll</HintPath>
     </Reference>
     <Reference Include="RDotNet.FSharp">
       <HintPath>..\..\bin\RDotNet.FSharp.dll</HintPath>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RInterop">
-      <HintPath>..\..\bin\RInterop.dll</HintPath>
-    </Reference>
-    <Reference Include="RProvider">
-      <HintPath>..\..\bin\RProvider.dll</HintPath>
+      <HintPath>..\..\bin\RDotNet.NativeLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="xunit">
-      <HintPath>..\..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    <Reference Include="System.Runtime.Remoting" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RInterop\RInterop.fsproj">
+      <Name>RInterop</Name>
+      <Project>{fbe4dd45-328e-4a64-9999-061248a4e99d}</Project>
       <Private>True</Private>
-    </Reference>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,4 +1,4 @@
-﻿namespace RProvider
+﻿namespace RInterop
 
 open RDotNet.Devices
 open System.Text

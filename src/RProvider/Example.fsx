@@ -1,7 +1,9 @@
 ﻿#r @"../../bin/RDotNet.dll"
+#r @"../../bin/RInterop.dll"
 #r @"../../bin/RProvider.dll"
  
 open RDotNet
+open RInterop
 open RProvider
 open RProvider.``base``
 open RProvider.graphics

@@ -20,9 +20,16 @@
     </dependencies>    
   </metadata>
   <files>
+    <file src="..\bin\RInterop.dll" target="lib" />
+    <file src="..\bin\RInterop.pdb" target="lib" />
+    <file src="..\bin\RProviderServer.exe" target="lib" />
+    <file src="..\bin\RProviderServer.pdb" target="lib" />
+    <file src="..\bin\RProviderServer4_3_1.exe" target="lib" />
+    <file src="..\bin\RProviderServer4_3_1.pdb" target="lib" />
     <file src="..\bin\RProvider.dll" target="lib" />
 	  <file src="..\bin\RProvider.pdb" target="lib" />
     <file src="..\nuget\init.ps1" target="tools" />
     <file src="..\bin\RProvider.fsx" target="." />
+    
   </files>
 </package>
