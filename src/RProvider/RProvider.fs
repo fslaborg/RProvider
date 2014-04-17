@@ -108,7 +108,7 @@ type public RProvider(cfg:TypeProviderConfig) as this =
     /// Check if R is installed - if no, generate type with properties displaying
     /// the error message, otherwise go ahead and use 'generateTypes'!
     let initAndGenerate () =
-
+        RSafe <| fun () ->
         // Get the assembly and namespace used to house the provided types
         Logging.logf "initAndGenerate: starting"
         let asm = System.Reflection.Assembly.GetExecutingAssembly()
