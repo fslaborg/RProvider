@@ -83,12 +83,12 @@ let characterDevice = new CharacterDeviceInterceptor()
 
 /// Lazily initialized value that, when evaluated, sets the PATH variable
 /// to include the R location, or fails and returns RInitError
-let initResult = Lazy<_>.Create(fun () -> setupPathVariable())
+let initResult = Lazy<_>(fun () -> setupPathVariable())
 
 /// Lazily initialized R engine. When 'DisableStackChecking' has been set prior
 /// to the initialization (in the static constructor of RProvider), then 
 /// set the 'R_CStackLimit' variable to -1.
-let engine = Lazy<_>.Create(fun () ->
+let engine = Lazy<_>(fun () ->
     try
         Logging.logf "engine: Creating instance" 
         initResult.Force() |> ignore
