@@ -47,9 +47,18 @@ module internal RInteropInternal =
         lazy
             // Look for plugins co-located with RProvider.dll
             let assem = typeof<IConvertToR<_>>.Assembly
-            let catalog = new DirectoryCatalog(Path.GetDirectoryName(assem.Location),"*.Plugin.dll")
-            let assemCatalog = new AssemblyCatalog(assem)
-            new CompositionContainer(new AggregateCatalog(catalog, assemCatalog))
+            
+            let path = assem.Location
+            let config = System.Configuration.ConfigurationManager.OpenExeConfiguration(path)
+            let dirs = config.AppSettings.Settings.["PluginLocations"].Value
+            let dirs = dirs.Split(';', ',')
+
+            let catalogs : seq<Primitives.ComposablePartCatalog> = 
+              seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName(assem.Location),"*.Plugin.dll")
+                    for d in dirs do
+                      yield upcast new DirectoryCatalog(d,"*.Plugin.dll")
+                    yield upcast new AssemblyCatalog(assem) }
+            new CompositionContainer(new AggregateCatalog(catalogs))
                 
     let internal toRConv = Collections.Generic.Dictionary<Type, REngine -> obj -> SymbolicExpression>()
 
