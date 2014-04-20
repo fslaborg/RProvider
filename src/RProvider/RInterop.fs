@@ -1,19 +1,20 @@
 ﻿namespace RProvider
 
-open Microsoft.FSharp.Reflection
 open System
+open System.Numerics
+open System.Collections.Generic
 open System.ComponentModel.Composition
 open System.ComponentModel.Composition.Hosting
 open System.Reflection
 open System.IO
-open System.Diagnostics
-open System.Numerics
-open System.Threading
-open System.Collections.Generic
 open System.Linq
+open Microsoft.FSharp.Reflection
+
 open RDotNet
 open RDotNet.ActivePatterns
-open RProvider.RInit
+open RProvider.Internal
+open RProvider.Internal.RInit
+open RProvider.Configuration
 
 /// Interface to use via MEF
 type IConvertToR<'inType> =     
@@ -50,12 +51,8 @@ module internal RInteropInternal =
         lazy
             // Look for plugins co-located with RProvider.dll
             let assem = typeof<IConvertToR<_>>.Assembly
-            
-            let path = assem.Location
-            let config = System.Configuration.ConfigurationManager.OpenExeConfiguration(path)
-            let dirs = config.AppSettings.Settings.["PluginLocations"].Value
-            let dirs = dirs.Split(';', ',')
-
+           
+            let dirs = getProbingLocations()
             let catalogs : seq<Primitives.ComposablePartCatalog> = 
               seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName(assem.Location),"*.Plugin.dll")
                     for d in dirs do

@@ -67,6 +67,9 @@
     <Reference Include="RProvider">
       <HintPath>..\..\bin\RProvider.dll</HintPath>
     </Reference>
+    <Reference Include="RProvider.Runtime">
+      <HintPath>D:\Local\Public\FSharp.RProvider\bin\RProvider.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />

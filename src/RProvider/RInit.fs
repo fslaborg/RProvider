@@ -1,9 +1,10 @@
-﻿module internal RProvider.RInit
+﻿module RProvider.Internal.RInit
 
 open System
 open System.IO
 open Microsoft.Win32
 open RDotNet
+open RProvider
 
 /// When set to 'true' before the R engine is initialized, the initialization
 /// will set the 'R_CStackLimit' variable to -1 (which disables stack checking
@@ -79,16 +80,16 @@ let private setupPathVariable () =
       reraise()
 
 /// Global interceptor that captures R console output
-let characterDevice = new CharacterDeviceInterceptor()
+let internal characterDevice = new CharacterDeviceInterceptor()
 
 /// Lazily initialized value that, when evaluated, sets the PATH variable
 /// to include the R location, or fails and returns RInitError
-let initResult = Lazy<_>(fun () -> setupPathVariable())
+let internal initResult = Lazy<_>(fun () -> setupPathVariable())
 
 /// Lazily initialized R engine. When 'DisableStackChecking' has been set prior
 /// to the initialization (in the static constructor of RProvider), then 
 /// set the 'R_CStackLimit' variable to -1.
-let engine = Lazy<_>(fun () ->
+let internal engine = Lazy<_>(fun () ->
     try
         Logging.logf "engine: Creating instance" 
         initResult.Force() |> ignore

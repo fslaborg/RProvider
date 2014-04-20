@@ -78,6 +78,9 @@
     <Compile Include="..\RProvider\Logging.fs">
       <Link>Logging.fs</Link>
     </Compile>
+    <Compile Include="..\RProvider\Configuration.fs">
+      <Link>Configuration.fs</Link>
+    </Compile>
     <Compile Include="..\RProvider\RInit.fs">
       <Link>RInit.fs</Link>
     </Compile>

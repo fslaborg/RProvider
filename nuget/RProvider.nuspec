@@ -20,9 +20,11 @@
     </dependencies>    
   </metadata>
   <files>
+    <file src="..\bin\RProvider.Runtime.dll" target="lib" />
+    <file src="..\bin\RProvider.Runtime.pdb" target="lib" />
     <file src="..\bin\RProvider.dll" target="lib" />
-	  <file src="..\bin\RProvider.pdb" target="lib" />
-    <file src="..\nuget\init.ps1" target="tools" />
+    <file src="..\bin\RProvider.pdb" target="lib" />
     <file src="..\bin\RProvider.fsx" target="." />
+    <file src="..\nuget\RProvider.dll.config" target="lib" />
   </files>
 </package>

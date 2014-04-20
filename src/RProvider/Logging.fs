@@ -1,12 +1,13 @@
-﻿module internal RProvider.Logging
+﻿module RProvider.Internal.Logging
 
 open System
 open System.IO
 open System.Diagnostics
 open Microsoft.FSharp.Reflection
+open RProvider
 
 /// Change this constant to enable logging
-let [<Literal>] loggingEnabled = false
+let [<Literal>] private loggingEnabled = false
 
 /// Log file (by default "C:\Users\<user>\AppData\Roaming\RLogs\log.txt")
 let private logFile = 
@@ -37,7 +38,7 @@ let logf fmt =
 
 /// Run the specified function and log potential expceptions, as well
 /// as the output written to console (unless characterDevice.IsCapturing)
-let logWithOutput (characterDevice:CharacterDeviceInterceptor) f =
+let internal logWithOutput (characterDevice:CharacterDeviceInterceptor) f =
   if loggingEnabled then 
     try 
       // If the device is capturing stuff for someone else, then
