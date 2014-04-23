@@ -57,6 +57,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
@@ -74,12 +75,15 @@
     <Compile Include="..\RProvider\CharacterDeviceInterceptor.fs">
       <Link>CharacterDeviceInterceptor.fs</Link>
     </Compile>
-	<Compile Include="..\RProvider\Logging.fs">
+    <Compile Include="..\RProvider\Logging.fs">
       <Link>Logging.fs</Link>
+    </Compile>
+    <Compile Include="..\RProvider\Configuration.fs">
+      <Link>Configuration.fs</Link>
     </Compile>
     <Compile Include="..\RProvider\RInit.fs">
       <Link>RInit.fs</Link>
-    </Compile>    
+    </Compile>
     <Compile Include="..\RProvider\RInterop.fs">
       <Link>RInterop.fs</Link>
     </Compile>
