@@ -11,7 +11,7 @@
 // Reference RProvider and RDotNet (which should be copied to the same directory)
 #r "RDotNet.dll"
 #r "RProvider.dll"
-#r "RProvider.Runtime.dll"
+#r "RProvider.Runtime.exe"
 open RProvider
 
 do fsi.AddPrinter(fun (synexpr:RDotNet.SymbolicExpression) -> synexpr.Print())

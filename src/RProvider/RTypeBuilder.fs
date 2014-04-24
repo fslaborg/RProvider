@@ -11,28 +11,32 @@ open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open RProvider
 open RProvider.Internal
-open RInteropInternal
 open RInterop
+open RInteropInternal
+open RInteropClient
 open Microsoft.Win32
 open System.IO
 
 module RTypeBuilder =
-
+    
     /// Assuming initialization worked correctly, generate the types using R engine
-    let generateTypes ns asm = seq {
+    let generateTypes ns asm = 
+        withServer <| fun server ->
+        seq {
         // Expose all available packages as namespaces
         Logging.logf "generateTypes: getting packages"
-        for package in getPackages() do
+        for package in server.GetPackages() do
             let pns = ns + "." + package
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
-            pty.AddXmlDocDelayed <| fun () -> getPackageDescription package
+            pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.GetPackageDescription package
             pty.AddMembersDelayed( fun () -> 
-              [ loadPackage package
-                let bindings = getBindings package
+              withServer <| fun serverDelayed ->
+              [ serverDelayed.LoadPackage package
+                let bindings = serverDelayed.GetBindings package
 
                 // We get the function descriptions for R the first time they are needed
-                let titles = lazy getFunctionDescriptions package
+                let titles = lazy withServer (fun s -> s.GetFunctionDescriptions package)
 
                 for name, rval in Map.toSeq bindings do
                     let memberName = makeSafeName name
@@ -102,13 +106,12 @@ module RTypeBuilder =
     /// Check if R is installed - if no, generate type with properties displaying
     /// the error message, otherwise go ahead and use 'generateTypes'!
     let initAndGenerate providerAssembly = 
-      RSafe <| fun () ->
        [  // Get the assembly and namespace used to house the provided types
           Logging.logf "initAndGenerate: starting"
           let ns = "RProvider"
 
-          match RInit.initResult.Value with
-          | RInit.RInitError error ->
+          match GetServer().RInitValue with
+          | Some error ->
               // add an error static property (shown when typing `R.`)
               let pty = ProvidedTypeDefinition(providerAssembly, ns, "R", Some(typeof<obj>))
               let prop = ProvidedProperty("<Error>", typeof<string>, IsStatic = true, GetterCode = fun _ -> <@@ error @@>)

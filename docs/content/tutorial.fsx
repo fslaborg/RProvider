@@ -18,6 +18,7 @@ we use `open` to reference a number of packages including `stats`, `tseries` and
 #r "RDotNet.FSharp.dll"
 #r "RDotNet.NativeLibrary.dll"
 #r "RProvider.dll"
+#r "RProvider.Runtime.exe"
  
 open RDotNet
 open RProvider

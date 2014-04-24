@@ -34,15 +34,12 @@ module Helpers =
     let namedParams (s: seq<string*_>) = dict <| Seq.map (fun (n,v) -> n, box v) s
 
 module internal RInteropInternal =
+    let interopLock = "RProvider.RInterop.lock"
     let RSafe f =
-        lock engine f
+        lock interopLock f
 
     type RParameter = string
     type HasVarArgs = bool
-
-    type RValue =
-        | Function of RParameter list * HasVarArgs
-        | Value
 
     [<Literal>] 
     let RDateOffset = 25569.
@@ -275,6 +272,10 @@ module RDotNetExtensions =
         member this.Value = defaultConvertFromR this
 
 module RInterop =
+    type RValue =
+        | Function of RParameter list * HasVarArgs
+        | Value
+
     let internal bindingInfo (name: string) : RValue = 
         RSafe <| fun () ->
         Logging.logf "Getting bindingInfo: %s" name
@@ -320,12 +321,65 @@ module RInterop =
                 failwithf "Loading package %s failed" packageName
             packages.Add packageName |> ignore
 
-    let internal getBindings packageName : Map<string, RValue> =
+    [<Literal>]
+    let internal getBindingsDefn = """function (pkgName) {
+    require(pkgName, character.only=TRUE)
+    pkgListing <- ls(paste("package:",pkgName,sep=""))
+    lapply(
+        pkgListing,
+        function (pname) {
+            pval <- get(pname)
+            ptype <- typeof(pval)
+            if (ptype == "closure") {
+                list(name=pname, type=ptype, params=list(names(formals(pname))))
+            } else {
+                list(name=pname, type=ptype, params=NA)
+            }
+        }
+    )
+}"""
+    let internal getBindingsFromR =
+        lazy
+            RSafe <| fun() ->
+            let symbolName = getNextSymbolName()
+            evalTo (getBindingsDefn.Replace("\r", "")) symbolName
+            fun (packageName) -> eval (sprintf "%s('%s')" symbolName packageName)
+
+    let internal bindingInfoFromR (bindingEntry: GenericVector) =
+        RSafe <| fun () ->
+        let entryList = bindingEntry.AsList()
+        let name = entryList.[0].AsCharacter().[0]
+        let type_ = entryList.[1].AsCharacter().[0]
+        let value =
+            match type_ with
+            | "closure" -> 
+                let argList =
+                    let paramsAsEntry = entryList.[2]
+                    let paramsAsList = paramsAsEntry.AsList()
+                    let paramsAsCharacter = paramsAsList.AsCharacter()
+                    let paramsValue = paramsAsCharacter.[0]
+                    match paramsValue with
+                    | v when v.StartsWith("c(") ->
+                      [for arg in v.Split([|"c("; ", "; ")"|], StringSplitOptions.RemoveEmptyEntries) do yield arg.Substring(1, arg.Length - 2)]
+                    | v -> List.ofArray [|v|]
+                    | null -> []
+                let hasVarArgs = argList |> List.exists(fun p -> p = "...")
+                RValue.Function(argList, hasVarArgs)
+            | "builtin" | "special" ->
+                RValue.Function([], true)
+            | "double" | "character" | "list" | "logical" ->
+                RValue.Value
+            | something ->
+                printfn "Ignoring name %s of type %s" name something
+                RValue.Value
+        name, value
+
+    let getBindings packageName : Map<string, RValue> =
         // TODO: Maybe get these from the environments?
         RSafe <| fun () ->
-        let names = eval(sprintf """ls("package:%s")""" packageName).GetValue()
-        names
-        |> Array.map (fun name -> name, bindingInfo name)
+        let bindings = getBindingsFromR.Value packageName
+        [| for entry in bindings.AsList() -> entry.AsList() |]
+        |> Array.map (fun (entry: GenericVector) -> bindingInfoFromR entry)
         |> Map.ofSeq
 
     let callFunc (packageName: string) (funcName: string) (argsByName: seq<KeyValuePair<string, obj>>) (varArgs: obj[]) : SymbolicExpression =
@@ -417,6 +471,6 @@ module RDotNetExtensions2 =
         /// Call the R print function and return output as a string
         member this.Print() : string = 
             characterDevice.BeginCapture()
-            let rvalStr = RValue.Function(["x"], true) |> RInterop.serializeRValue
+            let rvalStr = RInterop.RValue.Function(["x"], true) |> RInterop.serializeRValue
             RInterop.call "base" "print" rvalStr [| this |] [| |] |> ignore
             characterDevice.EndCapture()
