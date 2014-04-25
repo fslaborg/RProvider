@@ -2,6 +2,7 @@
 // FAKE build script 
 // --------------------------------------------------------------------------------------
 
+#I "packages/FAKE/tools"
 #r "packages/FAKE/tools/FakeLib.dll"
 open System
 open Fake 
@@ -82,10 +83,13 @@ Target "CleanDocs" (fun _ ->
 // Build library & test project
 
 Target "Build" (fun _ ->
-    { BaseDirectories = [__SOURCE_DIRECTORY__]
-      Includes = ["RProvider.sln"; "RProvider.Tests.sln"]
-      Excludes = [] } 
-    |> Scan
+    !! (projectName + "*.sln")
+    |> MSBuildRelease "" "Rebuild"
+    |> Log "AppBuild-Output: "
+)
+
+Target "BuildCore" (fun _ ->
+    !! (projectName + ".sln")
     |> MSBuildRelease "" "Rebuild"
     |> Log "AppBuild-Output: "
 )
@@ -176,6 +180,7 @@ Target "Release" DoNothing
 // Run all targets by default. Invoke 'build <Target>' to override
 
 Target "All" DoNothing
+Target "AllCore" DoNothing
 
 "Clean"
   ==> "RestorePackages"
@@ -184,6 +189,10 @@ Target "All" DoNothing
   ==> "Build"
   ==> "RunTests"
   ==> "All"
+
+"AssemblyInfo"
+  ==> "BuildCore"
+  ==> "AllCore"
 
 "All" 
   ==> "CleanDocs"
