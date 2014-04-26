@@ -34,10 +34,6 @@ module Helpers =
     let namedParams (s: seq<string*_>) = dict <| Seq.map (fun (n,v) -> n, box v) s
 
 module internal RInteropInternal =
-    let interopLock = "RProvider.RInterop.lock"
-    let RSafe f =
-        lock interopLock f
-
     type RParameter = string
     type HasVarArgs = bool
 
@@ -108,7 +104,6 @@ module internal RInteropInternal =
         | None -> failwithf "No converter registered for type %s or any of its base types" concreteType.FullName
         
     let internal convertFromRBuiltins<'outType> (sexp: SymbolicExpression) : Option<'outType> = 
-        RSafe <| fun () ->
         let retype (x: 'b) : Option<'a> = x |> box |> unbox |> Some
         let at = typeof<'outType>
         match sexp with
@@ -147,7 +142,6 @@ module internal RInteropInternal =
         | _                                                 -> None
 
     let internal convertFromR<'outType> (sexp: SymbolicExpression) : 'outType = 
-        RSafe <| fun () ->
         let concreteType = typeof<'outType>
         let vt = typeof<IConvertFromR<'outType>>
 
@@ -176,7 +170,6 @@ module internal RInteropInternal =
         | _ ->                      None
 
     let internal defaultConvertFromR (sexp: SymbolicExpression) : obj =
-        RSafe <| fun () ->
         let converters = mefContainer.Value.GetExports<IDefaultConvertFromR>()
         match converters |> Seq.tryPick (fun conv -> conv.Value.Convert sexp) with
         | Some res  -> res
@@ -186,13 +179,11 @@ module internal RInteropInternal =
         
 
     let createDateVector (dv: seq<DateTime>) = 
-        RSafe <| fun () ->
         let vec = engine.Value.CreateNumericVector [| for x in dv -> x.ToOADate() - RDateOffset |]
         vec.SetAttribute("class", engine.Value.CreateCharacterVector [|"Date"|])
         vec
 
     do
-        RSafe <| fun () ->
         registerToR<SymbolicExpression> (fun engine v -> v)
 
         registerToR<string>  (fun engine v -> upcast engine.CreateCharacterVector [|v|])
@@ -220,7 +211,6 @@ module internal RInteropInternal =
 
     type RDotNet.REngine with
         member this.SetValue(value: obj, ?symbolName: string) : SymbolicExpression =            
-            RSafe <| fun () ->
             let se = convertToR this value
             if symbolName.IsSome then engine.Value.SetSymbol(symbolName.Value, se)
             se
@@ -230,30 +220,25 @@ module internal RInteropInternal =
 
     /// Get next symbol name
     let getNextSymbolName() : string =
-        RSafe <| fun () ->
         symbolNum <- symbolNum + 1
         sprintf "fsr_%d_%d" pid symbolNum
     
     let toR (value: obj) =
-        RSafe <| fun () ->
         let symbolName = getNextSymbolName()
         let se = engine.Value.SetValue(value, symbolName)
         symbolName, se
 
     let eval (expr: string) = 
-        RSafe <| fun () ->
         Logging.logWithOutput characterDevice (fun () ->
             Logging.logf "eval(%s)" expr
             engine.Value.Evaluate(expr) )
 
     let evalTo (expr: string) (symbol: string) = 
-        RSafe <| fun () ->
         Logging.logWithOutput characterDevice (fun () ->
             Logging.logf "evalto(%s, %s)" expr symbol
             engine.Value.SetSymbol(symbol, engine.Value.Evaluate(expr)) )
     
     let exec (expr: string) : unit = 
-        RSafe <| fun () ->
         Logging.logWithOutput characterDevice (fun () ->
             Logging.logf "exec(%s)" expr 
             use res = engine.Value.Evaluate(expr) in () )
@@ -277,7 +262,6 @@ module RInterop =
     let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
 
     let internal bindingInfo (name: string) : RValue = 
-        RSafe <| fun () ->
         Logging.logf "Getting bindingInfo: %s" name
         match eval("typeof(get(\"" + name + "\"))").GetValue() with
         | "closure" ->
@@ -308,14 +292,12 @@ module RInterop =
         eval("packageDescription(\"" + packageName + "\")$Description").GetValue()
 
     let getFunctionDescriptions packageName : Map<string, string> =
-        RSafe <| fun () ->
         exec <| sprintf """rds = readRDS(system.file("Meta", "Rd.rds", package = "%s"))""" packageName
         Map.ofArray <| Array.zip ((eval "rds$Name").GetValue()) ((eval "rds$Title").GetValue())
 
     let private packages = System.Collections.Generic.HashSet<string>()
 
     let loadPackage packageName : unit =
-        RSafe <| fun () ->
         if not(packages.Contains packageName) then
             if not(eval("require(" + packageName + ")").GetValue()) then
                 failwithf "Loading package %s failed" packageName
@@ -340,13 +322,11 @@ module RInterop =
 }"""
     let internal getBindingsFromR =
         lazy
-            RSafe <| fun() ->
             let symbolName = getNextSymbolName()
             evalTo (getBindingsDefn.Replace("\r", "")) symbolName
             fun (packageName) -> eval (sprintf "%s('%s')" symbolName packageName)
 
     let internal bindingInfoFromR (bindingEntry: GenericVector) =
-        RSafe <| fun () ->
         let entryList = bindingEntry.AsList()
         let name = entryList.[0].AsCharacter().[0]
         let type_ = entryList.[1].AsCharacter().[0]
@@ -376,7 +356,6 @@ module RInterop =
 
     let getBindings packageName : Map<string, RValue> =
         // TODO: Maybe get these from the environments?
-        RSafe <| fun () ->
         let bindings = getBindingsFromR.Value packageName
         [| for entry in bindings.AsList() -> entry.AsList() |]
         |> Array.map (fun (entry: GenericVector) -> bindingInfoFromR entry)
@@ -386,7 +365,6 @@ module RInterop =
             // We make sure we keep a reference to any temporary symbols until after exec is called, 
             // so that the binding is kept alive in R
             // TODO: We need to figure out how to unset the symvol
-            RSafe <| fun () ->
             let tempSymbols = System.Collections.Generic.List<string * SymbolicExpression>()
             let passArg (arg: obj) : string = 
                 match arg with
@@ -441,7 +419,6 @@ module RInterop =
     let call (packageName: string) (funcName: string) (serializedRVal:string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
         //loadPackage packageName
 
-        RSafe <| fun () ->
         match deserializeRValue serializedRVal with
         | RValue.Function(rparams, hasVarArg) ->
             let argNames = rparams
