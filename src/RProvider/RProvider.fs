@@ -27,16 +27,11 @@ type public RProvider(cfg:TypeProviderConfig) as this =
           getProbingLocations()
           |> Seq.tryPick (fun dir ->
               let library = Path.Combine(dir, libraryName+".dll")
-              let exe = Path.Combine(dir, libraryName+".exe")
-              let path = if File.Exists(library) then Some library
-                         elif File.Exists(exe) then Some exe
-                         else None
-              match path with
-              | Some p ->
-                let asm = Assembly.LoadFrom(p)
+              if File.Exists(library) then 
+                let asm = Assembly.LoadFrom(library)
                 if asm.FullName = args.Name then Some(asm) else None
-              | _ -> None)
-              
+              else None)
+             
         defaultArg asm null)
       
       // Set the R 'R_CStackLimit' variable to -1 when initializing the R engine
