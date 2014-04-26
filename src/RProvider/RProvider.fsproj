@@ -66,8 +66,6 @@
     </Compile>
     <Compile Include="Configuration.fs" />
     <Compile Include="RProvider.fs" />
-    <None Include="example.fsx" />
-    <Compile Include="converters.fs" />
     <None Include="packages.config" />
     <None Include="RProvider.fsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
