@@ -93,7 +93,7 @@ let internal engine = Lazy<_>(fun () ->
     try
         Logging.logf "engine: Creating instance" 
         initResult.Force() |> ignore
-        let engine = REngine.CreateInstance(System.AppDomain.CurrentDomain.Id.ToString())
+        let engine = REngine.GetInstance()
         Logging.logf "engine: Intializing instance"
         engine.Initialize(null, characterDevice)
             
