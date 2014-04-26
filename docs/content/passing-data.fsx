@@ -4,7 +4,7 @@
 #r "RDotNet.dll"
 #r "RDotNet.FSharp.dll"
 #r "RProvider.dll"
-#r "RProvider.Runtime.exe"
+#r "RProvider.Runtime.dll"
 open System
 open RDotNet
 open RProvider

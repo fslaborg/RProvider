@@ -6,19 +6,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7ff9cfa3-2516-4970-9dd8-54c7d4ca24aa}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{39db100f-3587-45c0-a9ee-37b3f94078de}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <RootNamespace>RProvider</RootNamespace>
-    <AssemblyName>RProvider.Runtime</AssemblyName>
+    <AssemblyName>RProvider.Server</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <Name>RProvider</Name>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
-    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,51 +45,33 @@
     <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
   </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Common\AssemblyInfo.fs">
       <Link>AssemblyInfo.fs</Link>
     </Compile>
-    <Compile Include="..\Common\ProvidedTypes-0.2.fsi">
-      <Link>ProvidedTypes-0.2.fsi</Link>
-    </Compile>
-    <Compile Include="..\Common\ProvidedTypes-0.2.fs">
-      <Link>ProvidedTypes-0.2.fs</Link>
-    </Compile>
-    <Compile Include="CharacterDeviceInterceptor.fs" />
     <Compile Include="Configuration.fs" />
-    <Compile Include="Logging.fs" />
-    <Compile Include="RInit.fs" />
-    <Compile Include="RInterop.fs" />
-    <Compile Include="converters.fs" />
     <None Include="packages.config" />
+    <Compile Include="RInteropServer.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="mscorlib" />
-    <Reference Include="RDotNet">
-      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RDotNet.FSharp">
-      <HintPath>..\..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="FSharp.Core" />
+    <Reference Include="RDotNet" />
+    <Reference Include="RDotNet.FSharp" />
+    <Reference Include="RDotNet.NativeLibrary" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Remoting" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="RProvider.Runtime.fsproj">
+      <Name>RProvider.Runtime</Name>
+      <Project>{7ff9cfa3-2516-4970-9dd8-54c7d4ca24aa}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

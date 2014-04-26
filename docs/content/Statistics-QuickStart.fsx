@@ -29,7 +29,7 @@ you can reference the required libraries and packages this way:
 #r "RDotNet.FSharp.dll"
 #r "RDotNet.NativeLibrary.dll"
 #r "RProvider.dll"
-#r "RProvider.Runtime.exe"
+#r "RProvider.Runtime.dll"
 
 open System
 open RDotNet

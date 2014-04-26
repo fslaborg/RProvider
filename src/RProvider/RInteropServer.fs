@@ -5,7 +5,6 @@ open Microsoft.Win32
 open RDotNet
 open RInterop
 open RProvider.Internal
-open RProvider.RInteropInternal
 open System
 
 type RInteropServer() =
@@ -18,36 +17,39 @@ type RInteropServer() =
     static do RInit.DisableStackChecking <- true
     
     let initResultValue = RInit.initResult.Force()
+    let serverLock = "serverLock"
+    let withLock f =
+        lock serverLock f
 
     member x.RInitValue
         with get() =
-            RSafe <| fun () ->
+            withLock <| fun () ->
             match initResultValue with
             | RInit.RInitError error -> Some error
             | _ -> None
 
     member x.GetPackages() =
-         RSafe <| fun () ->
+         withLock <| fun () ->
             RInterop.getPackages()
 
     member x.LoadPackage(package) =
-        RSafe <| fun () ->
+        withLock <| fun () ->
             RInterop.loadPackage package
         
     member x.GetBindings(package) =
-        RSafe <| fun () ->
+        withLock <| fun () ->
             RInterop.getBindings package
         
     member x.GetFunctionDescriptions(package:string) =
-        RSafe <| fun () ->
+        withLock <| fun () ->
             RInterop.getFunctionDescriptions package
         
     member x.GetPackageDescription(package) =
-        RSafe <| fun () ->
+        withLock <| fun () ->
             RInterop.getPackageDescription package
         
     member x.MakeSafeName(name) =
-        RSafe <| fun () ->
+        withLock <| fun () ->
             makeSafeName name
 
 

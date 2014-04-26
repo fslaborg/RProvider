@@ -240,8 +240,6 @@ module internal RInteropInternal =
         let se = engine.Value.SetValue(value, symbolName)
         symbolName, se
 
-    let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
-
     let eval (expr: string) = 
         RSafe <| fun () ->
         Logging.logWithOutput characterDevice (fun () ->
@@ -276,6 +274,8 @@ module RInterop =
         | Function of RParameter list * HasVarArgs
         | Value
 
+    let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
+
     let internal bindingInfo (name: string) : RValue = 
         RSafe <| fun () ->
         Logging.logf "Getting bindingInfo: %s" name
@@ -301,20 +301,20 @@ module RInterop =
             printfn "Ignoring name %s of type %s" name something
             RValue.Value      
 
-    let internal getPackages() : string[] =
+    let getPackages() : string[] =
         eval(".packages(all.available=T)").GetValue()
 
-    let internal getPackageDescription packageName: string = 
+    let getPackageDescription packageName: string = 
         eval("packageDescription(\"" + packageName + "\")$Description").GetValue()
 
-    let internal getFunctionDescriptions packageName : Map<string, string> =
+    let getFunctionDescriptions packageName : Map<string, string> =
         RSafe <| fun () ->
         exec <| sprintf """rds = readRDS(system.file("Meta", "Rd.rds", package = "%s"))""" packageName
         Map.ofArray <| Array.zip ((eval "rds$Name").GetValue()) ((eval "rds$Title").GetValue())
 
     let private packages = System.Collections.Generic.HashSet<string>()
 
-    let internal loadPackage packageName : unit =
+    let loadPackage packageName : unit =
         RSafe <| fun () ->
         if not(packages.Contains packageName) then
             if not(eval("require(" + packageName + ")").GetValue()) then
@@ -424,7 +424,7 @@ module RInterop =
 
     /// Turn an `RValue` (which captures type information of a value or function)
     /// into a serialized string that can be spliced in a quotation 
-    let internal serializeRValue = function
+    let serializeRValue = function
       | RValue.Value -> ""
       | RValue.Function(pars, hasVar) -> 
           let prefix = if hasVar then "1" else "0"
