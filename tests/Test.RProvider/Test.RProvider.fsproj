@@ -70,11 +70,11 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="RDotNet">
-      <HintPath>..\..\packages\R.NET.1.5.6\lib\net40\RDotNet.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.1.5.11\lib\net40\RDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>..\..\packages\R.NET.1.5.6\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.1.5.11\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RProvider">
