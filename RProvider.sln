@@ -49,6 +49,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.Runtime", "src\RP
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.Server", "src\RProvider\RProvider.Server.fsproj", "{39DB100F-3587-45C0-A9EE-37B3F94078DE}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.DesignTime", "src\RProvider\RProvider.DesignTime.fsproj", "{00496B70-99EA-4ED2-AFD5-6DB4A1DB7317}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{39DB100F-3587-45C0-A9EE-37B3F94078DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39DB100F-3587-45C0-A9EE-37B3F94078DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39DB100F-3587-45C0-A9EE-37B3F94078DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00496B70-99EA-4ED2-AFD5-6DB4A1DB7317}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00496B70-99EA-4ED2-AFD5-6DB4A1DB7317}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00496B70-99EA-4ED2-AFD5-6DB4A1DB7317}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00496B70-99EA-4ED2-AFD5-6DB4A1DB7317}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

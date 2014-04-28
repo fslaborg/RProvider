@@ -197,8 +197,8 @@ Target "AllCore" DoNothing
 "All" 
   ==> "CleanDocs"
   ==> "GenerateDocs"
-  ==> "ReleaseDocs"
-  ==> "ReleaseBinaries"
+//  ==> "ReleaseDocs"
+//  ==> "ReleaseBinaries"
   ==> "NuGet"
   ==> "Release"
 

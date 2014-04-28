@@ -20,8 +20,12 @@
     </dependencies>    
   </metadata>
   <files>
-    <file src="..\bin\RProvider.Runtime.exe" target="lib" />
+    <file src="..\bin\RProvider.Runtime.dll" target="lib" />
     <file src="..\bin\RProvider.Runtime.pdb" target="lib" />
+    <file src="..\bin\RProvider.DesignTime.dll" target="lib" />
+    <file src="..\bin\RProvider.DesignTime.pdb" target="lib" />
+    <file src="..\bin\RProvider.Server.exe" target="lib" />
+    <file src="..\bin\RProvider.Server.pdb" target="lib" />
     <file src="..\bin\RProvider.dll" target="lib" />
     <file src="..\bin\RProvider.pdb" target="lib" />
     <file src="..\bin\RProvider.fsx" target="." />

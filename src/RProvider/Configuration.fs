@@ -7,7 +7,7 @@ open System.Configuration
 open System.Collections.Generic
 
 /// Returns the Assembly object of RProvider.dll (this needs to
-/// work when called from RProvider.dll and also RProvider.Runtime.exe)
+/// work when called from RProvider.dll and also RProvider.Runtime.dll)
 let getRProviderAssembly() =
   AppDomain.CurrentDomain.GetAssemblies()
   |> Seq.find (fun a -> a.FullName.StartsWith("RProvider,"))
