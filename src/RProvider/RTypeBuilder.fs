@@ -29,6 +29,7 @@ module internal RTypeBuilder =
             let pns = ns + "." + package
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
+            // Note use of withServer - this helps ensure we'll try to recovery from a crashed session
             pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.GetPackageDescription package
             pty.AddMembersDelayed( fun () -> 
               withServer <| fun serverDelayed ->

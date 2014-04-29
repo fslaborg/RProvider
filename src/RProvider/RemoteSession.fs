@@ -9,6 +9,11 @@ open System
 open System.Collections.Generic
 open System.Reflection
 
+type public SessionConfig(hostName: string, port: int, blocking: bool) =
+    member this.hostName = hostName
+    member this.port = port
+    member this.blocking = blocking
+
 type RemoteSymbolicExpression(getValue: RemoteSymbolicExpression -> SymbolicExpression, name) =
     member this.name = name
     
@@ -29,6 +34,9 @@ type RemoteSession(connectionName) as this=
         eval(sprintf "%s <- socketConnection(host='%s', port='%d', blocking='%s')" connectionName host port blocking) |> ignore
         new RemoteSession(connectionName)
 
+    static member GetConnection(config: SessionConfig) =
+        RemoteSession.GetConnection(host=config.hostName, port=config.port, blocking=config.blocking)
+    
     member this.connectionName = connectionName
     member this.isClosed = false
 
@@ -50,7 +58,7 @@ type RemoteSession(connectionName) as this=
 
     member this.exec expr =
         let expr = this.makeSafeExpr expr
-        eval(sprintf "evalServer(%s, 'exec(%s); TRUE');" this.connectionName expr) |> ignore
+        eval(sprintf "evalServer(%s, '%s'); TRUE');" this.connectionName expr) |> ignore
 
     member this.assign name value =
         let symbolName, se = toR value
@@ -139,8 +147,13 @@ type RemoteSession(connectionName) as this=
     member this.loadPackage packageName =
         loadPackage_ this.evalToSymbolicExpression this.packages packageName
 
+    member this.getBindingsFromR =
+        lazy
+            let funcHandle = this.evalToHandle RInterop.getBindingsDefn
+            fun packageName -> this.evalToSymbolicExpression (sprintf "%s('%s')" funcHandle.name packageName)
+
     member this.getBindings packageName =
-        getBindings_ this.evalToSymbolicExpression packageName
+        getBindings_ this.getBindingsFromR.Value packageName
 
     member this.serializeRValue = serializeRValue
 

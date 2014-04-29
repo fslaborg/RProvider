@@ -376,7 +376,7 @@ module RInterop =
         loadPackage_ eval packages packageName
 
     [<Literal>]
-    let internal getBindingsDefn = """function (pkgName) {
+    let getBindingsDefn = """function (pkgName) {
     require(pkgName, character.only=TRUE)
     pkgListing <- ls(paste("package:",pkgName,sep=""))
     lapply(
@@ -393,7 +393,7 @@ module RInterop =
     )
 }"""
 
-    let internal getBindingsFromR_ evalTo eval =
+    let getBindingsFromR_ evalTo eval =
         let symbolName = getNextSymbolName()
         evalTo (getBindingsDefn.Replace("\r","")) symbolName
         fun packageName -> eval (sprintf "%s('%s')" symbolName packageName)
