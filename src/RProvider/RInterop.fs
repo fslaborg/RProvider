@@ -312,6 +312,9 @@ module RDotNetExtensions =
 
 /// [omit]
 module RInterop =
+    type StringLiteral(value:string) = 
+        member this.value = value
+
     type RValue =
         | Function of RParameter list * HasVarArgs
         | Value
@@ -342,23 +345,35 @@ module RInterop =
             printfn "Ignoring name %s of type %s" name something
             RValue.Value      
 
-    let getPackages() : string[] =
+    let getPackages_ (eval: string -> SymbolicExpression) : string[] =
         eval(".packages(all.available=T)").GetValue()
 
-    let getPackageDescription packageName: string = 
-        eval("packageDescription(\"" + packageName + "\")$Description").GetValue()
+    let getPackages() : string[] =
+        getPackages_ eval
 
-    let getFunctionDescriptions packageName : Map<string, string> =
+    let getPackageDescription_ (eval: string -> SymbolicExpression) packageName : string =
+        eval("packageDescription(\"" + packageName + "\")$Description").GetValue()
+        
+    let getPackageDescription packageName: string = 
+        getPackageDescription_ eval packageName
+
+    let getFunctionDescriptions_ (exec: string -> unit) (eval: string -> SymbolicExpression) packageName : Map<string, string> =
         exec <| sprintf """rds = readRDS(system.file("Meta", "Rd.rds", package = "%s"))""" packageName
         Map.ofArray <| Array.zip ((eval "rds$Name").GetValue()) ((eval "rds$Title").GetValue())
 
+    let getFunctionDescriptions packageName : Map<string, string> =
+        getFunctionDescriptions_ exec eval packageName
+
     let private packages = System.Collections.Generic.HashSet<string>()
 
-    let loadPackage packageName : unit =
+    let loadPackage_ (eval: string -> SymbolicExpression) (packages: System.Collections.Generic.HashSet<string>) packageName : unit =
         if not(packages.Contains packageName) then
             if not(eval("require(" + packageName + ")").GetValue()) then
                 failwithf "Loading package %s failed" packageName
             packages.Add packageName |> ignore
+
+    let loadPackage packageName : unit =
+        loadPackage_ eval packages packageName
 
     [<Literal>]
     let internal getBindingsDefn = """function (pkgName) {
@@ -377,11 +392,15 @@ module RInterop =
         }
     )
 }"""
+
+    let internal getBindingsFromR_ evalTo eval =
+        let symbolName = getNextSymbolName()
+        evalTo (getBindingsDefn.Replace("\r","")) symbolName
+        fun packageName -> eval (sprintf "%s('%s')" symbolName packageName)
+
     let internal getBindingsFromR =
         lazy
-            let symbolName = getNextSymbolName()
-            evalTo (getBindingsDefn.Replace("\r", "")) symbolName
-            fun (packageName) -> eval (sprintf "%s('%s')" symbolName packageName)
+            getBindingsFromR_ evalTo eval
 
     let internal bindingInfoFromR (bindingEntry: GenericVector) =
         let entryList = bindingEntry.AsList()
@@ -411,51 +430,59 @@ module RInterop =
                 RValue.Value
         name, value
 
-    let getBindings packageName : Map<string, RValue> =
+    let getBindings_ (getBindingsFromR: string -> SymbolicExpression) packageName : Map<string, RValue> =
         // TODO: Maybe get these from the environments?
-        let bindings = getBindingsFromR.Value packageName
+        let bindings = getBindingsFromR packageName
         [| for entry in bindings.AsList() -> entry.AsList() |]
         |> Array.map (fun (entry: GenericVector) -> bindingInfoFromR entry)
         |> Map.ofSeq
 
-    let callFunc (packageName: string) (funcName: string) (argsByName: seq<KeyValuePair<string, obj>>) (varArgs: obj[]) : SymbolicExpression =
-            // We make sure we keep a reference to any temporary symbols until after exec is called, 
-            // so that the binding is kept alive in R
-            // TODO: We need to figure out how to unset the symvol
-            let tempSymbols = System.Collections.Generic.List<string * SymbolicExpression>()
-            let passArg (arg: obj) : string = 
-                match arg with
-                    | :? Missing            -> failwithf "Cannot pass Missing value"
-                    | :? int | :? double    -> arg.ToString()
-                    //  This doesn't handle escaping so we fall through to using toR 
-                    //| :? string as sval     -> "\"" + sval + "\""
-                    | :? bool as bval       -> if bval then "TRUE" else "FALSE"
-                    // We allow pairs to be passed, to specify parameter name
-                    | _ when arg.GetType().IsConstructedGenericType && arg.GetType().GetGenericTypeDefinition() = typedefof<_*_> 
-                                            -> match FSharpValue.GetTupleFields(arg) with
-                                               | [| name; value |] when name.GetType() = typeof<string> ->
-                                                    let name = name :?> string
-                                                    tempSymbols.Add(name, engine.Value.SetValue(value, name))
-                                                    name
-                                               | _ -> failwithf "Pairs must be string * value"
-                    | _                     -> let sym,se = toR arg
-                                               tempSymbols.Add(sym, se)
-                                               sym
-            
-            let argList = [|
-                // Pass the named arguments as name=val pairs
-                for kvp in argsByName do
-                    if not(kvp.Value = null || kvp.Value :? Missing) then
-                        yield kvp.Key + "=" + passArg kvp.Value
-                            
-                // Now yield any varargs
-                if varArgs <> null then
-                    for argVal in varArgs -> 
-                        passArg argVal
-            |]
+    let getBindings packageName : Map<string, RValue> =
+        getBindings_ getBindingsFromR.Value packageName
 
-            let expr = sprintf "%s::`%s`(%s)" packageName funcName (String.Join(", ", argList))
-            eval expr
+    // Generic implementation of callFunc so that the function can be reused for differing symbol return types    
+    let callFunc_<'TExpr> (eval: string -> 'TExpr) (packageName: string) (funcName: string) (argsByName: seq<KeyValuePair<string, obj>>) (varArgs: obj[]) : 'TExpr =
+        // We make sure we keep a reference to any temporary symbols until after exec is called, 
+        // so that the binding is kept alive in R
+        // TODO: We need to figure out how to unset the symvol
+        let tempSymbols = System.Collections.Generic.List<string * SymbolicExpression>()
+        let passArg (arg: obj) : string = 
+            match arg with
+                | :? Missing            -> failwithf "Cannot pass Missing value"
+                | :? int | :? double    -> arg.ToString()
+                //  This doesn't handle escaping so we fall through to using toR 
+                //| :? string as sval     -> "\"" + sval + "\""
+                | :? StringLiteral as sval -> sval.value
+                | :? bool as bval       -> if bval then "TRUE" else "FALSE"
+                // We allow pairs to be passed, to specify parameter name
+                | _ when arg.GetType().IsConstructedGenericType && arg.GetType().GetGenericTypeDefinition() = typedefof<_*_> 
+                                        -> match FSharpValue.GetTupleFields(arg) with
+                                           | [| name; value |] when name.GetType() = typeof<string> ->
+                                                let name = name :?> string
+                                                tempSymbols.Add(name, engine.Value.SetValue(value, name))
+                                                name
+                                           | _ -> failwithf "Pairs must be string * value"
+                | _                     -> let sym,se = toR arg
+                                           tempSymbols.Add(sym, se)
+                                           sym
+            
+        let argList = [|
+            // Pass the named arguments as name=val pairs
+            for kvp in argsByName do
+                if not(kvp.Value = null || kvp.Value :? Missing) then
+                    yield kvp.Key + "=" + passArg kvp.Value
+                        
+            // Now yield any varargs
+            if varArgs <> null then
+                for argVal in varArgs -> 
+                    passArg argVal
+        |]
+
+        let expr = sprintf "%s::`%s`(%s)" packageName funcName (String.Join(", ", argList))
+        eval expr
+    
+    let callFunc (packageName: string) (funcName: string) (argsByName: seq<KeyValuePair<string, obj>>) (varArgs: obj[]) : SymbolicExpression =
+        callFunc_ eval packageName funcName argsByName varArgs
 
     /// Turn an `RValue` (which captures type information of a value or function)
     /// into a serialized string that can be spliced in a quotation 
@@ -472,8 +499,9 @@ module RInterop =
       else 
         let hasVar = match serialized.[0] with '1' -> true | '0' -> false | _ -> invalidArg "serialized" "Should start with a flag"
         RValue.Function(List.ofSeq (serialized.Substring(1).Split(';')), hasVar)
-        
-    let call (packageName: string) (funcName: string) (serializedRVal:string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
+
+    // Generic implementation of call so that the function can be reused for differing symbol return types
+    let call_<'TExpr> (eval: string -> 'TExpr) (packageName: string) (funcName: string) (serializedRVal: string) (namedArgs: obj[]) (varArgs: obj[]) : 'TExpr =
         //loadPackage packageName
 
         match deserializeRValue serializedRVal with
@@ -486,11 +514,14 @@ module RInterop =
                 failwithf "Function %s expects %d named arguments and you supplied %d" funcName namedArgCount namedArgs.Length 
 *)            
             let argsByName = seq { for n,v in Seq.zip argNames namedArgs -> KeyValuePair(n, v) }
-            callFunc packageName funcName argsByName varArgs
+            callFunc_ eval packageName funcName argsByName varArgs
 
         | RValue.Value ->
             let expr = sprintf "%s::%s" packageName funcName
             eval expr
+    
+    let call (packageName: string) (funcName: string) (serializedRVal:string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
+        call_ eval packageName funcName serializedRVal namedArgs varArgs
 
     /// Convert a value to a value in R.
     /// Generally you shouldn't use this function - it is mainly for testing.
