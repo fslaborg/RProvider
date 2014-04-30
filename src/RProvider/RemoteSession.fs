@@ -2,11 +2,15 @@
 
 open Microsoft.FSharp.Reflection
 open RDotNet
+open RProvider.Internal
 open RProvider.Internal.Logging
+open RProvider.Internal.RInit
 open RProvider.RInterop
 open RProvider.RInteropInternal
 open System
 open System.Collections.Generic
+open System.Diagnostics
+open System.IO
 open System.Reflection
 
 type public SessionConfig(hostName: string, port: int, blocking: bool) =
@@ -21,7 +25,29 @@ type RemoteSymbolicExpression(getValue: RemoteSymbolicExpression -> SymbolicExpr
     member this.GetValue () =
         getValue(this)
 
+type LaunchResult<'T> =
+    | LaunchResult of 'T
+    | LaunchError of string
+
 type RemoteSession(connectionName) as this=
+    static member LaunchRProfile port = 
+        let rprofileFmt = sprintf """
+        .First <- function() {
+            if (!(require(svSocket))) {
+                install.packages("svSocket", dependencies = TRUE)
+                # library will raise an error if the package is still not installed
+                library(svSocket)
+            }
+            startSocketServer(port = %d)
+        }
+
+        .Last <- function() {
+            closeSocketClients(sockets = "all", serverport = %d)
+            stopSocketServer(port = %d)
+        }
+        """
+        rprofileFmt port port port
+
     static member GetConnection(?host, ?port, ?blocking) =
         let host = defaultArg host "localhost"
         let port = defaultArg port 8888
@@ -36,7 +62,32 @@ type RemoteSession(connectionName) as this=
 
     static member GetConnection(config: SessionConfig) =
         RemoteSession.GetConnection(host=config.hostName, port=config.port, blocking=config.blocking)
-    
+
+    static member LaunchRGui (?port: int, ?fileName: string) =
+        match RInit.initResult.Value with
+        | RInitError error -> LaunchError error
+        | RInitResult location ->
+            try
+                let tempDirectory = Path.GetTempFileName()
+                File.Delete(tempDirectory)
+                Directory.CreateDirectory(tempDirectory) |> ignore
+                let rprofilePath = Path.Combine(tempDirectory, ".Rprofile")
+                let tempFS = new StreamWriter(rprofilePath)
+                let port = defaultArg port 8888
+                let fileName = defaultArg fileName "Rgui"
+                tempFS.Write(RemoteSession.LaunchRProfile port)
+                tempFS.Flush()
+                tempFS.Close()
+                let startInfo = ProcessStartInfo(UseShellExecute=false, fileName=fileName, WorkingDirectory=tempDirectory)
+                let p = Process.Start(startInfo, EnableRaisingEvents=false)
+                p.Exited.Add(fun _ ->
+                    File.Delete(rprofilePath)
+                    Directory.Delete(tempDirectory)
+                    )
+                LaunchResult p
+            with e ->
+                reraise()
+
     member this.connectionName = connectionName
     member this.isClosed = false
 
@@ -103,9 +154,6 @@ type RemoteSession(connectionName) as this=
         let result = callFunc_ this.evalToHandle packageName funcName argsByName varArgs
         this.clearTemporaryHandles temporaryHandles
         result
-
-//        member this.bindingInfo (name: string) : RValue =
-//            bindingInfo_ this.evalToSymbolicExpression name
 
     member val cache_getPackages = lazy(getPackages_ this.evalToSymbolicExpression)
     
