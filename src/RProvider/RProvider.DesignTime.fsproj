@@ -68,19 +68,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="RProvider.fsproj">
-      <Name>RProvider</Name>
-      <Project>{5624f098-be3f-4c8e-b50f-1cfc9e1e0708}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="RProvider.Runtime.fsproj">
       <Name>RProvider.Runtime</Name>
       <Project>{7ff9cfa3-2516-4970-9dd8-54c7d4ca24aa}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="RProvider.Server.fsproj">
-      <Name>RProvider.Server</Name>
-      <Project>{39db100f-3587-45c0-a9ee-37b3f94078de}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

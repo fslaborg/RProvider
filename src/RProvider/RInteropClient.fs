@@ -8,11 +8,12 @@ open System.Diagnostics
 open System.Threading
 open Microsoft.Win32
 open System.IO
+open RProviderServer
 
 module internal RInteropClient =
 
     [<Literal>]
-    let server = "RProvider.Server.exe"
+    let server = "RProvider.Runtime.exe"
 
     // true to load the server in-process, false load the server out-of-process
     let localServer = false

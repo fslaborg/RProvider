@@ -1,4 +1,4 @@
-﻿namespace RProvider
+﻿namespace RProviderServer
 
 module Main =
     open System

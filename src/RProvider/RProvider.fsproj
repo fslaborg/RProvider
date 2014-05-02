@@ -50,13 +50,14 @@
       <Link>AssemblyInfo.fs</Link>
     </Compile>
     <Compile Include="RProvider.fs" />
-    <None Include="packages.config" />
     <None Include="RProvider.fsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" />
+    <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />

@@ -1,9 +1,9 @@
-﻿namespace RProvider
+﻿namespace RProviderServer
 
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.Win32
 open RDotNet
-open RInterop
+open RProvider.RInterop
 open RProvider.Internal
 open System
 
@@ -30,23 +30,23 @@ type RInteropServer() =
 
     member x.GetPackages() =
          withLock <| fun () ->
-            RInterop.getPackages()
+            getPackages()
 
     member x.LoadPackage(package) =
         withLock <| fun () ->
-            RInterop.loadPackage package
+            loadPackage package
         
     member x.GetBindings(package) =
         withLock <| fun () ->
-            RInterop.getBindings package
+            getBindings package
         
     member x.GetFunctionDescriptions(package:string) =
         withLock <| fun () ->
-            RInterop.getFunctionDescriptions package
+            getFunctionDescriptions package
         
     member x.GetPackageDescription(package) =
         withLock <| fun () ->
-            RInterop.getPackageDescription package
+            getPackageDescription package
         
     member x.MakeSafeName(name) =
         withLock <| fun () ->
