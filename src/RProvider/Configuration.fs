@@ -1,4 +1,4 @@
-﻿module internal RProvider.Configuration
+﻿module RProvider.Configuration
 
 open System
 open System.IO
@@ -10,7 +10,7 @@ open System.Collections.Generic
 /// work when called from RProvider.dll and also RProvider.Runtime.dll)
 let getRProviderAssembly() =
   AppDomain.CurrentDomain.GetAssemblies()
-  |> Seq.find (fun a -> a.FullName.StartsWith("RProvider,"))
+  |> Seq.find (fun a -> a.FullName.StartsWith("RProvider.Runtime,"))
 
 /// Finds directories relative to 'dirs' using the specified 'patterns'.
 /// Patterns is a string, such as "..\foo\*\bar" split by '\'. Standard

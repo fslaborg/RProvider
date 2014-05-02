@@ -29,6 +29,6 @@
     <file src="..\bin\RProvider.dll" target="lib" />
     <file src="..\bin\RProvider.pdb" target="lib" />
     <file src="..\bin\RProvider.fsx" target="." />
-    <file src="..\nuget\RProvider.dll.config" target="lib" />
+    <file src="..\nuget\RProvider.Runtime.dll.config" target="lib" />
   </files>
 </package>

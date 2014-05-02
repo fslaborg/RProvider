@@ -53,7 +53,6 @@
       <Link>ProvidedTypes-0.2.fs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.DesignTime.fs" />
-    <Compile Include="Configuration.fs" />
     <Compile Include="RInteropClient.fs" />
     <Compile Include="RTypeBuilder.fs" />
     <Compile Include="DesignTime.fs" />
@@ -69,6 +68,11 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="RProvider.fsproj">
+      <Name>RProvider</Name>
+      <Project>{5624f098-be3f-4c8e-b50f-1cfc9e1e0708}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="RProvider.Runtime.fsproj">
       <Name>RProvider.Runtime</Name>
       <Project>{7ff9cfa3-2516-4970-9dd8-54c7d4ca24aa}</Project>

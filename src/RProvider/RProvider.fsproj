@@ -49,7 +49,6 @@
     <Compile Include="..\Common\AssemblyInfo.fs">
       <Link>AssemblyInfo.fs</Link>
     </Compile>
-    <Compile Include="Configuration.fs" />
     <Compile Include="RProvider.fs" />
     <None Include="packages.config" />
     <None Include="RProvider.fsx">
