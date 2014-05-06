@@ -13,10 +13,11 @@ open System.Diagnostics
 open System.IO
 open System.Reflection
 
-type public SessionConfig(hostName: string, port: int, blocking: bool) =
+type public SessionConfig(hostName: string, port: int, blocking: bool, ?timeout: int) =
     member this.hostName = hostName
     member this.port = port
     member this.blocking = blocking
+    member this.timeout = defaultArg timeout 2
 
 type RemoteSymbolicExpression(getValue: RemoteSymbolicExpression -> SymbolicExpression, name) =
     member this.name = name
@@ -48,20 +49,24 @@ type RemoteSession(connectionName) as this=
         """
         rprofileFmt port port port
 
-    static member GetConnection(?host, ?port, ?blocking) =
+    static member GetConnection(?host, ?port, ?blocking, ?timeout) =
         let host = defaultArg host "localhost"
         let port = defaultArg port 8888
         let blocking =
             match blocking with
             | Some true -> "TRUE"
             | _ -> "FALSE"
+        let timeout = defaultArg timeout 2 // seconds
         let connectionName = getNextSymbolName()
         loadPackage("svSocket")
-        eval(sprintf "%s <- socketConnection(host='%s', port='%d', blocking='%s')" connectionName host port blocking) |> ignore
-        new RemoteSession(connectionName)
-
+        let conn = eval(sprintf "%s <- tryCatch( {socketConnection(host='%s', port='%d', blocking='%s', timeout='%d')}, error=function(cond) {return(NULL)}, warning=function(cond) {return(NULL)})" connectionName host port blocking timeout)
+        if (eval(sprintf "is.null(%s)" connectionName).GetValue<bool>()) then
+            failwith (sprintf "Failed to connect to remote R session with host %s on port %d. Are you sure that the R host application is running?" host port)
+        else
+            new RemoteSession(connectionName)
+        
     static member GetConnection(config: SessionConfig) =
-        RemoteSession.GetConnection(host=config.hostName, port=config.port, blocking=config.blocking)
+        RemoteSession.GetConnection(host=config.hostName, port=config.port, blocking=config.blocking, timeout=config.timeout)
 
     static member LaunchRGui (?port: int, ?fileName: string) =
         match RInit.initResult.Value with
