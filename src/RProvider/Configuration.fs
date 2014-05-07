@@ -6,9 +6,9 @@ open System.Reflection
 open System.Configuration
 open System.Collections.Generic
 
-/// Returns the Assembly object of RProvider.dll (this needs to
-/// work when called from RProvider.dll and also RProvider.Runtime.dll)
-let getRProviderAssembly() =
+/// Returns the Assembly object of RProvider.Runtime.dll (this needs to
+/// work when called from RProvider.DesignTime.dll and also RProvider.Server.exe)
+let getRProviderRuntimeAssembly() =
   AppDomain.CurrentDomain.GetAssemblies()
   |> Seq.find (fun a -> a.FullName.StartsWith("RProvider.Runtime,"))
 
@@ -30,7 +30,7 @@ let rec searchDirectories patterns dirs =
 /// them as a list.
 let getProbingLocations() = 
   try
-    let root = getRProviderAssembly().Location
+    let root = getRProviderRuntimeAssembly().Location
     let config = System.Configuration.ConfigurationManager.OpenExeConfiguration(root)
     let pattern = config.AppSettings.Settings.["ProbingLocations"]
     if pattern <> null then

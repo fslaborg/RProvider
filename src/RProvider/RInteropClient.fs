@@ -13,7 +13,7 @@ open RProviderServer
 module internal RInteropClient =
 
     [<Literal>]
-    let server = "RProvider.Runtime.exe"
+    let server = "RProvider.Server.exe"
 
     // true to load the server in-process, false load the server out-of-process
     let localServer = false
@@ -69,4 +69,4 @@ module internal RInteropClient =
         match existingAssembly with
         | Some a -> a
         | None -> null
-        ))
+        )) 
