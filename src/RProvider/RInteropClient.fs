@@ -60,13 +60,3 @@ module internal RInteropClient =
         lock serverlock <| fun () ->
         let server = GetServer()
         f server
-
-    AppDomain.CurrentDomain.add_AssemblyResolve(ResolveEventHandler(fun _ args ->
-        let name = System.Reflection.AssemblyName(args.Name)
-        let existingAssembly =
-            System.AppDomain.CurrentDomain.GetAssemblies()
-            |> Seq.tryFind(fun a -> System.Reflection.AssemblyName.ReferenceMatchesDefinition(name, a.GetName()))
-        match existingAssembly with
-        | Some a -> a
-        | None -> null
-        )) 

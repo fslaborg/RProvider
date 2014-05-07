@@ -31,6 +31,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{33FDB386-BD2B-417C-B94D-7C2F11A3E2D0}"
 	ProjectSection(SolutionItems) = preProject
 		docs\content\Charts-QuickStart.fsx = docs\content\Charts-QuickStart.fsx
+		docs\content\devnotes.md = docs\content\devnotes.md
 		docs\content\howto.md = docs\content\howto.md
 		docs\content\index.md = docs\content\index.md
 		docs\content\internals.md = docs\content\internals.md

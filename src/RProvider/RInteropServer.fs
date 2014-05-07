@@ -21,9 +21,8 @@ type RInteropServer() =
     let withLock f =
         lock serverLock f
 
-    member x.RInitValue
-        with get() =
-            withLock <| fun () ->
+    member x.RInitValue =
+        withLock <| fun () ->
             match initResultValue with
             | RInit.RInitError error -> Some error
             | _ -> None

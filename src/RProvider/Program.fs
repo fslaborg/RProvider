@@ -13,23 +13,14 @@ module Main =
     [<STAThreadAttribute>]
     [<EntryPoint>]
     let main argv =
-//        Debugger.Launch() |> ignore
+        // When RProvider is installed via NuGet, the RDotNet assembly and plugins
+        // will appear typically in "../../*/lib/net40". To support this, we look at
+        // RProvider.dll.config which has this pattern in custom key "ProbingLocations".
+        // Here, we resolve assemblies by looking into the specified search paths.
         AppDomain.CurrentDomain.add_AssemblyResolve(fun source args ->
-            let libraryName = 
-              let idx = args.Name.IndexOf(',') 
-              if idx > 0 then args.Name.Substring(0, idx) else args.Name
+          resolveReferencedAssembly args.Name)
 
-            let asm =
-              getProbingLocations()
-              |> Seq.tryPick (fun dir ->
-                  let library = Path.Combine(dir, libraryName+".dll")
-                  if File.Exists(library) then 
-                    let asm = Assembly.LoadFrom(library)
-                    if asm.FullName = args.Name then Some(asm) else None
-                  else None)
-             
-            defaultArg asm null)
-
+        // Create an IPC channel that exposes RInteropServer instance
         let channelName = argv.[0]
         let event = EventWaitHandle.OpenExisting(name = channelName)
         let chan = new Ipc.IpcChannel(channelName)

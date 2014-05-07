@@ -42,3 +42,33 @@ let getProbingLocations() =
     else []
   with :? ConfigurationErrorsException | :? KeyNotFoundException -> []
 
+
+/// Given an assembly name, try to find it in either assemblies
+/// loaded in the current AppDomain, or in one of the specified 
+/// probing directories.
+let resolveReferencedAssembly (asmName:string) = 
+  
+  // First, try to find the assembly in the currently loaded assemblies
+  let fullName = AssemblyName(asmName)
+  let loadedAsm = 
+    System.AppDomain.CurrentDomain.GetAssemblies()
+    |> Seq.tryFind (fun a -> AssemblyName.ReferenceMatchesDefinition(fullName, a.GetName()))
+  match loadedAsm with
+  | Some asm -> asm
+  | None ->
+
+    // Otherwise, search the probing locations for a DLL file
+    let libraryName = 
+      let idx = asmName.IndexOf(',') 
+      if idx > 0 then asmName.Substring(0, idx) else asmName
+
+    let asm =
+      getProbingLocations()
+      |> Seq.tryPick (fun dir ->
+          let library = Path.Combine(dir, libraryName+".dll")
+          if File.Exists(library) then 
+            let asm = Assembly.LoadFrom(library)
+            if asm.FullName = asmName then Some(asm) else None
+          else None)
+             
+    defaultArg asm null
