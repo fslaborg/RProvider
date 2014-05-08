@@ -27,20 +27,7 @@ module DesignTime =
           // RProvider.dll.config which has this pattern in custom key "ProbingLocations".
           // Here, we resolve assemblies by looking into the specified search paths.
           AppDomain.CurrentDomain.add_AssemblyResolve(fun source args ->
-            let libraryName = 
-              let idx = args.Name.IndexOf(',') 
-              if idx > 0 then args.Name.Substring(0, idx) else args.Name
-
-            let asm =
-              getProbingLocations()
-              |> Seq.tryPick (fun dir ->
-                  let library = Path.Combine(dir, libraryName+".dll")
-                  if File.Exists(library) then 
-                    let asm = Assembly.LoadFrom(library)
-                    if asm.FullName = args.Name then Some(asm) else None
-                  else None)
-             
-            defaultArg asm null)
+            resolveReferencedAssembly args.Name)
       
           // Set the R 'R_CStackLimit' variable to -1 when initializing the R engine
           // (the engine is initialized lazily, so the initialization always happens
@@ -51,7 +38,7 @@ module DesignTime =
         // Generate all the types and log potential errors
         let buildTypes () =
             try 
-              for ns, types in RTypeBuilder.initAndGenerate(runtimeAssembly) do //Assembly.GetExecutingAssembly()) do
+              for ns, types in RTypeBuilder.initAndGenerate(runtimeAssembly) do
                 this.AddNamespace(ns, types)
             with e ->
               Logging.logf "RProvider constructor failed: %O" e
