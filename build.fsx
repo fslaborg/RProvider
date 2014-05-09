@@ -195,11 +195,12 @@ Target "AllCore" DoNothing
   ==> "AllCore"
 
 "All" 
-  ==> "CleanDocs"
-  ==> "GenerateDocs"
-  ==> "ReleaseDocs"
-  ==> "ReleaseBinaries"
-  ==> "NuGet"
+  ==> "CleanDocs" 
+  ==> "GenerateDocs" 
+  ==> "ReleaseDocs" 
+  ==> "ReleaseBinaries" 
   ==> "Release"
+  
+"All" ==> "NuGet" ==> "Release"
 
 RunTargetOrDefault "All"

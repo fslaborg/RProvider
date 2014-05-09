@@ -25,7 +25,7 @@ open RProvider
 let mutable DisableStackChecking = false
 
 /// Represents R value used in initialization or information about failure
-type internal RInitResult<'T> =
+type RInitResult<'T> =
   | RInitResult of 'T
   | RInitError of string
 
@@ -84,7 +84,7 @@ let internal characterDevice = new CharacterDeviceInterceptor()
 
 /// Lazily initialized value that, when evaluated, sets the PATH variable
 /// to include the R location, or fails and returns RInitError
-let internal initResult = Lazy<_>(fun () -> setupPathVariable())
+let initResult = Lazy<_>(fun () -> setupPathVariable())
 
 /// Lazily initialized R engine. When 'DisableStackChecking' has been set prior
 /// to the initialization (in the static constructor of RProvider), then 

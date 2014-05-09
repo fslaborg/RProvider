@@ -22,7 +22,7 @@
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
     <OutputPath>../../bin</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <OtherFlags>
     </OtherFlags>
@@ -46,15 +46,14 @@
   </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
-    <Compile Include="..\Common\AssemblyInfo.fs">
+    <Compile Include="$(SolutionDir)src\Common\AssemblyInfo.fs">
       <Link>AssemblyInfo.fs</Link>
     </Compile>
-    <Compile Include="Configuration.fs" />
     <Compile Include="RProvider.fs" />
-    <None Include="packages.config" />
     <None Include="RProvider.fsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" />
@@ -65,6 +64,15 @@
     <Reference Include="RDotNet.NativeLibrary">
       <HintPath>..\..\packages\R.NET.1.5.11\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>True</Private>
+    <Reference Include="mscorlib" />
+    <Reference Include="RDotNet">
+      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="RDotNet.FSharp">
+      <HintPath>..\..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="RDotNet.NativeLibrary">
+      <HintPath>..\..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -75,7 +83,7 @@
   <ItemGroup>
     <ProjectReference Include="RProvider.Runtime.fsproj">
       <Name>RProvider.Runtime</Name>
-      <Project>{7ff9cfa3-2516-4970-9dd8-54c7d4ca24aa}</Project>
+      <Project>{80fd4284-c7bd-4170-8cc3-41e8548402e4}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
