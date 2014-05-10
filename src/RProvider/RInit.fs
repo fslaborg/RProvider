@@ -71,8 +71,7 @@ let private setupPathVariable () =
               RInitError (sprintf "No R engine at %s" binPath)
           else
               // Set the path
-              let pathSepChar = if isLinux then ":" else ";"
-              Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + pathSepChar + binPath)
+              REngine.SetEnvironmentVariables(binPath, location)
               Logging.logf "setupPathVariable completed"
               RInitResult ()
     with e ->
@@ -93,7 +92,7 @@ let internal engine = Lazy<_>(fun () ->
     try
         Logging.logf "engine: Creating instance" 
         initResult.Force() |> ignore
-        let engine = REngine.CreateInstance(System.AppDomain.CurrentDomain.Id.ToString())
+        let engine = REngine.GetInstance()
         Logging.logf "engine: Intializing instance"
         engine.Initialize(null, characterDevice)
             
