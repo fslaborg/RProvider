@@ -1,7 +1,7 @@
 ﻿(*** hide ***)
 // Include the right directories so that the documentation tool tips work
 #nowarn "211" // Ignore warning that a search path does not exist on #I
-#I "../../packages/FSharp.Data.1.1.10/lib/net40/"
+#I "../../packages/FSharp.Data.2.0.7/lib/net40/"
 #I "../../bin/"
 
 (** 

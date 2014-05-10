@@ -1,7 +1,7 @@
 ﻿(*** hide ***)
 // Include the right directories so that the documentation tool tips work
 #nowarn "211" // Ignore warning that a search path does not exist on #I
-#I "../../packages/FSharp.Data.1.1.10/lib/net40/"
+#I "../../packages/FSharp.Data.2.0.7/lib/net40/"
 #I "../../bin/"
 
 (** 
@@ -54,7 +54,7 @@ type Stocks = CsvProvider<"http://ichart.finance.yahoo.com/table.csv?s=SPX">
 /// of days (starting from the most recent)
 let getStockPrices stock count =
   let url = "http://ichart.finance.yahoo.com/table.csv?s="
-  [| for r in Stocks.Load(url + stock).Take(count).Data -> float r.Open |] 
+  [| for r in Stocks.Load(url + stock).Take(count).Rows -> float r.Open |] 
   |> Array.rev
 
 /// Get opening prices for MSFT for the last 255 days

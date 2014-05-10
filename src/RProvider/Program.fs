@@ -8,7 +8,7 @@ module Main =
     open System.Runtime.Remoting
     open System.Runtime.Remoting.Channels
     open System.Threading
-    open RProvider.Configuration
+    open RProvider.Internal.Configuration
 
     [<STAThreadAttribute>]
     [<EntryPoint>]

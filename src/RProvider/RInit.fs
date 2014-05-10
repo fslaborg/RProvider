@@ -1,4 +1,5 @@
-﻿module RProvider.Internal.RInit
+﻿/// [omit]
+module RProvider.Internal.RInit
 
 open System
 open System.IO
