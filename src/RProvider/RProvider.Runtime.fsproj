@@ -77,6 +77,12 @@
       <HintPath>..\..\packages\R.NET.1.5.12\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RDotNet.FSharp">
+      <HintPath>..\..\packages\RDotNet.FSharp.0.1.5\lib\net40\RDotNet.FSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="RDotNet.NativeLibrary">
+      <HintPath>..\..\packages\R.NET.1.5.12\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />

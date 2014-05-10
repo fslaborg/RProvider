@@ -71,8 +71,7 @@ let private setupPathVariable () =
               RInitError (sprintf "No R engine at %s" binPath)
           else
               // Set the path
-              let pathSepChar = if isLinux then ":" else ";"
-              Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + pathSepChar + binPath)
+              REngine.SetEnvironmentVariables(binPath, location)
               Logging.logf "setupPathVariable completed"
               RInitResult ()
     with e ->
