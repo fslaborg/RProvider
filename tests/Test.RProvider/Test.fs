@@ -1,4 +1,14 @@
-﻿module Test.RProvider
+﻿#if INTERACTIVE
+#I "../../bin"
+#r "RDotNet.dll"
+#r "RProvider.dll"
+#r "RProvider.Runtime.dll"
+#r "../../packages/FsCheck.0.9.2.0/lib/net40-Client/FsCheck.dll"
+#r "../../packages/FsCheck.Xunit.0.4.0.2/lib/net40-Client/FsCheck.Xunit.dll"
+#r "../../packages/xunit.1.9.2/lib/net20/xunit.dll"
+#else
+module Test.RProvider
+#endif
 
 open RDotNet
 open RDotNet.Internals
