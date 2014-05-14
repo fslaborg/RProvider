@@ -16,7 +16,7 @@ open RInteropClient
 open Microsoft.Win32
 open System.IO
 
-module RemoteRTypeBuilder =
+module internal RemoteRTypeBuilder =
         
     let generateTypes remoteSession (parentType: ProvidedTypeDefinition) =
         withServer <| fun server ->

@@ -39,7 +39,7 @@ type RInteropServer() =
             getPackages()
 
     member x.GetPackages(remoteSession) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             x.GetRemoteSession(remoteSession).getPackages()
          
     member x.LoadPackage(package) =
@@ -47,11 +47,11 @@ type RInteropServer() =
             loadPackage package
 
     member x.LoadPackage(package, remoteSession) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             x.GetRemoteSession(remoteSession).loadPackage package
         
     member x.GetBindings(package, remoteSession) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             x.GetRemoteSession(remoteSession).getBindings package
 
     member x.GetBindings(package) =
@@ -59,7 +59,7 @@ type RInteropServer() =
             getBindings package
         
     member x.GetFunctionDescriptions(package:string, remoteSession) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             x.GetRemoteSession(remoteSession).getFunctionDescriptions package
     
     member x.GetFunctionDescriptions(package:string) =
@@ -67,7 +67,7 @@ type RInteropServer() =
             getFunctionDescriptions package
         
     member x.GetPackageDescription(package, remoteSession) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             x.GetRemoteSession(remoteSession).getPackageDescription package
     
     member x.GetPackageDescription(package) =

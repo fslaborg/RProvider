@@ -63,9 +63,7 @@
     <Compile Include="RInterop.fs" />
     <Compile Include="Converters.fs" />
     <Compile Include="RemoteSession.fs" />
-    <Compile Include="converters.fs" />
     <Compile Include="RInteropServer.fs" />
-    <Compile Include="Program.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
