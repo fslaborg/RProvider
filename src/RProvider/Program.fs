@@ -25,9 +25,9 @@ module Main =
         let event = EventWaitHandle.OpenExisting(name = channelName)
         let chan = new Ipc.IpcChannel(channelName)
         ChannelServices.RegisterChannel(chan, false)
-        let server = new RInteropServer()
-        let objRef = RemotingServices.Marshal(server, "RInteropServer")
-        RemotingConfiguration.RegisterActivatedServiceType(typeof<RInteropServer>)
+        let serviceEntry =
+            new WellKnownServiceTypeEntry(typeof<RInteropServer>, "RInteropServer", WellKnownObjectMode.Singleton)
+        RemotingConfiguration.RegisterWellKnownServiceType(serviceEntry)
         let success = event.Set()
         assert success
         let parentPid = channelName.Split('_').[1]
