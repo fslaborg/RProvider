@@ -12,27 +12,41 @@ type RInteropServer() =
     
     let initResultValue = RInit.initResult.Force()
 
+    let exceptionSafe f =
+        try
+            f()
+        with
+        | ex when ex.GetType().IsSerializable -> raise ex
+        | ex ->
+            failwith ex.Message
+
     member x.RInitValue =
         match initResultValue with
         | RInit.RInitError error -> Some error
         | _ -> None
 
     member x.GetPackages() =
-        getPackages()
+        exceptionSafe <| fun () ->
+            getPackages()
 
     member x.LoadPackage(package) =
-        loadPackage package
+        exceptionSafe <| fun () ->
+            loadPackage package
         
     member x.GetBindings(package) =
-        getBindings package
+        exceptionSafe <| fun () ->
+            getBindings package
         
     member x.GetFunctionDescriptions(package:string) =
-        getFunctionDescriptions package
+        exceptionSafe <| fun () ->
+            getFunctionDescriptions package
         
     member x.GetPackageDescription(package) =
-        getPackageDescription package
+        exceptionSafe <| fun () ->
+            getPackageDescription package
         
     member x.MakeSafeName(name) =
-        makeSafeName name
+        exceptionSafe <| fun () ->
+            makeSafeName name
 
 
