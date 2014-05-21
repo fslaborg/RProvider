@@ -27,7 +27,6 @@ let tags = "F# fsharp R TypeProvider visualization statistics"
 
 let gitHome = "https://github.com/BlueMountainCapital"
 let gitName = "FSharpRProvider"
-let testAssemblies = []
 
 // --------------------------------------------------------------------------------------
 // The rest of the code is standard F# build script 
@@ -73,6 +72,7 @@ Target "RestorePackages" (fun _ ->
 
 Target "Clean" (fun _ ->
     CleanDirs ["bin"; "temp" ]
+    CleanDirs ["tests/Test.RProvider/bin"; "tests/Test.RProvider/obj" ]
 )
 
 Target "CleanDocs" (fun _ ->
@@ -96,31 +96,27 @@ Target "BuildCore" (fun _ ->
 
 // --------------------------------------------------------------------------------------
 // Run the unit tests using test runner & kill test runner when complete
-//
-// TODO: The tests are using xUnit, so tests are not run as part of FAKE currently :-(
-//
-(*
+
 
 Target "RunTests" (fun _ ->
-    let nunitVersion = GetPackageVersion "packages" "NUnit.Runners"
-    let nunitPath = sprintf "packages/NUnit.Runners.%s/Tools" nunitVersion
+    let xunitVersion = GetPackageVersion "packages" "xunit.runners"
+    let xunitPath = sprintf "packages/xunit.runners.%s/tools/xunit.console.clr4.exe" xunitVersion
 
     ActivateFinalTarget "CloseTestRunner"
 
-    (files ["tests/*/bin/Release/Test.RProvider.dll"])
-    |> NUnit (fun p ->
-        { p with
-            ToolPath = nunitPath
-            DisableShadowCopy = true
-            TimeOut = TimeSpan.FromMinutes 20.
-            OutputFile = "TestResults.xml" })
+    !! "tests/Test.RProvider/bin/**/Test*.dll"
+    |> xUnit (fun p -> 
+            {p with 
+                ToolPath = xunitPath
+                ShadowCopy = false
+                HtmlOutput = true
+                XmlOutput = true
+                OutputDir = "." })
 )
-
+ 
 FinalTarget "CloseTestRunner" (fun _ ->  
-    ProcessHelper.killProcess "nunit-agent.exe"
+    ProcessHelper.killProcess "xunit.console.clr4.exe"
 )
-*)
-Target "RunTests" DoNothing
 
 // --------------------------------------------------------------------------------------
 // Build a NuGet package

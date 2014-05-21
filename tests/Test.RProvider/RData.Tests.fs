@@ -13,7 +13,7 @@ open System
 open RProvider
 open RProvider.``base``
 
-type Sample = RData<"sample.rdata">
+type Sample = RData<"data/sample.rdata">
 
 [<Fact>]
 let ``Can read sample RData file`` () = 
