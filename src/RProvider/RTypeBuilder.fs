@@ -17,7 +17,7 @@ open RInteropClient
 open Microsoft.Win32
 open System.IO
 
-module RTypeBuilder =
+module internal RTypeBuilder =
     
     /// Assuming initialization worked correctly, generate the types using R engine
     let generateTypes ns asm = 

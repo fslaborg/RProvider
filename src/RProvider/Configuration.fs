@@ -1,4 +1,5 @@
-﻿module RProvider.Configuration
+﻿/// [omit]
+module RProvider.Internal.Configuration
 
 open System
 open System.IO

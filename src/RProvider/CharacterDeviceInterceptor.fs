@@ -3,7 +3,7 @@
 open RDotNet.Devices
 open System.Text
 
-type CharacterDeviceInterceptor() = 
+type internal CharacterDeviceInterceptor() = 
     inherit RDotNet.Devices.ConsoleDevice()
 
     let mutable sb : StringBuilder = null

@@ -37,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{33FD
 		docs\content\internals.md = docs\content\internals.md
 		docs\content\passing-data.fsx = docs\content\passing-data.fsx
 		docs\content\plugins.md = docs\content\plugins.md
+		docs\content\reading-rdata.fsx = docs\content\reading-rdata.fsx
 		docs\content\Statistics-QuickStart.fsx = docs\content\Statistics-QuickStart.fsx
 		docs\content\tutorial.fsx = docs\content\tutorial.fsx
 		docs\content\whatwhy.md = docs\content\whatwhy.md

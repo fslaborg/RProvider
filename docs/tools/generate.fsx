@@ -4,7 +4,7 @@
 // --------------------------------------------------------------------------------------
 
 // Binaries that have XML documentation (in a corresponding generated XML file)
-let referenceBinaries = [ ] 
+let referenceBinaries = [ "RProvider.Runtime.dll" ] 
 // Web site location for the generated documentation
 let website = "http://bluemountaincapital.github.io/FSharpRProvider"
 
@@ -27,6 +27,7 @@ let info =
 #r "../../packages/FAKE/tools/FakeLib.dll"
 #r "RazorEngine.dll"
 #r "FSharp.Literate.dll"
+#r "FSharp.Markdown.dll"
 #r "FSharp.CodeFormat.dll"
 #r "FSharp.MetadataFormat.dll"
 open Fake
@@ -67,12 +68,11 @@ let copyFiles () =
 // Build API reference from XML comments
 let buildReference () =
   CleanDir (output @@ "reference")
-  for lib in referenceBinaries do
-    MetadataFormat.Generate
-      ( bin @@ lib, output @@ "reference", layoutRoots, 
-        parameters = ("root", root)::info,
-        sourceRepo = "https://github.com/BlueMountainCapital/FSharpRProvider/tree/master/",
-        sourceFolder = __SOURCE_DIRECTORY__.Substring(0, __SOURCE_DIRECTORY__.Length - "\docs\tools".Length ) )
+  MetadataFormat.Generate
+    ( List.map ((@@) bin) referenceBinaries, output @@ "reference", layoutRoots, libDirs = [ bin ],
+      parameters = ("root", root)::info,
+      sourceRepo = "https://github.com/BlueMountainCapital/FSharpRProvider/tree/master/",
+      sourceFolder = __SOURCE_DIRECTORY__.Substring(0, __SOURCE_DIRECTORY__.Length - "\docs\tools".Length ) )
 
 // Build documentation from `fsx` and `md` files in `docs/content`
 let buildDocumentation () =

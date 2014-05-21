@@ -1,4 +1,5 @@
-﻿module RProvider.Internal.Logging
+﻿/// [omit]
+module RProvider.Internal.Logging
 
 open System
 open System.IO

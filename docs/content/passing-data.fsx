@@ -1,5 +1,5 @@
 (*** hide ***)
-#I "../../packages/FSharp.Data.1.1.10/lib/net40/"
+#I "../../packages/FSharp.Data.2.0.7/lib/net40/"
 #I "../../bin/"
 #r "RDotNet.dll"
 #r "RDotNet.FSharp.dll"

@@ -1,4 +1,4 @@
-﻿namespace RProviderConverters
+﻿namespace RProvider.Internal.Converters
 
 open RDotNet
 open RProvider
@@ -6,8 +6,8 @@ open RInterop
 open System.ComponentModel.Composition
 open System.Linq
 
-// Contains higher-level converters
-
+/// Contains higher-level converters
+/// [omit]
 module Factor = 
     let getLevels sexp = 
         let rvalStr = RInterop.serializeRValue (RValue.Function(["x"], false))
