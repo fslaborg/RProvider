@@ -14,12 +14,12 @@ module Factor =
         let symexpr = RInterop.call "base" "levels" rvalStr [| sexp |] [| |]
         symexpr.AsCharacter().ToArray()
 
-    let tryConvert sexp = 
-        match sexp with
-        | IntegerVector(nv) when sexp.Class = [| "factor" |] ->                
+    let tryConvert (sexp:SymbolicExpression) = 
+        match sexp, sexp.Type, sexp.Class with
+        | UntypedVector(nv), Internals.SymbolicExpressionType.IntegerVector, [| "factor" |] ->                
                 Some( let levels = getLevels sexp
-                      nv |> Seq.map (fun i -> levels.[i-1]) 
-                         |> Seq.toArray )
+                      nv.AsInteger() |> Seq.map (fun i -> levels.[i-1]) 
+                                     |> Seq.toArray )
         | _ -> None 
 
     [<Export(typeof<IConvertFromR<string[]>>)>]

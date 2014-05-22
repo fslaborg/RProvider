@@ -6,24 +6,6 @@ open Microsoft.Win32
 open RDotNet
 open RProvider
 
-/// When set to 'true' before the R engine is initialized, the initialization
-/// will set the 'R_CStackLimit' variable to -1 (which disables stack checking
-/// in the R engine and makes it possible to call R engine from multiple threads
-///
-/// This should not generally be done, but it is hard to avoid in a type provider
-/// called by the F# compiler and engine called by user code.
-///
-/// When this is *not* done, the R provider will occasionally report 
-/// "Error: C stack usage is too close to the limit" when it is called from 
-/// another thread (not concurrently, just from another thread than previously).
-///
-/// For more information, see somewhat vague comment "8.1.5 Threading issues" 
-/// in: www.cran.r-project.org/doc/manuals/R-exts.pdf
-///
-/// NOTE: For this to work correctly, the R engine must be initialized lazily
-/// *after* this variable is set in the static constructor of the RProvider
-let mutable DisableStackChecking = false
-
 /// Represents R value used in initialization or information about failure
 type RInitResult<'T> =
   | RInitResult of 'T
@@ -85,9 +67,7 @@ let internal characterDevice = new CharacterDeviceInterceptor()
 /// to include the R location, or fails and returns RInitError
 let initResult = Lazy<_>(fun () -> setupPathVariable())
 
-/// Lazily initialized R engine. When 'DisableStackChecking' has been set prior
-/// to the initialization (in the static constructor of RProvider), then 
-/// set the 'R_CStackLimit' variable to -1.
+/// Lazily initialized R engine.
 let internal engine = Lazy<_>(fun () ->
     try
         Logging.logf "engine: Creating instance" 
@@ -95,12 +75,6 @@ let internal engine = Lazy<_>(fun () ->
         let engine = REngine.GetInstance()
         Logging.logf "engine: Intializing instance"
         engine.Initialize(null, characterDevice)
-            
-        if DisableStackChecking then
-            // This needs to be called *after* the initialization of REngine
-            let varAddress = engine.DangerousGetHandle("R_CStackLimit")
-            System.Runtime.InteropServices.Marshal.WriteInt32(varAddress, -1)
-    
         System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose()) 
         Logging.logf "engine: Created & initialized instance"
         engine
