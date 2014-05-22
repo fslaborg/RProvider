@@ -63,7 +63,7 @@
   <ItemGroup>
     <Reference Include="FSharp.Core" />
     <Reference Include="RDotNet">
-      <HintPath>..\..\packages\R.NET.1.5.12\lib\net40\RDotNet.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.Community.1.5.13\lib\net40\RDotNet.dll</HintPath>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary" />
     <Reference Include="System" />
