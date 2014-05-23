@@ -51,7 +51,7 @@ type RInteropServer() =
             makeSafeName name
 
     member x.GetRDataSymbols(file) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             let env = REnv(file) 
             [| for k in env.Keys ->
                   let v = env.Get(k)
