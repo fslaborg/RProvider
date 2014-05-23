@@ -52,7 +52,11 @@
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
+    <None Include="data/sample.rdata">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Compile Include="Test.fs" />
+    <Compile Include="RData.Tests.fs" />
     <None Include="packages.config" />
     <None Include="app.config" />
   </ItemGroup>

@@ -4,3 +4,4 @@
 * 1.0.6-alpha - Fixed assembly resolution when installed via NuGet
 * 1.0.7-alpha - Fix handling of missing configuration key
 * 1.0.8-alpha - Execute R in a separate process in the type provider
+* 1.0.9 - Out-of-process execution, RData type provider, bug fixes

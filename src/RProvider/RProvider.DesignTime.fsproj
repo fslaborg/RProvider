@@ -26,6 +26,7 @@
     <WarningLevel>3</WarningLevel>
     <OtherFlags>
     </OtherFlags>
+    <DocumentationFile>../../bin\RProvider.DesignTime.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,6 +35,7 @@
     <OutputPath>../../bin</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <DocumentationFile>../../bin\RProvider.DesignTime.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -57,7 +59,8 @@
     </Compile>
     <Compile Include="RInteropClient.fs" />
     <Compile Include="RTypeBuilder.fs" />
-    <Compile Include="DesignTime.fs" />
+    <Compile Include="RProvider.fs" />
+    <Compile Include="RData.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

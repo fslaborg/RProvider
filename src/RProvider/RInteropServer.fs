@@ -3,6 +3,7 @@
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.Win32
 open RDotNet
+open RProvider
 open RProvider.RInterop
 open RProvider.Internal
 open System
@@ -49,4 +50,11 @@ type RInteropServer() =
         exceptionSafe <| fun () ->
             makeSafeName name
 
+    member x.GetRDataSymbols(file) =
+        withLock <| fun () ->
+            let env = REnv(file) 
+            [| for k in env.Keys ->
+                  let v = env.Get(k)
+                  let typ = try Some(v.Value.GetType()) with _ -> None
+                  k, typ |]
 

@@ -26,6 +26,7 @@
     <WarningLevel>3</WarningLevel>
     <OtherFlags>
     </OtherFlags>
+    <DocumentationFile>../../bin\RProvider.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,6 +35,7 @@
     <OutputPath>../../bin</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <DocumentationFile>../../bin\RProvider.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -49,7 +51,7 @@
     <Compile Include="$(SolutionDir)src\Common\AssemblyInfo.fs">
       <Link>AssemblyInfo.fs</Link>
     </Compile>
-    <Compile Include="RProvider.fs" />
+    <Compile Include="RProviderAttribute.fs" />
     <None Include="RProvider.fsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

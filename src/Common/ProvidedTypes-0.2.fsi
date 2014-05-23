@@ -17,13 +17,13 @@ open System.Linq.Expressions
 open Microsoft.FSharp.Core.CompilerServices
 
 /// Represents an erased provided parameter
-type ProvidedParameter =
+type internal ProvidedParameter =
     inherit System.Reflection.ParameterInfo
     new : parameterName: string * parameterType: Type * ?isOut:bool * ?optionalValue:obj * ?isParamArray: bool -> ProvidedParameter
     
 
 /// Represents an erased provided constructor.
-type ProvidedConstructor =    
+type internal ProvidedConstructor =    
     inherit System.Reflection.ConstructorInfo
 
     /// Create a new provided constructor. It is not initially associated with any specific provided type definition.
@@ -48,7 +48,7 @@ type ProvidedConstructor =
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
     
 
-type ProvidedMethod = 
+type internal ProvidedMethod = 
     inherit System.Reflection.MethodInfo
 
     /// Create a new provided method. It is not initially associated with any specific provided type definition.
@@ -85,7 +85,7 @@ type ProvidedMethod =
 
 
 /// Represents an erased provided property.
-type ProvidedProperty =
+type internal ProvidedProperty =
     inherit System.Reflection.PropertyInfo
 
     /// Create a new provided type. It is not initially associated with any specific provided type definition.
@@ -120,7 +120,7 @@ type ProvidedProperty =
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
 
 /// Represents an erased provided property.
-type ProvidedLiteralField =
+type internal ProvidedLiteralField =
     inherit System.Reflection.FieldInfo
 
     /// Create a new provided type. It is not initially associated with any specific provided type definition.
@@ -142,7 +142,7 @@ type ProvidedLiteralField =
 
 /// Represents an erased provided property.
 [<Class>]
-type ProvidedMeasureBuilder =
+type internal ProvidedMeasureBuilder =
     
     /// The ProvidedMeasureBuilder for building measures.
     static member Default : ProvidedMeasureBuilder
@@ -179,7 +179,7 @@ type internal ProvidedStaticParameter =
     member AddXmlDocDelayed   : xmlDocFunction: (unit -> string) -> unit   
 
 /// Represents a provided type definition.
-type ProvidedTypeDefinition =
+type internal ProvidedTypeDefinition =
     inherit System.Type
 
     /// Create a new provided type definition in a namespace. 
@@ -254,6 +254,8 @@ type ProvidedTypeDefinition =
 
 /// A base type providing default implementations of type provider functionality when all provided 
 /// types are of type ProvidedTypeDefinition.
+///
+/// [omit]
 type TypeProviderForNamespaces =
 
     /// Initializes a type provider to provide the types in the given namespace.
