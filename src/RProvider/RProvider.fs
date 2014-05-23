@@ -27,12 +27,6 @@ type public RProvider(cfg:TypeProviderConfig) as this =
       AppDomain.CurrentDomain.add_AssemblyResolve(fun source args ->
         resolveReferencedAssembly args.Name)
       
-      // Set the R 'R_CStackLimit' variable to -1 when initializing the R engine
-      // (the engine is initialized lazily, so the initialization always happens
-      // after the static constructor is called - by doing this in the static constructor
-      // we make sure that this is *not* set in the normal execution)
-//      RInit.DisableStackChecking <- true
-
     // Generate all the types and log potential errors
     let buildTypes () =
         try 
