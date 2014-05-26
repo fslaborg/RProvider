@@ -11,49 +11,47 @@ open System
 type RInteropServer() =
     inherit MarshalByRefObject()
     
-    // Set the R 'R_CStackLimit' variable to -1 when initializing the R engine
-    // (the engine is initialized lazily, so the initialization always happens
-    // after the static constructor is called - by doing this in the static constructor
-    // we make sure that this is *not* set in the normal execution)
-    static do RInit.DisableStackChecking <- true
-    
     let initResultValue = RInit.initResult.Force()
-    let serverLock = "serverLock"
-    let withLock f =
-        lock serverLock f
+
+    let exceptionSafe f =
+        try
+            f()
+        with
+        | ex when ex.GetType().IsSerializable -> raise ex
+        | ex ->
+            failwith ex.Message
 
     member x.RInitValue =
-        withLock <| fun () ->
-            match initResultValue with
-            | RInit.RInitError error -> Some error
-            | _ -> None
+        match initResultValue with
+        | RInit.RInitError error -> Some error
+        | _ -> None
 
     member x.GetPackages() =
-         withLock <| fun () ->
+        exceptionSafe <| fun () ->
             getPackages()
 
     member x.LoadPackage(package) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             loadPackage package
         
     member x.GetBindings(package) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             getBindings package
         
     member x.GetFunctionDescriptions(package:string) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             getFunctionDescriptions package
         
     member x.GetPackageDescription(package) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             getPackageDescription package
         
     member x.MakeSafeName(name) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             makeSafeName name
 
     member x.GetRDataSymbols(file) =
-        withLock <| fun () ->
+        exceptionSafe <| fun () ->
             let env = REnv(file) 
             [| for k in env.Keys ->
                   let v = env.Get(k)
