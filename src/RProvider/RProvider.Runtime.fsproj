@@ -68,15 +68,15 @@
     <Reference Include="FSharp.Core" />
     <Reference Include="mscorlib" />
     <Reference Include="RDotNet">
-      <HintPath>..\..\packages\R.NET.Community.1.5.14\lib\net40\RDotNet.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.Community.1.5.15\lib\net40\RDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.FSharp">
-      <HintPath>..\..\packages\R.NET.Community.FSharp.0.1.7\lib\net40\RDotNet.FSharp.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.Community.FSharp.0.1.8\lib\net40\RDotNet.FSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>..\..\packages\R.NET.Community.1.5.14\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+      <HintPath>..\..\packages\R.NET.Community.1.5.15\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
