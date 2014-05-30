@@ -59,11 +59,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" />
+    <Reference Include="mscorlib" />
     <Reference Include="RDotNet">
       <HintPath>..\..\packages\R.NET.Community.1.5.15\lib\net40\RDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="mscorlib" />
     <Reference Include="RDotNet.FSharp">
       <HintPath>..\..\packages\R.NET.Community.FSharp.0.1.8\lib\net40\RDotNet.FSharp.dll</HintPath>
       <Private>True</Private>
