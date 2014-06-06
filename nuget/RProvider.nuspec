@@ -30,5 +30,8 @@
     <file src="..\bin\RProvider.pdb" target="lib" />
     <file src="..\bin\RProvider.fsx" target="." />
     <file src="..\nuget\RProvider.Runtime.dll.config" target="lib" />
+    <file src="..\nuget\FSharp.Core.dll" target="lib"/>
+    <file src="..\nuget\FSharp.Core.optdata" target="lib"/>
+    <file src="..\nuget\FSharp.Core.sigdata" target="lib"/>
   </files>
 </package>
