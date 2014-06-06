@@ -49,6 +49,9 @@ let getProbingLocations() =
 /// probing directories.
 let resolveReferencedAssembly (asmName:string) = 
   
+  // Do not interfere with loading FSharp.Core resources, see #97
+  if asmName.StartsWith "FSharp.Core.resources" then null else
+
   // First, try to find the assembly in the currently loaded assemblies
   let fullName = AssemblyName(asmName)
   let loadedAsm = 
