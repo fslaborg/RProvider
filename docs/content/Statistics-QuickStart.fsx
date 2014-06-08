@@ -24,12 +24,8 @@ Assuming you installed the R Type Provider in your project from NuGet,
 you can reference the required libraries and packages this way:
 *)
 
-#I "../packages/RProvider.1.0.3/lib"
-#r "RDotNet.dll"
-#r "RDotNet.FSharp.dll"
-#r "RDotNet.NativeLibrary.dll"
-#r "RProvider.dll"
-#r "RProvider.Runtime.dll"
+#I "../packages/RProvider.1.0.11"
+#load "RProvider.fsx"
 
 open System
 open RDotNet
