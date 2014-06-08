@@ -6,3 +6,5 @@
 * 1.0.8-alpha - Execute R in a separate process in the type provider
 * 1.0.9 - Out-of-process execution, RData type provider, bug fixes
 * 1.0.10 - GC fixes in R.NET
+* 1.0.11 - Bug fixes (include FSharp.Core, fix resource resolution).
+* 1.0.12 - Use correct folders in NuGet package
