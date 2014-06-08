@@ -99,6 +99,11 @@ let ``Complex scalar round-trip tests`` (r: double) (i: double) =
         let x = Complex(r, i) 
         testScalar x SymbolicExpressionType.ComplexVector None
 
+[<Fact>]
+let ``Printing of data frame returns string with frame data`` () =
+  let df = namedParams [ "Test", box [| 1; 42; 2 |] ] |> R.data_frame
+  Assert.Contains("42", df.Print())
+
 //[<Property>]
 // Has various issues - embedded nulls, etc.
 let ``String arrays round-trip``(strings: string[]) =
