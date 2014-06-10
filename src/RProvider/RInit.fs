@@ -71,11 +71,9 @@ let initResult = Lazy<_>(fun () -> setupPathVariable())
 /// Lazily initialized R engine.
 let internal engine = Lazy<_>(fun () ->
     try
-        Logging.logf "engine: Creating instance" 
+        Logging.logf "engine: Creating and initializing instance" 
         initResult.Force() |> ignore
-        let engine = REngine.GetInstance()
-        Logging.logf "engine: Intializing instance"
-        engine.Initialize(null, characterDevice)
+        let engine = REngine.GetInstance(null, true, null, characterDevice)
         System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose()) 
         Logging.logf "engine: Created & initialized instance"
         engine
