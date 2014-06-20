@@ -61,6 +61,7 @@
     <Compile Include="RTypeBuilder.fs" />
     <Compile Include="RemoteRTypeBuilder.fs" />
     <Compile Include="RProvider.fs" />
+    <Compile Include="RProviderRemote.fs" />
     <Compile Include="RData.fs" />
     <None Include="packages.config" />
   </ItemGroup>
