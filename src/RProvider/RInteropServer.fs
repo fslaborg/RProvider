@@ -21,27 +21,55 @@ type RInteropServer() =
         | ex ->
             failwith ex.Message
 
+    let mutable remoteSessions = Map.empty
+
     member x.RInitValue =
         match initResultValue with
         | RInit.RInitError error -> Some error
         | _ -> None
 
+    member private x.GetRemoteSession(config:SessionConfig) =
+        let sessionKey = (config.hostName, config.port, config.blocking)
+        if not (remoteSessions.ContainsKey sessionKey) then 
+            remoteSessions <- remoteSessions.Add(sessionKey, RemoteSession.GetConnection(config))
+        remoteSessions.[sessionKey]
+
     member x.GetPackages() =
         exceptionSafe <| fun () ->
             getPackages()
 
+    member x.GetPackages(remoteSession) =
+        exceptionSafe <| fun () ->
+            x.GetRemoteSession(remoteSession).getPackages()
+         
     member x.LoadPackage(package) =
         exceptionSafe <| fun () ->
             loadPackage package
+
+    member x.LoadPackage(package, remoteSession) =
+        exceptionSafe <| fun () ->
+            x.GetRemoteSession(remoteSession).loadPackage package
         
+    member x.GetBindings(package, remoteSession) =
+        exceptionSafe <| fun () ->
+            x.GetRemoteSession(remoteSession).getBindings package
+
     member x.GetBindings(package) =
         exceptionSafe <| fun () ->
             getBindings package
         
+    member x.GetFunctionDescriptions(package:string, remoteSession) =
+        exceptionSafe <| fun () ->
+            x.GetRemoteSession(remoteSession).getFunctionDescriptions package
+    
     member x.GetFunctionDescriptions(package:string) =
         exceptionSafe <| fun () ->
             getFunctionDescriptions package
         
+    member x.GetPackageDescription(package, remoteSession) =
+        exceptionSafe <| fun () ->
+            x.GetRemoteSession(remoteSession).getPackageDescription package
+    
     member x.GetPackageDescription(package) =
         exceptionSafe <| fun () ->
             getPackageDescription package

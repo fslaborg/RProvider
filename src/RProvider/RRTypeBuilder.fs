@@ -17,9 +17,8 @@ open RInteropClient
 open Microsoft.Win32
 open System.IO
 
-module internal RTypeBuilder =
-    
-    /// Assuming initialization worked correctly, generate the types using R engine
+module internal RRTypeBuilder =
+
     let generateTypes ns asm = 
         withServer <| fun server ->
         seq {
@@ -27,7 +26,7 @@ module internal RTypeBuilder =
         Logging.logf "generateTypes: getting packages"
         for package in server.GetPackages() do
             let pns = ns + "." + package
-            let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
+            let pty = ProvidedTypeDefinition(asm, pns, "RR", Some(typeof<obj>))    
 
             // Note use of withServer - this helps ensure we'll try to recovery from a crashed session
             pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.GetPackageDescription package
@@ -60,7 +59,7 @@ module internal RTypeBuilder =
                         let pm = ProvidedMethod(
                                       methodName = memberName,
                                       parameters = paramList,
-                                      returnType = typeof<RDotNet.SymbolicExpression>,
+                                      returnType = typeof<RemoteSymbolicExpression>,
                                       IsStaticMethod = true,
                                       InvokeCode = fun args -> if args.Length <> paramCount then
                                                                  failwithf "Expected %d arguments and received %d" paramCount args.Length
@@ -70,10 +69,10 @@ module internal RTypeBuilder =
                                                                      |> List.ofArray
                                                                  let namedArgs = Quotations.Expr.NewArray(typeof<obj>, namedArgs)
                                                                  let varArgs = args.[paramCount-1]
-                                                                 <@@ RInterop.call package name serializedRVal %%namedArgs %%varArgs @@>                                                 
+                                                                 <@@ RRSession.CurrentSession().call package name serializedRVal %%namedArgs %%varArgs @@>                                                 
                                                                else
                                                                  let namedArgs = Quotations.Expr.NewArray(typeof<obj>, args)                                            
-                                                                 <@@ RInterop.call package name serializedRVal %%namedArgs [||] @@> )
+                                                                 <@@ RRSession.CurrentSession().call package name serializedRVal %%namedArgs [||] @@> )
 
                         pm.AddXmlDocDelayed (fun () -> match titles.Value.TryFind name with 
                                                         | Some docs -> docs 
@@ -86,24 +85,24 @@ module internal RTypeBuilder =
                         let pdm = ProvidedMethod(
                                       methodName = memberName,
                                       parameters = [ ProvidedParameter("paramsByName",  typeof<IDictionary<string,obj>>) ],
-                                      returnType = typeof<RDotNet.SymbolicExpression>,
+                                      returnType = typeof<RemoteSymbolicExpression>,
                                       IsStaticMethod = true,
                                       InvokeCode = fun args -> if args.Length <> 1 then
                                                                  failwithf "Expected 1 argument and received %d" args.Length
                                                                let argsByName = args.[0]
                                                                <@@  let vals = %%argsByName: IDictionary<string,obj>
                                                                     let valSeq = vals :> seq<KeyValuePair<string, obj>>
-                                                                    RInterop.callFunc package name valSeq null @@> )
+                                                                    RRSession.CurrentSession().callFunc package name valSeq null @@> )
                         yield pdm :> MemberInfo                                    
                     | RValue.Value ->
                         yield ProvidedProperty(
                                 propertyName = memberName,
-                                propertyType = typeof<RDotNet.SymbolicExpression>,
+                                propertyType = typeof<RemoteSymbolicExpression>,
                                 IsStatic = true,
-                                GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
+                                GetterCode = fun _ -> <@@ RRSession.CurrentSession().call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
                       
-            yield pns, [ pty ] }
-    
+            yield pns, [ pty ] }    
+
     /// Check if R is installed - if no, generate type with properties displaying
     /// the error message, otherwise go ahead and use 'generateTypes'!
     let initAndGenerate providerAssembly = 

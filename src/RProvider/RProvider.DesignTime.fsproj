@@ -59,7 +59,11 @@
     </Compile>
     <Compile Include="RInteropClient.fs" />
     <Compile Include="RTypeBuilder.fs" />
+    <Compile Include="RRTypeBuilder.fs" />
+    <Compile Include="RemoteRTypeBuilder.fs" />
     <Compile Include="RProvider.fs" />
+    <Compile Include="RRProvider.fs" />
+    <Compile Include="RProviderRemote.fs" />
     <Compile Include="RData.fs" />
     <None Include="packages.config" />
   </ItemGroup>

@@ -60,3 +60,14 @@ module internal RInteropClient =
         lock serverlock <| fun () ->
         let server = GetServer()
         f server
+
+    let mutable localServerInstance = None
+    let withLocalServer f =
+        lock serverlock <| fun () ->
+        let server = match localServerInstance with
+                        | Some s -> s
+                        | _ ->
+                            let s = new RInteropServer()
+                            localServerInstance <- Some s
+                            s
+        f server
