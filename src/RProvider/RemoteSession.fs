@@ -12,6 +12,7 @@ open System.Collections.Generic
 open System.Diagnostics
 open System.IO
 open System.Reflection
+open System.Threading
 
 type public SessionConfig(hostName: string, port: int, blocking: bool, ?timeout: int) =
     member this.hostName = hostName
@@ -218,3 +219,40 @@ type RemoteSession(connectionName) as this=
     override this.Finalize () =
         if not this.isClosed then
             this.close()
+
+type RRSession (session) =
+    [<ThreadStatic; DefaultValue>]
+    static val mutable private threadSessions : Stack<RemoteSession>
+
+    static member private Sessions =
+        if RRSession.threadSessions = null then
+            RRSession.threadSessions <- new Stack<RemoteSession>()
+        RRSession.threadSessions
+
+    static member GetSession (hostname, port, blocking, timeout) =
+        RRSession.Sessions.Push(
+            RemoteSession.GetConnection(hostname, port, blocking, timeout))
+        RRSession.Sessions.Peek()
+
+    static member CurrentSession () =
+        if RRSession.Sessions.Count > 0 then
+            RRSession.Sessions.Peek()
+        else
+            failwith "No current RemoteSession"
+
+    new(?hostname, ?port, ?blocking, ?timeout) =
+        new RRSession(
+            RRSession.GetSession(
+                defaultArg hostname "localhost", 
+                defaultArg port 8888,
+                defaultArg blocking false, 
+                defaultArg timeout 2))
+            
+    let mutable disposed = false
+
+    interface IDisposable with
+        member this.Dispose() =
+            if not disposed then
+                RRSession.Sessions.Pop() |> ignore
+                session.close()
+                disposed <- true

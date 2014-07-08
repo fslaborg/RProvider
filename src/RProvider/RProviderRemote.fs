@@ -9,6 +9,7 @@ open RProvider
 open RProvider.Internal.Configuration
 open RProvider.Internal
 
+// Type provider for the parameterized RemoteR type (Remote R session proxied through svSocket in local R session)
 [<TypeProvider>]
 type public RProviderRemote(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
