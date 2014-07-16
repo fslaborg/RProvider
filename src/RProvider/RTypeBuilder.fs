@@ -7,7 +7,7 @@ open System.Reflection
 open System.IO
 open System.Diagnostics
 open System.Threading
-open Samples.FSharp.ProvidedTypes
+open ProviderImplementation.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open RProvider
 open RProvider.Internal
@@ -51,7 +51,7 @@ module internal RTypeBuilder =
                                                 ProvidedParameter(makeSafeName p,  typeof<obj>, optionalValue=null)
 
                                           if hasVarArgs then
-                                            yield ProvidedParameter("paramArray", typeof<obj[]>, optionalValue=null, isParamArray=true)
+                                            yield ProvidedParameter("paramArray", typeof<obj[]>, optionalValue=null, IsParamArray=true)
                                         ]
                         
                         let paramCount = paramList.Length

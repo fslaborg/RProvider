@@ -3,7 +3,7 @@
 open System
 open System.IO
 open System.Reflection
-open Samples.FSharp.ProvidedTypes
+open ProviderImplementation.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open RProvider
 open RProvider.Internal.Configuration
