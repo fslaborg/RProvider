@@ -29,6 +29,7 @@ module internal RTypeBuilder =
             let pns = ns + "." + package
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
+            // Note use of withServer - this helps ensure we'll try to recovery from a crashed session
             pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.GetPackageDescription package
             pty.AddMembersDelayed( fun () -> 
               withServer <| fun serverDelayed ->
@@ -69,10 +70,12 @@ module internal RTypeBuilder =
                                                                      |> List.ofArray
                                                                  let namedArgs = Quotations.Expr.NewArray(typeof<obj>, namedArgs)
                                                                  let varArgs = args.[paramCount-1]
-                                                                 <@@ RInterop.call package name serializedRVal %%namedArgs %%varArgs @@>                                                 
+                                                                 //<@@ RInterop.call package name serializedRVal %%namedArgs %%varArgs @@>
+                                                                 <@@ RSession.Singleton.Call(package, name, serializedRVal, %%namedArgs, %%varArgs) @@>
                                                                else
                                                                  let namedArgs = Quotations.Expr.NewArray(typeof<obj>, args)                                            
-                                                                 <@@ RInterop.call package name serializedRVal %%namedArgs [||] @@> )
+                                                                 //<@@ RInterop.call package name serializedRVal %%namedArgs [||] @@> )
+                                                                 <@@ RSession.Singleton.Call(package, name, serializedRVal, %%namedArgs, [||]) @@> )
 
                         pm.AddXmlDocDelayed (fun () -> match titles.Value.TryFind name with 
                                                         | Some docs -> docs 
@@ -92,14 +95,73 @@ module internal RTypeBuilder =
                                                                let argsByName = args.[0]
                                                                <@@  let vals = %%argsByName: IDictionary<string,obj>
                                                                     let valSeq = vals :> seq<KeyValuePair<string, obj>>
-                                                                    RInterop.callFunc package name valSeq null @@> )
-                        yield pdm :> MemberInfo                                    
+                                                                    //RInterop.callFunc package name valSeq null @@> )
+                                                                    RSession.Singleton.CallFunc(package, name, valSeq, null) @@>)
+                        yield pdm :> MemberInfo
+
+                        // Generate extension methods on RemoteSession!
+                        //Debugger.Launch()
+                        let sessionParm = ProvidedParameter("self", typeof<RProvider.RemoteSession>)
+                        let pm = ProvidedMethod(
+                                      methodName = memberName,
+                                      parameters = sessionParm :: paramList,
+                                      returnType = typeof<RProvider.RemoteSymbolicExpression>,
+                                      IsStaticMethod = true,
+                                      InvokeCode = 
+                                        fun args ->
+                                            if args.Length <> paramCount then
+                                                failwithf "Expected %d arguments and received %d" paramCount args.Length
+                                            if hasVarArgs then
+                                                let namedArgs = 
+                                                    Array.sub (Array.ofList args) 0 (paramCount-1)
+                                                    |> List.ofArray
+                                                let namedArgs = Quotations.Expr.NewArray(typeof<obj>, namedArgs)
+                                                let varArgs = args.[paramCount-1]
+                                                //<@@ RInterop.call package name serializedRVal %%namedArgs %%varArgs @@>
+                                                <@@ ((%%args.[0]:obj) :?> RemoteSession).call package name serializedRVal %%namedArgs %%varArgs @@>
+                                            else
+                                                let namedArgs = Quotations.Expr.NewArray(typeof<obj>, args)                                            
+                                                //<@@ RInterop.call package name serializedRVal %%namedArgs [||] @@> )
+                                                <@@ ((%%args.[0]:obj) :?> RemoteSession).call package name serializedRVal %%namedArgs, [||] @@> )
+
+                        pm.AddXmlDocDelayed (fun () -> match titles.Value.TryFind name with 
+                                                        | Some docs -> docs 
+                                                        | None -> "No documentation available")                                    
+                        
+                        yield pm :> MemberInfo
+
+                        // Yield an additional overload that takes a Dictionary<string, object>
+                        // This variant is more flexible for constructing lists, data frames etc.
+                        let pdm = ProvidedMethod(
+                                      methodName = memberName,
+                                      parameters = [ sessionParm; ProvidedParameter("paramsByName",  typeof<IDictionary<string,obj>>) ],
+                                      returnType = typeof<RDotNet.SymbolicExpression>,
+                                      IsStaticMethod = true,
+                                      InvokeCode = fun args -> if args.Length <> 1 then
+                                                                 failwithf "Expected 1 argument and received %d" args.Length
+                                                               let argsByName = args.[0]
+                                                               <@@  let vals = %%argsByName: IDictionary<string,obj>
+                                                                    let valSeq = vals :> seq<KeyValuePair<string, obj>>
+                                                                    //RInterop.callFunc package name valSeq null @@> )
+                                                                    ((%%args.[0]:obj) :?> RemoteSession).callFunc package name valSeq null @@>)
+                        yield pdm :> MemberInfo
                     | RValue.Value ->
                         yield ProvidedProperty(
                                 propertyName = memberName,
                                 propertyType = typeof<RDotNet.SymbolicExpression>,
                                 IsStatic = true,
-                                GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
+                                //GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
+                                GetterCode = fun _ -> <@@ RSession.Singleton.Call(package, name, serializedRVal, [| |], [| |]) @@>) :> MemberInfo
+
+                        // Add a method to retrieve the property for RemoteSession
+                        yield ProvidedMethod(
+                                methodName = memberName,
+                                parameters = [ProvidedParameter("self", typeof<RProvider.RemoteSession>)],
+                                returnType = typeof<RemoteSymbolicExpression>,
+                                IsStaticMethod = true,
+                                //GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
+                                InvokeCode = fun args -> <@@ ((%%args.[0]:obj) :?> RemoteSession).call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
+                      
                       
             yield pns, [ pty ] }
     
