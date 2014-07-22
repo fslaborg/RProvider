@@ -8,3 +8,5 @@
 * 1.0.10 - GC fixes in R.NET
 * 1.0.11 - Bug fixes (include FSharp.Core, fix resource resolution).
 * 1.0.12 - Use correct folders in NuGet package
+* 1.0.13 - Fix the Print extension method
+* 1.0.14 - Fix the module clash error in FsLab (#46)

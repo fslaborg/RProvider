@@ -48,11 +48,11 @@
   </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
-    <Compile Include="..\Common\ProvidedTypes-0.2.fsi">
-      <Link>ProvidedTypes-0.2.fsi</Link>
+    <Compile Include="..\Common\ProvidedTypes.fsi">
+      <Link>ProvidedTypes.fsi</Link>
     </Compile>
-    <Compile Include="..\Common\ProvidedTypes-0.2.fs">
-      <Link>ProvidedTypes-0.2.fs</Link>
+    <Compile Include="..\Common\ProvidedTypes.fs">
+      <Link>ProvidedTypes.fs</Link>
     </Compile>
     <Compile Include="$(SolutionDir)src\Common\AssemblyInfo.fs">
       <Link>AssemblyInfo.fs</Link>
