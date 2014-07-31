@@ -7,6 +7,43 @@
 (** 
 # RemoteR Provider Tutorial
 
+## Introduction
+
+Interaction with R sessions running in a separate process, or even a separate machine
+on the network, can be performed using the RProvider.RemoteSession class. The
+RemoteSession class can copy variables to the remote R session, as well as from the
+remote R session, and invoke arbitrary R code in the remote session.
+
+This can be very useful if you want to switch between working in Fsi and working in
+RGui or RStudio, or if you want to offload some processing in R to another machine.
+
+To make the experience of using RemoteSession instances more like using the R type
+provided by RProvider the RemoteR type provider extends the RemoteSession class
+with methods and properties corresponding to functions and properties defined by R packages
+for the local R installation. R packages referenced by the module "open" syntax will have 
+their functions and properties automatically added to the RemoteSession class, just as they
+are for the R type. It's important to remember that type discovery is performed using the
+local R installation; if you are connected to an R session running on a separate machine
+it may not have the package you reference installed and attempting to call a function in
+the remote R session provided by a package that isn't installed on that machine will result
+in a runtime error.
+
+## Pre-requisites
+
+The RemoteSession class requires the svSocket package in R. This package must be installed
+in R for the local R installation. If you connect to a remote machine, the R installation
+for that remote machine must also have the svSocket package installed
+
+## Tutorial Setup
+
+These instructions assume that you are running RGui or RStudio on the same machine as you
+are running Fsi.
+
+    * Start RGui or RStudio
+    * Make sure that svSocket package is installed
+    * In R, `require(svSocket)`
+    * In R, `startSocketServer()`
+
 ## Referencing the provider
 
 In order to use the RemoteR provider, you need to reference the `RDotNet.dll` library
@@ -22,6 +59,10 @@ we use `open` to reference a number of packages including `stats`, `tseries` and
  
 open RDotNet
 open RProvider
+(**
+These statements import the R packages named. Discovery of the packages is performed
+using the local R installation.
+*)
 open RProvider.``base``
 open RProvider.stats
 open RProvider.tseries
