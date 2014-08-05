@@ -32,6 +32,21 @@ type LaunchResult<'T> =
     | LaunchError of string
 
 type RemoteSession(connectionName) as this=
+    static let getConnection (host : string option) (port : int option) (blocking : bool option) (timeout : int option) =
+        let host = defaultArg host "localhost"
+        let port = defaultArg port 8888
+        let blocking =
+            match blocking with
+            | Some true -> "TRUE"
+            | _ -> "FALSE"
+        let timeout = defaultArg timeout 2 // seconds
+        let connectionName = getNextSymbolName()
+        loadPackage("svSocket")
+        let conn = eval(sprintf "%s <- tryCatch( {socketConnection(host='%s', port='%d', blocking='%s', timeout='%d')}, error=function(cond) {return(NULL)}, warning=function(cond) {return(NULL)})" connectionName host port blocking timeout)
+        if (eval(sprintf "is.null(%s)" connectionName).GetValue<bool>()) then
+            failwith (sprintf "Failed to connect to remote R session with host %s on port %d. Are you sure that the R host application is running?" host port)
+        connectionName
+
     static member LaunchRProfile port = 
         let rprofileFmt = sprintf """
         .First <- function() {
@@ -51,20 +66,7 @@ type RemoteSession(connectionName) as this=
         rprofileFmt port port port
 
     static member GetConnection(?host, ?port, ?blocking, ?timeout) =
-        let host = defaultArg host "localhost"
-        let port = defaultArg port 8888
-        let blocking =
-            match blocking with
-            | Some true -> "TRUE"
-            | _ -> "FALSE"
-        let timeout = defaultArg timeout 2 // seconds
-        let connectionName = getNextSymbolName()
-        loadPackage("svSocket")
-        let conn = eval(sprintf "%s <- tryCatch( {socketConnection(host='%s', port='%d', blocking='%s', timeout='%d')}, error=function(cond) {return(NULL)}, warning=function(cond) {return(NULL)})" connectionName host port blocking timeout)
-        if (eval(sprintf "is.null(%s)" connectionName).GetValue<bool>()) then
-            failwith (sprintf "Failed to connect to remote R session with host %s on port %d. Are you sure that the R host application is running?" host port)
-        else
-            new RemoteSession(connectionName)
+        new RemoteSession(getConnection host port blocking timeout)
         
     static member GetConnection(config: SessionConfig) =
         RemoteSession.GetConnection(host=config.hostName, port=config.port, blocking=config.blocking, timeout=config.timeout)
@@ -93,6 +95,9 @@ type RemoteSession(connectionName) as this=
                 LaunchResult p
             with e ->
                 reraise()
+
+    new (?host, ?port, ?blocking, ?timeout) =
+        new RemoteSession(getConnection host port blocking timeout)
 
     member this.connectionName = connectionName
     member this.isClosed = false

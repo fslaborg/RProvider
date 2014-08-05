@@ -9,7 +9,7 @@ open RProvider
 open RProvider.Internal.Configuration
 open RProvider.Internal
 
-// Type provider for the RR type (Remote R session proxied through svSocket in local R session)
+// Type provider for the RemoteR type (Remote R session proxied through svSocket in local R session)
 [<TypeProvider>]
 type public RemoteRProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()

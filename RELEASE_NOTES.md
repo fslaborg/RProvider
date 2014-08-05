@@ -11,3 +11,4 @@
 * 1.0.13 - Fix the Print extension method
 * 1.0.14 - Fix the module clash error in FsLab (#46). Fix assembly resolution (#117). Update NuGET and automatically update FAKE(#116).
 * 1.0.15 - Fix bad upload to NuGet.org
+* 1.0.16-rc1 - RemoteSession for Remote R session interaction

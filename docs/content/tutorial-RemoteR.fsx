@@ -32,7 +32,12 @@ in a runtime error.
 
 The RemoteSession class requires the svSocket package in R. This package must be installed
 in R for the local R installation. If you connect to a remote machine, the R installation
-for that remote machine must also have the svSocket package installed
+for that remote machine must also have the svSocket package installed.
+
+As of 8/1/2014 a patched version of the compiler is required for the type provider that adds
+the extension methods to RemoteSession. The source for this version and can be downloaded from
+of the compiler can be downloaded and built from here:
+[Extension Methods fork on CodePlex](https://visualfsharp.codeplex.com/SourceControl/network/forks/dsyme/cleanup/contribution/6853)
 
 ## Tutorial Setup
 
@@ -71,6 +76,9 @@ open RProvider.graphics
 open System
 open System.Net
 
+/// Constructs a new RemoteSession. If you've compiled with an F# compiler that supports
+/// generating extension methods the RR instance will provide the same functions as the
+/// R type would given the R package imports above: base, stats, tseries, and graphics
 let RR = new RemoteSession()
 
 (**
@@ -110,9 +118,13 @@ Now, we're ready to call R functions using the type provider. The following snip
 differences of the resulting vector using `R.diff`:
 *)
 
-// Retrieve stock price time series and compute returns
+/// Retrieve stock price time series and compute returns
 let msft = msftOpens |> RR.log |> RR.diff
 
+/// Alternately, the RemoteR class is provided which is equivalent to the R class; however,
+/// it takes a RemoteSession instance as the first argument and uses that RemoteSession instance
+/// to make all R calls.
+///let msft = msftOpens |> (fun a -> RemoteR.log(RR, a) |> (fun a -> RemoteR.diff(RR, a)
 
 (**
 If you want to see the resulting values, you can call `msft.AsVector()` in F# Interactive.

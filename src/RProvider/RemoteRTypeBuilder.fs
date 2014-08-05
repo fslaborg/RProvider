@@ -123,7 +123,7 @@ module internal RemoteRTypeBuilder =
           match GetServer().RInitValue with
           | Some error ->
               // add an error static property (shown when typing `R.`)
-              let pty = ProvidedTypeDefinition(providerAssembly, ns, "RRR", Some(typeof<obj>))
+              let pty = ProvidedTypeDefinition(providerAssembly, ns, "RemoteR", Some(typeof<obj>))
               let prop = ProvidedProperty("<Error>", typeof<string>, IsStatic = true, GetterCode = fun _ -> <@@ error @@>)
               prop.AddXmlDoc error
               pty.AddMember prop
