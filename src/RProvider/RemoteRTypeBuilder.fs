@@ -68,13 +68,13 @@ module internal RemoteRTypeBuilder =
                                                     |> List.ofArray
                                                 let namedArgs = Quotations.Expr.NewArray(typeof<obj>, namedArgs)
                                                 let varArgs = args.[paramCount]
-                                                <@@ (%%args.[0]:RemoteSession).call package name serializedRVal %%namedArgs %%varArgs @@>
+                                                <@@ (%%args.[0]:RemoteSession).Connection.call package name serializedRVal %%namedArgs %%varArgs @@>
                                             else
                                                 let namedArgs =
                                                     Array.sub (Array.ofList args) 1 (args.Length-1)
                                                     |> List.ofArray
                                                 let namedArgs = Quotations.Expr.NewArray(typeof<obj>, namedArgs)
-                                                <@@ (%%args.[0]:RemoteSession).call package name serializedRVal %%namedArgs [||] @@>
+                                                <@@ (%%args.[0]:RemoteSession).Connection.call package name serializedRVal %%namedArgs [||] @@>
                                         )
                             pm.AddXmlDocDelayed (
                                 fun () ->
@@ -96,7 +96,7 @@ module internal RemoteRTypeBuilder =
                                             let argsByName = args.[1]
                                             <@@ let vals = %%argsByName: IDictionary<string,obj>
                                                 let valSeq = vals :> seq<KeyValuePair<string,obj>>
-                                                (%%args.[0]:RemoteSession).callFunc package name valSeq null @@>
+                                                (%%args.[0]:RemoteSession).Connection.callFunc package name valSeq null @@>
                                         )
                             yield pdm :> MemberInfo
                         
@@ -105,7 +105,7 @@ module internal RemoteRTypeBuilder =
                             yield ProvidedProperty(
                                     propertyName = memberName,
                                     propertyType = typeof<RemoteSymbolicExpression>,
-                                    GetterCode = fun args -> <@@ ((%%args.[0]:obj) :?> RemoteSession).call package name serializedRVal [||] [||] @@>
+                                    GetterCode = fun args -> <@@ ((%%args.[0]:obj) :?> RemoteSession).Connection.call package name serializedRVal [||] [||] @@>
                                     ) :> MemberInfo
                 ]
 

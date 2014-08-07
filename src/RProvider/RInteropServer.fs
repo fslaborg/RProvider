@@ -28,10 +28,10 @@ type RInteropServer() =
         | RInit.RInitError error -> Some error
         | _ -> None
 
-    member private x.GetRemoteSession(config:SessionConfig) =
+    member private x.GetRemoteConnection(config:SessionConfig) =
         let sessionKey = (config.hostName, config.port, config.blocking)
         if not (remoteSessions.ContainsKey sessionKey) then 
-            remoteSessions <- remoteSessions.Add(sessionKey, RemoteSession.GetConnection(config))
+            remoteSessions <- remoteSessions.Add(sessionKey, RemoteConnection.GetConnection(config))
         remoteSessions.[sessionKey]
 
     member x.GetPackages() =
@@ -40,7 +40,7 @@ type RInteropServer() =
 
     member x.GetPackages(remoteSession) =
         exceptionSafe <| fun () ->
-            x.GetRemoteSession(remoteSession).getPackages()
+            x.GetRemoteConnection(remoteSession).getPackages()
          
     member x.LoadPackage(package) =
         exceptionSafe <| fun () ->
@@ -48,11 +48,11 @@ type RInteropServer() =
 
     member x.LoadPackage(package, remoteSession) =
         exceptionSafe <| fun () ->
-            x.GetRemoteSession(remoteSession).loadPackage package
+            x.GetRemoteConnection(remoteSession).loadPackage package
         
     member x.GetBindings(package, remoteSession) =
         exceptionSafe <| fun () ->
-            x.GetRemoteSession(remoteSession).getBindings package
+            x.GetRemoteConnection(remoteSession).getBindings package
 
     member x.GetBindings(package) =
         exceptionSafe <| fun () ->
@@ -60,7 +60,7 @@ type RInteropServer() =
         
     member x.GetFunctionDescriptions(package:string, remoteSession) =
         exceptionSafe <| fun () ->
-            x.GetRemoteSession(remoteSession).getFunctionDescriptions package
+            x.GetRemoteConnection(remoteSession).getFunctionDescriptions package
     
     member x.GetFunctionDescriptions(package:string) =
         exceptionSafe <| fun () ->
@@ -68,7 +68,7 @@ type RInteropServer() =
         
     member x.GetPackageDescription(package, remoteSession) =
         exceptionSafe <| fun () ->
-            x.GetRemoteSession(remoteSession).getPackageDescription package
+            x.GetRemoteConnection(remoteSession).getPackageDescription package
     
     member x.GetPackageDescription(package) =
         exceptionSafe <| fun () ->

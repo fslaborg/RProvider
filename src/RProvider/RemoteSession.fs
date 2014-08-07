@@ -7,6 +7,7 @@ open RProvider.Internal.Logging
 open RProvider.Internal.RInit
 open RProvider.RInterop
 open RProvider.RInteropInternal
+open System.Runtime.CompilerServices
 open System
 open System.Collections.Generic
 open System.Diagnostics
@@ -31,7 +32,7 @@ type LaunchResult<'T> =
     | LaunchResult of 'T
     | LaunchError of string
 
-type RemoteSession(connectionName) as this=
+type RemoteConnection(connectionName) as this=
     static let getConnection (host : string option) (port : int option) (blocking : bool option) (timeout : int option) =
         let host = defaultArg host "localhost"
         let port = defaultArg port 8888
@@ -66,10 +67,10 @@ type RemoteSession(connectionName) as this=
         rprofileFmt port port port
 
     static member GetConnection(?host, ?port, ?blocking, ?timeout) =
-        new RemoteSession(getConnection host port blocking timeout)
+        new RemoteConnection(getConnection host port blocking timeout)
         
     static member GetConnection(config: SessionConfig) =
-        RemoteSession.GetConnection(host=config.hostName, port=config.port, blocking=config.blocking, timeout=config.timeout)
+        RemoteConnection.GetConnection(host=config.hostName, port=config.port, blocking=config.blocking, timeout=config.timeout)
 
     static member LaunchRGui (?port: int, ?fileName: string) =
         match RInit.initResult.Value with
@@ -83,7 +84,7 @@ type RemoteSession(connectionName) as this=
                 let tempFS = new StreamWriter(rprofilePath)
                 let port = defaultArg port 8888
                 let fileName = defaultArg fileName "Rgui"
-                tempFS.Write(RemoteSession.LaunchRProfile port)
+                tempFS.Write(RemoteConnection.LaunchRProfile port)
                 tempFS.Flush()
                 tempFS.Close()
                 let startInfo = ProcessStartInfo(UseShellExecute=false, FileName=fileName, WorkingDirectory=tempDirectory)
@@ -97,7 +98,7 @@ type RemoteSession(connectionName) as this=
                 reraise()
 
     new (?host, ?port, ?blocking, ?timeout) =
-        new RemoteSession(getConnection host port blocking timeout)
+        new RemoteConnection(getConnection host port blocking timeout)
 
     member this.connectionName = connectionName
     member this.isClosed = false
@@ -112,6 +113,11 @@ type RemoteSession(connectionName) as this=
     member this.getHandleValue (handle: RemoteSymbolicExpression) =
         this.evalToSymbolicExpression(handle.name)
 
+    member this.toHandle value =
+        let handleName = getNextSymbolName()
+        let rName, rValue = toR value
+        this.assign handleName rValue
+
     member this.evalToHandle expr =
         let handleName = getNextSymbolName()
         let expr = this.makeSafeExpr expr
@@ -122,9 +128,10 @@ type RemoteSession(connectionName) as this=
         let expr = this.makeSafeExpr expr
         eval(sprintf "evalServer(%s, '%s'); TRUE');" this.connectionName expr) |> ignore
 
-    member this.assign name value =
+    member this.assign name (value : obj) =
         let symbolName, se = toR value
         eval(sprintf "evalServer(%s, %s, %s)" this.connectionName name symbolName) |> ignore
+        new RemoteSymbolicExpression(this.getHandleValue, name)
         
     member this.getRemoteSymbol name =
         this.evalToSymbolicExpression name
@@ -137,7 +144,7 @@ type RemoteSession(connectionName) as this=
         | arg ->
             let symbolName = getNextSymbolName()
             temporaryHandles.Add(symbolName)
-            this.assign symbolName arg
+            this.assign symbolName arg |> ignore
             new StringLiteral(symbolName) :> obj
     
     member this.resolveHandles (args: obj[]) (temporaryHandles: System.Collections.Generic.List<string>) =
@@ -225,39 +232,31 @@ type RemoteSession(connectionName) as this=
         if not this.isClosed then
             this.close()
 
-type RRSession (session) =
-    [<ThreadStatic; DefaultValue>]
-    static val mutable private threadSessions : Stack<RemoteSession>
+type RemoteSession (remoteConnection : RemoteConnection) as x =
+    new (?host, ?port, ?blocking, ?timeout) =
+        new RemoteSession(new RemoteConnection(?host=host, ?port=port, ?blocking=blocking, ?timeout=timeout))
 
-    static member private Sessions =
-        if RRSession.threadSessions = null then
-            RRSession.threadSessions <- new Stack<RemoteSession>()
-        RRSession.threadSessions
+    new (config : SessionConfig) =
+        new RemoteSession(RemoteConnection.GetConnection(config))
 
-    static member GetSession (hostname, port, blocking, timeout) =
-        RRSession.Sessions.Push(
-            RemoteSession.GetConnection(hostname, port, blocking, timeout))
-        RRSession.Sessions.Peek()
+    member x.Connection = remoteConnection
 
-    static member CurrentSession () =
-        if RRSession.Sessions.Count > 0 then
-            RRSession.Sessions.Peek()
-        else
-            failwith "No current RemoteSession"
+    static member (?<-) (session : RemoteSession, name : string, value) =
+        session.Connection.assign name value
 
-    new(?hostname, ?port, ?blocking, ?timeout) =
-        new RRSession(
-            RRSession.GetSession(
-                defaultArg hostname "localhost", 
-                defaultArg port 8888,
-                defaultArg blocking false, 
-                defaultArg timeout 2))
-            
-    let mutable disposed = false
+    static member (?) (session : RemoteSession, name : string) =
+        session.Connection.evalToHandle name
 
-    interface IDisposable with
-        member this.Dispose() =
-            if not disposed then
-                RRSession.Sessions.Pop() |> ignore
-                session.close()
-                disposed <- true
+[<ExtensionAttribute>]
+type RemoteSessionUtil =
+    [<ExtensionAttribute>]
+    static member ToLocalValue (value : obj) =
+        toR value
+
+    [<ExtensionAttribute>]
+    static member ToLocalValue (value : RemoteSymbolicExpression) =
+        value.GetValue()
+
+    [<ExtensionAttribute>]
+    static member ToRemoteValue (value : obj, session : RemoteSession) =
+        session.Connection.toHandle value

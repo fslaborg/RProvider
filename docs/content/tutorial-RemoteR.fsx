@@ -159,6 +159,15 @@ let data =
 let df = RR.data_frame(namedParams data)
 RR.pairs(df)
 
+// Create variable in the remote session and copy a value to it
+RR?foo <- "foo"
+// Retrieve a remote variable as a RemoteSymbolicExpression
+let remoteFoo = RR?foo 
+// Get a local SymbolicExpression for the remote one
+let localFoo = remoteFoo.ToLocalValue()
+// Get an unnamed RemoteSymbolicExpression for a value
+(32).ToRemoteValue(RR)
+
 (**
 As a result, you should see a window showing results similar to these:
 
