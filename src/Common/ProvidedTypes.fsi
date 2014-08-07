@@ -100,6 +100,7 @@ type ProvidedMethod =
     /// Add a custom attribute to the provided method definition.
     member AddCustomAttribute : CustomAttributeData -> unit
 
+    member ExtensionAttribute : bool with set
 
 
 /// Represents an erased provided property.
@@ -356,6 +357,8 @@ type ProvidedTypeDefinition =
     /// Suppress System.Object entries in intellisense menus in instances of this provided type 
     member HideObjectMethods  : bool with set
 
+    member ExtensionAttribute : bool with set
+
     /// Get or set a flag indicating if the ProvidedTypeDefinition is erased
     member IsErased : bool  with get,set
 
@@ -382,6 +385,7 @@ type ProvidedAssembly =
     new : assemblyFileName:string -> ProvidedAssembly
     /// <summary>
     /// Emit the given provided type definitions as part of the assembly 
+
     /// and adjust the 'Assembly' property of all provided type definitions to return that
     /// assembly.
     ///

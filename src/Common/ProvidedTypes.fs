@@ -19,6 +19,7 @@ open System.Reflection
 open System.Reflection.Emit
 open System.Linq.Expressions
 open System.Collections.Generic
+open System.Runtime.CompilerServices
 open Microsoft.FSharp.Core.CompilerServices
 
 type E = Quotations.Expr
@@ -77,6 +78,16 @@ module internal Misc =
     type CustomAttributeData = Microsoft.FSharp.Core.CompilerServices.IProvidedCustomAttributeData
 #endif
 
+    let mkExtensionAttributeData() =
+#if FX_NO_CUSTOMATTRIBUTEDATA
+        { new IProvidedCustomAttributeData with
+#else
+        { new CustomAttributeData() with
+#endif
+              member __.Constructor = typeof<ExtensionAttribute>.GetConstructors().[0]
+              member __.ConstructorArguments = upcast [| |]
+              member __.NamedArguments = upcast [||] }
+
     let mkEditorHideMethodsCustomAttributeData() = 
 #if FX_NO_CUSTOMATTRIBUTEDATA
         { new IProvidedCustomAttributeData with 
@@ -132,6 +143,7 @@ module internal Misc =
         let mutable xmlDocDelayed = None
         let mutable xmlDocAlwaysRecomputed = None
         let mutable hasParamArray = false
+        let mutable extensionAttribute = false
 
         // XML doc text that we only compute once, if any. This must _not_ be forced until the ConstructorArguments
         // property of the custom attribute is foced.
@@ -155,9 +167,11 @@ module internal Misc =
         member __.AddXmlDocDelayed(xmlDoc : unit -> string) = xmlDocDelayed <- Some xmlDoc
         member this.AddXmlDoc(text:string) =  this.AddXmlDocDelayed (fun () -> text)
         member __.HideObjectMethods with set v = hideObjectMethods <- v
+        member __.ExtensionAttribute with set v = extensionAttribute <- v
         member __.AddCustomAttribute(attribute) = customAttributes.Add(attribute)
         member __.GetCustomAttributesData() = 
             [| yield! customAttributesOnce.Force()
+               if extensionAttribute then yield mkExtensionAttributeData()
                match xmlDocAlwaysRecomputed with None -> () | Some f -> customAttributes.Add(mkXmlDocCustomAttributeData (f()))  |]
             :> IList<_>
 
@@ -582,6 +596,7 @@ type ProvidedMethod(methodName: string, parameters: ProvidedParameter list, retu
     member this.AddXmlDoc xmlDoc                            = customAttributesImpl.AddXmlDoc xmlDoc
     member this.AddObsoleteAttribute (msg,?isError)         = customAttributesImpl.AddObsolete (msg,defaultArg isError false)
     member this.AddDefinitionLocation(line,column,filePath) = customAttributesImpl.AddDefinitionLocation(line, column, filePath)
+    member this.ExtensionAttribute with set v               = customAttributesImpl.ExtensionAttribute <- v
     member __.AddCustomAttribute(attribute) = customAttributesImpl.AddCustomAttribute(attribute)
     member __.GetCustomAttributesDataImpl() = customAttributesImpl.GetCustomAttributesData()
 #if FX_NO_CUSTOMATTRIBUTEDATA
@@ -1239,6 +1254,7 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
     member this.AddObsoleteAttribute (msg,?isError)         = customAttributesImpl.AddObsolete (msg,defaultArg isError false)
     member this.AddDefinitionLocation(line,column,filePath) = customAttributesImpl.AddDefinitionLocation(line, column, filePath)
     member this.HideObjectMethods with set v                = customAttributesImpl.HideObjectMethods <- v
+    member this.ExtensionAttribute with set v               = customAttributesImpl.ExtensionAttribute <- v
     member __.GetCustomAttributesDataImpl() = customAttributesImpl.GetCustomAttributesData()
     member this.AddCustomAttribute attribute                = customAttributesImpl.AddCustomAttribute attribute
 #if FX_NO_CUSTOMATTRIBUTEDATA

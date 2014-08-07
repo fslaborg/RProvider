@@ -9,9 +9,9 @@ open RProvider
 open RProvider.Internal.Configuration
 open RProvider.Internal
 
-// Type provider for the R type (Local R session)
+// Type provider for the RemoteR type (Remote R session proxied through svSocket in local R session)
 [<TypeProvider>]
-type public RProvider(cfg:TypeProviderConfig) as this =
+type public RemoteRProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
     let useReflectionOnly = true
@@ -31,9 +31,9 @@ type public RProvider(cfg:TypeProviderConfig) as this =
     // Generate all the types and log potential errors
     let buildTypes () =
         try 
-          for ns, types in RTypeBuilder.initAndGenerate(runtimeAssembly) do
+          for ns, types in RemoteRTypeBuilder.initAndGenerate(runtimeAssembly) do
             this.AddNamespace(ns, types)
         with e ->
-          Logging.logf "RProvider constructor failed: %O" e
+          Logging.logf "RemoteRProvider constructor failed: %O" e
           reraise()
     do buildTypes ()

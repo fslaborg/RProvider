@@ -59,7 +59,9 @@
     </Compile>
     <Compile Include="RInteropClient.fs" />
     <Compile Include="RTypeBuilder.fs" />
+    <Compile Include="RemoteRTypeBuilder.fs" />
     <Compile Include="RProvider.fs" />
+    <Compile Include="RemoteRProvider.fs" />
     <Compile Include="RData.fs" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -68,7 +70,9 @@
     <Reference Include="RDotNet">
       <HintPath>..\..\packages\R.NET.Community.1.5.15\lib\net40\RDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="RDotNet.NativeLibrary" />
+    <Reference Include="RDotNet.NativeLibrary">
+      <HintPath>..\..\packages\R.NET.Community.1.5.15\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
