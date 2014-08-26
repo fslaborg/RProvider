@@ -99,10 +99,18 @@ module internal RInteropInternal =
         lazy
             // Look for plugins co-located with RProvider.dll
             let assem = typeof<IConvertToR<_>>.Assembly
+            
+            /// The location of the RProvider assembly.
+            /// If the assembly has been shadow-copied, this will be the assembly's
+            /// original location, not the shadow-copied location.
+            let assemblyLocation =
+                if System.AppDomain.CurrentDomain.ShadowCopyFiles then
+                    (new System.Uri (assem.EscapedCodeBase)).LocalPath
+                else assem.Location
            
             let dirs = getProbingLocations()
             let catalogs : seq<Primitives.ComposablePartCatalog> = 
-              seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName(assem.Location),"*.Plugin.dll")
+              seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName assemblyLocation,"*.Plugin.dll")
                     for d in dirs do
                       yield upcast new DirectoryCatalog(d,"*.Plugin.dll")
                     yield upcast new AssemblyCatalog(assem) }
