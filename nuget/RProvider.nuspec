@@ -15,8 +15,8 @@
     <tags>@tags@</tags>
     <language>en-US</language>
     <dependencies>
-      <dependency id="R.NET.Community" version="1.5.15" />
-      <dependency id="R.NET.Community.FSharp" version="0.1.8" />
+      <dependency id="R.NET.Community" version="[1.5.15]" />
+      <dependency id="R.NET.Community.FSharp" version="[0.1.8]" />
     </dependencies>    
   </metadata>
   <files>
