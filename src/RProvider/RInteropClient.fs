@@ -43,7 +43,17 @@ module internal RInteropClient =
                         System.AppDomain.CurrentDomain.GetAssemblies()
                         |> Seq.tryFind(
                             fun a-> System.Reflection.AssemblyName.ReferenceMatchesDefinition(fsharpCoreName, a.GetName()))
-                    let exePath = Path.Combine(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location), server)
+                            
+                    /// The location of the RProvider assembly.
+                    /// If the assembly has been shadow-copied, this will be the assembly's
+                    /// original location, not the shadow-copied location.
+                    let assem = Assembly.GetExecutingAssembly()
+                    let assemblyLocation =
+                        if System.AppDomain.CurrentDomain.ShadowCopyFiles then
+                            (new System.Uri (assem.EscapedCodeBase)).LocalPath
+                        else assem.Location
+                            
+                    let exePath = Path.Combine(Path.GetDirectoryName(assemblyLocation), server)
                     let arguments = channelName
                     let startInfo = ProcessStartInfo(UseShellExecute = false, CreateNoWindow = true, FileName=exePath, Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden)
                     let p = Process.Start(startInfo, EnableRaisingEvents = true)
