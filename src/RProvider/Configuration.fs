@@ -70,9 +70,11 @@ let resolveReferencedAssembly (asmName:string) =
       getProbingLocations()
       |> Seq.tryPick (fun dir ->
           let library = Path.Combine(dir, libraryName+".dll")
-          if File.Exists(library) then 
-            let asm = Assembly.LoadFrom(library)
-            if asm.FullName = asmName then Some(asm) else None
+          if File.Exists(library) then
+            // We do a ReflectionOnlyLoad so that we can check the version
+            let refAssem = Assembly.ReflectionOnlyLoadFrom(library)
+            // If it matches, we load the actual assembly
+            if refAssem.FullName = asmName then Some(Assembly.LoadFrom(library)) else None
           else None)
              
     defaultArg asm null
