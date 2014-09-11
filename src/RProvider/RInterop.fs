@@ -103,11 +103,8 @@ module internal RInteropInternal =
             /// The location of the RProvider assembly.
             /// If the assembly has been shadow-copied, this will be the assembly's
             /// original location, not the shadow-copied location.
-            let assemblyLocation =
-                if System.AppDomain.CurrentDomain.ShadowCopyFiles then
-                    (new System.Uri (assem.EscapedCodeBase)).LocalPath
-                else assem.Location
-           
+            let assemblyLocation = assem |> getAssemblyLocation
+
             let dirs = getProbingLocations()
             let catalogs : seq<Primitives.ComposablePartCatalog> = 
               seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName assemblyLocation,"*.Plugin.dll")

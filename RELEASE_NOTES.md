@@ -12,3 +12,4 @@
 * 1.0.14 - Fix the module clash error in FsLab (#46). Fix assembly resolution (#117). Update NuGET and automatically update FAKE(#116).
 * 1.0.15 - Fix bad upload to NuGet.org
 * 1.0.16 - Fix shadow copying (#122) and require specific R.NET version
+* 1.0.17 - Fix shadow copying when referenced via a NuGet package

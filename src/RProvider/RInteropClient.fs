@@ -48,11 +48,8 @@ module internal RInteropClient =
                     /// If the assembly has been shadow-copied, this will be the assembly's
                     /// original location, not the shadow-copied location.
                     let assem = Assembly.GetExecutingAssembly()
-                    let assemblyLocation =
-                        if System.AppDomain.CurrentDomain.ShadowCopyFiles then
-                            (new System.Uri (assem.EscapedCodeBase)).LocalPath
-                        else assem.Location
-                            
+                    let assemblyLocation = assem |> RProvider.Internal.Configuration.getAssemblyLocation
+
                     let exePath = Path.Combine(Path.GetDirectoryName(assemblyLocation), server)
                     let arguments = channelName
                     let startInfo = ProcessStartInfo(UseShellExecute = false, CreateNoWindow = true, FileName=exePath, Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden)

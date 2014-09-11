@@ -26,12 +26,19 @@ let rec searchDirectories patterns dirs =
       dirs |> List.map (fun d -> Path.Combine(d, name))
       |> searchDirectories patterns
 
+/// Returns the real assembly location - when shadow copying is enabled, this
+/// returns the original assembly location (which may contain other files we need)
+let getAssemblyLocation (assem:Assembly) = 
+  if System.AppDomain.CurrentDomain.ShadowCopyFiles then
+      (new System.Uri(assem.EscapedCodeBase)).LocalPath
+  else assem.Location
+
 /// Reads the 'RProvider.dll.config' file and gets the 'ProbingLocations' 
 /// parameter from the configuration file. Resolves the directories and returns
 /// them as a list.
 let getProbingLocations() = 
   try
-    let root = getRProviderRuntimeAssembly().Location
+    let root = getRProviderRuntimeAssembly() |> getAssemblyLocation
     let config = System.Configuration.ConfigurationManager.OpenExeConfiguration(root)
     let pattern = config.AppSettings.Settings.["ProbingLocations"]
     if pattern <> null then
