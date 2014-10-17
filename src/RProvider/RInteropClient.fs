@@ -54,9 +54,17 @@ module internal RInteropClient =
                     let arguments = channelName
                     let startInfo = ProcessStartInfo(UseShellExecute = false, CreateNoWindow = true, FileName=exePath, Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden)
                     let p = Process.Start(startInfo, EnableRaisingEvents = true)
+                    let maxSeconds = 15;
+                    let maxTimeSpan = new TimeSpan(0, 0, maxSeconds);
+                    let success = serverStarted.WaitOne(maxTimeSpan)
+                    if not success then
+                        let msg = (sprintf "Failed to start the R.NET server within %d seconds. \
+                                           This indicates a loading problem.  You may be able to diagnose \
+                                           an issue by running the following command in the console and \
+                                           looking for an error message:\n\
+                                           RProvider.Server.exe %s" maxSeconds arguments)
+                        failwith msg
 
-                    let success = serverStarted.WaitOne()
-                    assert success
                     p.Exited.Add(fun _ -> lastServer <- None)
                     let server = Activator.GetObject(typeof<RInteropServer>, "ipc://" + channelName + "/RInteropServer") :?> RInteropServer
                     lastServer <- Some server
