@@ -109,17 +109,5 @@ module internal RTypeBuilder =
        [  // Get the assembly and namespace used to house the provided types
           Logging.logf "initAndGenerate: starting"
           let ns = "RProvider"
-
-          match GetServer().RInitValue with
-          | Some error ->
-              // add an error static property (shown when typing `R.`)
-              let pty = ProvidedTypeDefinition(providerAssembly, ns, "R", Some(typeof<obj>))
-              let prop = ProvidedProperty("<Error>", typeof<string>, IsStatic = true, GetterCode = fun _ -> <@@ error @@>)
-              prop.AddXmlDoc error
-              pty.AddMember prop
-              yield ns, [ pty ]
-              // add an error namespace (shown when typing `open RProvider.`)
-              yield ns + ".Error: " + error, [ pty ]
-          | _ -> 
-              yield! generateTypes ns providerAssembly
+          yield! generateTypes ns providerAssembly
           Logging.logf "initAndGenerate: finished" ]
