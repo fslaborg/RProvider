@@ -9,14 +9,20 @@ open System.Threading
 open Microsoft.Win32
 open System.IO
 open RProviderServer
+open RDotNet.NativeLibrary
 
 module internal RInteropClient =
 
     [<Literal>]
     let server = "RProvider.Server.exe"
 
-    // true to load the server in-process, false load the server out-of-process
-    let localServer = false
+    let runningInMono = if Type.GetType("Mono.Runtime") <> null then true else false
+
+    (* True to load the server in-process, false load the server out-of-process.
+       Because interprocess communication is very different on Mono versus Microsoft,
+       by default use a local server on unix/mac to avoid IPC compatibility issues.
+    *)
+    let localServer = if runningInMono then true else false
 
     let mutable lastServer = None
     let serverlock = "serverlock"
@@ -50,9 +56,16 @@ module internal RInteropClient =
                     let assem = Assembly.GetExecutingAssembly()
                     let assemblyLocation = assem |> RProvider.Internal.Configuration.getAssemblyLocation
 
-                    let exePath = Path.Combine(Path.GetDirectoryName(assemblyLocation), server)
-                    let arguments = channelName
-                    let startInfo = ProcessStartInfo(UseShellExecute = false, CreateNoWindow = true, FileName=exePath, Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden)
+
+                    let mutable exeName = Path.Combine(Path.GetDirectoryName(assemblyLocation), server)
+                    let mutable arguments = channelName
+                    // Open F# with call to Mono first if needed.
+                    if NativeUtility.IsUnix then
+                        arguments <- exeName + " "+ channelName
+                        exeName <- "mono"
+                             
+
+                    let startInfo = ProcessStartInfo(UseShellExecute = false, CreateNoWindow = true, FileName=exeName, Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden)
                     let p = Process.Start(startInfo, EnableRaisingEvents = true)
                     let maxSeconds = 15;
                     let maxTimeSpan = new TimeSpan(0, 0, maxSeconds);

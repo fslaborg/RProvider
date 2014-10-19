@@ -10,9 +10,7 @@ open System
 
 type RInteropServer() =
     inherit MarshalByRefObject()
-    
-    let initResultValue = RInit.initResult.Force()
-
+                                      
     let exceptionSafe f =
         try
             f()
@@ -20,11 +18,7 @@ type RInteropServer() =
         | ex when ex.GetType().IsSerializable -> raise ex
         | ex ->
             failwith ex.Message
-
-    member x.RInitValue =
-        match initResultValue with
-        | RInit.RInitError error -> Some error
-        | _ -> None
+                
 
     member x.GetPackages() =
         exceptionSafe <| fun () ->

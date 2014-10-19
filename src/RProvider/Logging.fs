@@ -14,8 +14,9 @@ let [<Literal>] private loggingEnabled = false
 let private logFile = 
   try
     let appd = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-    if not (Directory.Exists(appd + "\\RLogs")) then Directory.CreateDirectory(appd + "\\RLogs") |> ignore
-    appd + "\\RLogs\\log.txt"
+    let rlogDir = Path.Combine(appd,"RLogs")
+    if not (Directory.Exists(rlogDir)) then Directory.CreateDirectory(rlogDir) |> ignore
+    Path.Combine(rlogDir,  "log.txt")
   with _ -> (* Silently ignoring logging errors *) null
 
 /// Append string to a log file
