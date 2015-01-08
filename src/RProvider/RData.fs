@@ -49,7 +49,7 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
     resTy.AddMember(ctor)
 
     // For each key in the environment, provide a property..
-    for name, typ in RInteropClient.GetServer().GetRDataSymbols(longFileName) do
+    for name, typ in RInteropClient.getServer().GetRDataSymbols(longFileName) do
       match typ with 
       | Some typ ->
           // If there is a default convertor for the type, then generate

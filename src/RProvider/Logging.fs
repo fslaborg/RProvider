@@ -7,22 +7,29 @@ open System.Diagnostics
 open Microsoft.FSharp.Reflection
 open RProvider
 
-/// Change this constant to enable logging
-let [<Literal>] private loggingEnabled = false
+/// The logging is enabled by setting the RPROVIDER_LOG environment variable
+/// Alternatively, just change this constant to 'true' and logs will be 
+/// saved in the default location (see below)
+let private loggingEnabled = 
+    System.Environment.GetEnvironmentVariable("RPROVIDER_LOG") <> null
 
-/// Log file (by default "C:\Users\<user>\AppData\Roaming\RLogs\log.txt")
+/// Log file - if the RPROVIDER_LOG variable is not set, the default on  
+/// Windows is "C:\Users\<user>\AppData\Roaming\RLogs\log.txt" and on Mac 
+/// this is in "/User/<user>/.config/RLogs/log.txt")
 let private logFile = 
   try
-    let appd = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-    if not (Directory.Exists(appd + "\\RLogs")) then Directory.CreateDirectory(appd + "\\RLogs") |> ignore
-    appd + "\\RLogs\\log.txt"
+    let var = System.Environment.GetEnvironmentVariable("RPROVIDER_LOG")
+    if var <> null then var else
+      let appd = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+      if not (Directory.Exists(appd + "/RLogs")) then Directory.CreateDirectory(appd + "/RLogs") |> ignore
+      appd + "/RLogs/log.txt"
   with _ -> (* Silently ignoring logging errors *) null
 
 /// Append string to a log file
 let private writeString str =
   try
     // This serializes all writes to the log file (from multiple processes)
-    use fs = new FileStream(logFile, FileMode.OpenOrCreate, Security.AccessControl.FileSystemRights.AppendData, FileShare.Write, 4096, FileOptions.None)
+    use fs = new FileStream(logFile, FileMode.Append, Security.AccessControl.FileSystemRights.AppendData, FileShare.Write, 4096, FileOptions.None)
     use writer = new StreamWriter(fs)
     writer.AutoFlush <- true
       

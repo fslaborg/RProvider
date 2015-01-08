@@ -8,6 +8,7 @@ packages/
 temp/
 docs/output/
 *.DotSettings
+*.userprefs
 
 #################
 ## Eclipse

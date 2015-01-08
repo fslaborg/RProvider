@@ -110,7 +110,7 @@ module internal RTypeBuilder =
           Logging.logf "initAndGenerate: starting"
           let ns = "RProvider"
 
-          match GetServer().RInitValue with
+          match getServer().RInitValue with
           | Some error ->
               // add an error static property (shown when typing `R.`)
               let pty = ProvidedTypeDefinition(providerAssembly, ns, "R", Some(typeof<obj>))
