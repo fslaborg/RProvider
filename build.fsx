@@ -126,8 +126,7 @@ Target "MergeRProviderServer" (fun _ ->
 
 
 Target "RunTests" (fun _ ->
-    let xunitVersion = GetPackageVersion "packages" "xunit.runners"
-    let xunitPath = sprintf "packages/xunit.runners.%s/tools/xunit.console.clr4.exe" xunitVersion
+    let xunitPath = "packages/xunit.runners/tools/xunit.console.clr4.exe"
 
     ActivateFinalTarget "CloseTestRunner"
 
@@ -151,7 +150,6 @@ FinalTarget "CloseTestRunner" (fun _ ->
 Target "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
     let projectDescription = projectDescription.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
-    let nugetPath = ".nuget/nuget.exe"
     NuGet (fun p -> 
         { p with   
             Authors = authors
@@ -162,7 +160,7 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = String.concat " " release.Notes
             Tags = tags
             OutputPath = "bin"
-            ToolPath = nugetPath
+            ToolPath = "nuget.exe"
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         "nuget/RProvider.nuspec"

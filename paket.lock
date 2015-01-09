@@ -1,0 +1,30 @@
+NUGET
+  remote: https://www.nuget.org/api/v2
+  specs:
+    FAKE (3.13.4)
+    FsCheck (0.9.2.0)
+    FsCheck.Xunit (0.4.0.2)
+      FsCheck
+      xunit (>= 1.9.2 <  3.0)
+    FSharp.Compiler.Service (0.0.44)
+    FSharp.Data (2.0.7)
+      Zlib.Portable (>= 1.9.2)
+    FSharp.Formatting (2.4.8)
+      FSharp.Compiler.Service (>= 0.0.44)
+      Microsoft.AspNet.Razor (>= 2.0.30506.0)
+      RazorEngine (>= 3.3.0)
+    Microsoft.AspNet.Razor (2.0.30506.0)
+    R.NET.Community (1.5.15)
+    R.NET.Community.FSharp (0.1.8)
+      R.NET.Community (>= 1.5.15)
+    RazorEngine (3.3.0)
+      Microsoft.AspNet.Razor (>= 2.0.30506.0)
+    xunit (1.9.2)
+    xunit.runners (1.9.2)
+    Zlib.Portable (1.10.0)
+GITHUB
+  remote: fsprojects/FSharp.TypeProviders.StarterPack
+  specs:
+    src/DebugProvidedTypes.fs (66277f5f3b881706a2b7af30e0aedee3feee9bc0)
+    src/ProvidedTypes.fs (66277f5f3b881706a2b7af30e0aedee3feee9bc0)
+    src/ProvidedTypes.fsi (66277f5f3b881706a2b7af30e0aedee3feee9bc0)
