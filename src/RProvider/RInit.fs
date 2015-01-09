@@ -16,10 +16,17 @@ type RInitResult<'T> =
 /// at the SOFTWARE\R-core\R\InstallPath value (using HKCU or, as a second try HKLM root)
 let private getRLocation () =
     let rec getRLocationFromRCoreKey (rCore:RegistryKey) =
-        let rec keys (root:RegistryKey) =
-            seq { yield root
-                  for subKeyName in root.GetSubKeyNames() do
-                      yield! keys <| root.OpenSubKey(subKeyName) }
+        /// Iterates over all subkeys in "SOFTWARE\R-core". If a key with name "R"
+        /// exists, then it is returned first (because that's the one where the 
+        /// InstallPath should be according to the documentation).
+        let keys (rCore:RegistryKey) =
+            let rec loop (root:RegistryKey) = seq { 
+                yield root
+                for subKeyName in root.GetSubKeyNames() do
+                    yield! loop <| root.OpenSubKey(subKeyName) }
+            seq { let key = rCore.OpenSubKey "R" 
+                  if key <> null then yield key
+                  yield! loop rCore }
 
         let hasInstallPath (key:RegistryKey) =
             key.GetValueNames()
