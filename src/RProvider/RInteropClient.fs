@@ -16,6 +16,9 @@ open System.Security.Principal
 [<Literal>]
 let server = "RProvider.Server.exe"
 
+/// Thrown when we want to show the specified string as a friendly error message to the user
+exception RInitializationError of string
+
 /// true to load the server in-process, false load the server out-of-process
 let localServer = false
 
@@ -37,6 +40,22 @@ let newChannelName() =
     let tick = System.Environment.TickCount
     sprintf "RInteropServer_%d_%d_%d" pid tick salt
 
+/// On Mac and Linux, we need to run the server using 64 bit version of mono
+/// There is no standard location for this, so the user needs ~/.rprovider.conf 
+let get64bitMonoExecutable() = 
+    if Environment.OSVersion.Platform = PlatformID.Unix ||
+       Environment.OSVersion.Platform = PlatformID.MacOSX then
+        try
+            let home = Environment.GetEnvironmentVariable("HOME")
+            Logging.logf "get64bitMonoExecutable - Home: '%s'" home
+            let config = home + "/.rprovider.conf"
+            IO.File.ReadLines(config) 
+            |> Seq.pick (fun line ->
+                match line.Split('=') with
+                | [| "MONO64"; exe |] -> Some exe
+                | _ -> None )
+        with e -> raise (RInitializationError("Mono 64bit executable not set (~/.rprovider.conf missing or invalid)"))
+    else "mono" // On non-*nix systems, we *try* running just mono
 
 // Global variables for remembering the current server
 let mutable lastServer = None
@@ -53,7 +72,8 @@ let startNewServer() =
     let arguments = channelName + " \"" + tempFile + "\""
 
     // If this is Mac or Linux, we try to run "chmod" to make the server executable
-    if Environment.OSVersion.Platform = PlatformID.Unix then
+    if Environment.OSVersion.Platform = PlatformID.Unix ||
+       Environment.OSVersion.Platform = PlatformID.MacOSX then
         Logging.logf "Setting execute permission on '%s'" exePath
         try System.Diagnostics.Process.Start("chmod", "+x " + exePath).WaitForExit()
         with _ -> ()
@@ -67,8 +87,9 @@ let startNewServer() =
     let runningOnMono = try System.Type.GetType("Mono.Runtime") <> null with e -> false 
     let startInfo = 
       if runningOnMono then
+        let monoExecutable = get64bitMonoExecutable ()
         ProcessStartInfo
-         ( UseShellExecute = false, CreateNoWindow = true, FileName="mono", 
+         ( UseShellExecute = false, CreateNoWindow = true, FileName=monoExecutable, 
            Arguments = sprintf "\"%s\" %s" exePath arguments, WindowStyle = ProcessWindowStyle.Hidden )
       else 
         ProcessStartInfo
@@ -102,6 +123,13 @@ let getServer() =
             lastServer <- Some server
             Logging.logf "Got some server"
             server )
+
+/// Returns Some("...") when there is an 'expected' kind of error that we want
+/// to show in the IntelliSense in a pleasant way (R is not installed, registry
+/// key is missing or .rprovider.conf is missing)
+let tryGetInitializationError () =
+    try getServer().RInitValue 
+    with RInitializationError err -> Some(err)
 
 let withServer f =
     lock serverlock <| fun () ->

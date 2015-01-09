@@ -12,23 +12,52 @@ type RInitResult<'T> =
   | RInitResult of 'T
   | RInitError of string
 
+let private isUnixOrMac () = 
+    let platform = Environment.OSVersion.Platform 
+    // The guide at www.mono-project.com/FAQ:_Technical says to also check for the
+    // value 128, but that is only relevant to old versions of Mono without F# support
+    platform = PlatformID.MacOSX || platform = PlatformID.Unix              
+
 /// Find the R installation. First check "R_HOME" environment variable, then look 
 /// at the SOFTWARE\R-core\R\InstallPath value (using HKCU or, as a second try HKLM root)
 let private getRLocation () =
     let getRLocationFromRCoreKey (rCore:RegistryKey) =
         let key = rCore.OpenSubKey "R"
-        if key = null then RInitError "SOFTWARE\R-core exists but subkey R does not exist"
+        if key = null then RInitError "R was not found (SOFTWARE\R-core exists but subkey R does not)"
         else key.GetValue "InstallPath" |> unbox<string> |> RInitResult
 
     let locateRfromRegistry () =
+        Logging.logf "Scanning the registry"
         match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
-        | null, null -> RInitError "Reg key Software\R-core does not exist; R is likely not installed on this computer"
+        | null, null -> RInitError "R is not installed (Software\R-core does not exist)"
         | null, x 
         | x, _ -> getRLocationFromRCoreKey x
 
+    let locateRfromShellR () = 
+        Logging.logf "Calling 'R --print-home'"
+        try
+            // Run the process & read standard output
+            let ps = System.Diagnostics.ProcessStartInfo
+                      ( FileName = "R", Arguments = "--print-home",
+                        RedirectStandardOutput = true, UseShellExecute = false)
+            let p = System.Diagnostics.Process.Start(ps)
+            p.WaitForExit()
+            let path = p.StandardOutput.ReadToEnd()
+            Logging.logf "R --print-home returned: %s" path
+            RInitResult(path.Trim())
+        with e -> 
+            Logging.logf "Calling 'R --print-home' failed with: %A" e
+            RInitError("R is not installed (running 'R --print-home' failed")
+
+    // First, check R_HOME. If that's not set, then on Mac or Unix, we use 
+    // `R --print-home` and on Windows, we look at "SOFTWARE\R-core" in registry
     Logging.logf "getRLocation"
+
+    // On Mac and Unix we run "R --print-home" hoping that R is in PATH
     match Environment.GetEnvironmentVariable "R_HOME" with
-    | null -> locateRfromRegistry()
+    | null -> 
+        if isUnixOrMac() then locateRfromShellR()
+        else locateRfromRegistry()
     | rPath -> RInitResult rPath 
 
 /// Find the R installation using 'getRLocation' and add the directory to the
@@ -39,21 +68,18 @@ let private setupPathVariable () =
       match getRLocation() with
       | RInitError error -> RInitError error
       | RInitResult location ->
-          let isLinux = 
-              let platform = Environment.OSVersion.Platform 
-              // The guide at www.mono-project.com/FAQ:_Technical says to also check for the
-              // value 128, but that is only relevant to old versions of Mono without F# support
-              platform = PlatformID.MacOSX || platform = PlatformID.Unix              
           let binPath = 
-              if isLinux then 
+              if isUnixOrMac() then 
                   Path.Combine(location, "lib") 
               else
                   Path.Combine(location, "bin", if Environment.Is64BitProcess then "x64" else "i386")
+
           // Set the path
-          if not ((Path.Combine(binPath, "libR.so") |> File.Exists) || (Path.Combine(binPath,"R.dll") |> File.Exists)) then
+          if not ((Path.Combine(binPath, "libR.dylib") |> File.Exists) || 
+                  (Path.Combine(binPath, "R.dll") |> File.Exists)) then
               RInitError (sprintf "No R engine at %s" binPath)
           else
-              // Set the path
+              Logging.logf "setupPathVariable: path='%s', home='%s'" binPath location
               REngine.SetEnvironmentVariables(binPath, location)
               Logging.logf "setupPathVariable completed"
               RInitResult ()
@@ -71,7 +97,7 @@ let initResult = Lazy<_>(fun () -> setupPathVariable())
 /// Lazily initialized R engine.
 let internal engine = Lazy<_>(fun () ->
     try
-        Logging.logf "engine: Creating and initializing instance" 
+        Logging.logf "engine: Creating and initializing instance (sizeof<IntPtr>=%d)" IntPtr.Size 
         initResult.Force() |> ignore
         let engine = REngine.GetInstance(null, true, null, characterDevice)
         System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose()) 
