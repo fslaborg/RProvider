@@ -4,9 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7ff9cfa3-2516-4970-9dd8-54c7d4ca24aa}</ProjectGuid>
+    <ProjectGuid>{7FF9CFA3-2516-4970-9DD8-54C7D4CA24AA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>RProvider</RootNamespace>
     <AssemblyName>RProvider.Server</AssemblyName>
@@ -25,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>../../bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <OtherFlags>
@@ -35,7 +33,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>../../bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
@@ -63,21 +61,16 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="FSharp.Core" />
     <Reference Include="mscorlib" />
     <Reference Include="RDotNet">
       <HintPath>..\..\packages\R.NET.Community.1.5.15\lib\net40\RDotNet.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.FSharp">
       <HintPath>..\..\packages\R.NET.Community.FSharp.0.1.8\lib\net40\RDotNet.FSharp.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
       <HintPath>..\..\packages\R.NET.Community.1.5.15\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -89,8 +82,7 @@
   <ItemGroup>
     <ProjectReference Include="RProvider.Runtime.fsproj">
       <Name>RProvider.Runtime</Name>
-      <Project>{80fd4284-c7bd-4170-8cc3-41e8548402e4}</Project>
-      <Private>True</Private>
+      <Project>{80FD4284-C7BD-4170-8CC3-41E8548402E4}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
