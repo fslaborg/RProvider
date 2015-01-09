@@ -20,10 +20,8 @@ open System.IO
 module internal RTypeBuilder =
     
     /// Assuming initialization worked correctly, generate the types using R engine
-    let generateTypes ns asm = 
-        withServer <| fun server ->
-        seq {
-        // Expose all available packages as namespaces
+    let generateTypes ns asm = withServer <| fun server ->
+      [ // Expose all available packages as namespaces
         Logging.logf "generateTypes: getting packages"
         for package in server.GetPackages() do
             let pns = ns + "." + package
@@ -101,7 +99,7 @@ module internal RTypeBuilder =
                                 IsStatic = true,
                                 GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
                       
-            yield pns, [ pty ] }
+            yield pns, [ pty ] ]
     
     /// Check if R is installed - if no, generate type with properties displaying
     /// the error message, otherwise go ahead and use 'generateTypes'!
@@ -110,7 +108,7 @@ module internal RTypeBuilder =
           Logging.logf "initAndGenerate: starting"
           let ns = "RProvider"
 
-          match getServer().RInitValue with
+          match tryGetInitializationError() with
           | Some error ->
               // add an error static property (shown when typing `R.`)
               let pty = ProvidedTypeDefinition(providerAssembly, ns, "R", Some(typeof<obj>))

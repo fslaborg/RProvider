@@ -291,7 +291,9 @@ module internal RInteropInternal =
     let eval (expr: string) = 
         Logging.logWithOutput characterDevice (fun () ->
             Logging.logf "eval(%s)" expr
-            engine.Value.Evaluate(expr) )
+            let res = engine.Value.Evaluate(expr) 
+            Logging.logf "eval(%s) returned %A" expr res
+            res )
 
     let evalTo (expr: string) (symbol: string) = 
         Logging.logWithOutput characterDevice (fun () ->
