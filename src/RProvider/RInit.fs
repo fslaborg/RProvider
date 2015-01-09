@@ -16,9 +16,15 @@ type RInitResult<'T> =
 /// at the SOFTWARE\R-core\R\InstallPath value (using HKCU or, as a second try HKLM root)
 let private getRLocation () =
     let getRLocationFromRCoreKey (rCore:RegistryKey) =
-        let key = rCore.OpenSubKey "R"
-        if key = null then RInitError "SOFTWARE\R-core exists but subkey R does not exist"
-        else key.GetValue "InstallPath" |> unbox<string> |> RInitResult
+        let rKey = rCore.OpenSubKey "R"
+        if rKey = null then RInitError "SOFTWARE\R-core exists but subkey R does not exist"
+        else match rKey.GetValue "InstallPath" |> unbox<string> with
+             | null -> match rKey.GetSubKeyNames() |> Array.toList with
+                       | [] -> RInitError "SOFTWARE\R-core\R exists but no subkeys"
+                       | verKeyName :: _ -> match rKey.OpenSubKey(verKeyName).GetValue("InstallPath") |> unbox<string> with
+                                            | null -> RInitError (sprintf "SOFTWARE\R-core\R\%s exists but no InstallPath" verKeyName)
+                                            | path -> RInitResult path
+             | path -> RInitResult path
 
     let locateRfromRegistry () =
         match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
@@ -39,6 +45,7 @@ let private setupPathVariable () =
       match getRLocation() with
       | RInitError error -> RInitError error
       | RInitResult location ->
+          Logging.logf "R locataion %s" location
           let isLinux = 
               let platform = Environment.OSVersion.Platform 
               // The guide at www.mono-project.com/FAQ:_Technical says to also check for the
