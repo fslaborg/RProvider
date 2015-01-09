@@ -229,8 +229,6 @@ Target "AllCore" DoNothing
 "AssemblyInfo"
   ==> "BuildCore"
   ==> "AllCore"
-"MergeRProviderServer" 
-  ==> "AllCore"
 
 "All" 
   ==> "CleanDocs" 

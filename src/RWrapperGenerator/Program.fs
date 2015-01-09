@@ -73,7 +73,7 @@ let generatePackage (writer: TextWriter) (exposedNames: HashSet<string>) (packag
 
     loadPackage packageName
 
-    for name, rval in Map.toSeq (getBindings packageName) do
+    for name, rval in getBindings packageName do
         let name = if exposedNames.Contains(name) then packageName + "." + name else name
                 
         match rval with

@@ -71,12 +71,12 @@ module internal EventLoop =
 type RInteropServer() =
     inherit MarshalByRefObject()
     
-    member x.RInitValue : string option =
+    member x.RInitValue =
         // No need for event loop here, because this is initialized
         // when the event loop starts (so initResult has value now)
         match RInit.initResult.Value with
-        | RInit.RInitError error -> Some error
-        | _ -> None
+        | RInit.RInitError error -> error
+        | _ -> null
        
     member x.GetPackages() =
         EventLoop.runServerCommandSafe getPackages

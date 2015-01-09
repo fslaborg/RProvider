@@ -98,10 +98,10 @@ let startNewServer() =
     
     // Start the process and wait until it starts & deletes temp file
     let p = Process.Start(startInfo)
-    try Async.RunSynchronously(waitUntilDeleted tempFile, 10*1000)
+    try Async.RunSynchronously(waitUntilDeleted tempFile, 20*1000)
     with :? System.TimeoutException ->
         failwith
-          ( "Failed to start the R.NET server within 10 seconds." +
+          ( "Failed to start the R.NET server within 20 seconds." +
             "To enable logging set RPROVIDER_LOG to an existing file name." )
 
     if p <> null then 
@@ -133,7 +133,7 @@ let getServer() =
 /// key is missing or .rprovider.conf is missing)
 let tryGetInitializationError () =
     try getServer().RInitValue 
-    with RInitializationError err -> Some(err)
+    with RInitializationError err -> err
 
 let withServer f =
     lock serverlock <| fun () ->

@@ -355,9 +355,9 @@ module RInterop =
     let getPackageDescription packageName: string = 
         eval("packageDescription(\"" + packageName + "\")$Description").GetValue()
 
-    let getFunctionDescriptions packageName : Map<string, string> =
+    let getFunctionDescriptions packageName =
         exec <| sprintf """rds = readRDS(system.file("Meta", "Rd.rds", package = "%s"))""" packageName
-        Map.ofArray <| Array.zip ((eval "rds$Name").GetValue()) ((eval "rds$Title").GetValue())
+        Array.zip ((eval "rds$Name").GetValue()) ((eval "rds$Title").GetValue())
 
     let private packages = System.Collections.Generic.HashSet<string>()
 
@@ -418,12 +418,11 @@ module RInterop =
                 RValue.Value
         name, value
 
-    let getBindings packageName : Map<string, RValue> =
+    let getBindings packageName =
         // TODO: Maybe get these from the environments?
         let bindings = getBindingsFromR.Value packageName
         [| for entry in bindings.AsList() -> entry.AsList() |]
         |> Array.map (fun (entry: GenericVector) -> bindingInfoFromR entry)
-        |> Map.ofSeq
 
     let callFunc (packageName: string) (funcName: string) (argsByName: seq<KeyValuePair<string, obj>>) (varArgs: obj[]) : SymbolicExpression =
             // We make sure we keep a reference to any temporary symbols until after exec is called, 

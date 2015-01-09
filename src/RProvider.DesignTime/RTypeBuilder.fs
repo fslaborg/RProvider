@@ -34,9 +34,9 @@ module internal RTypeBuilder =
                 let bindings = serverDelayed.GetBindings package
 
                 // We get the function descriptions for R the first time they are needed
-                let titles = lazy withServer (fun s -> s.GetFunctionDescriptions package)
+                let titles = lazy Map.ofSeq (withServer (fun s -> s.GetFunctionDescriptions package))
 
-                for name, rval in Map.toSeq bindings do
+                for name, rval in bindings do
                     let memberName = makeSafeName name
 
                     // Serialize RValue to a string, so that we can include it in the 
@@ -109,7 +109,9 @@ module internal RTypeBuilder =
           let ns = "RProvider"
 
           match tryGetInitializationError() with
-          | Some error ->
+          | null -> 
+              yield! generateTypes ns providerAssembly
+          | error ->
               // add an error static property (shown when typing `R.`)
               let pty = ProvidedTypeDefinition(providerAssembly, ns, "R", Some(typeof<obj>))
               let prop = ProvidedProperty("<Error>", typeof<string>, IsStatic = true, GetterCode = fun _ -> <@@ error @@>)
@@ -118,6 +120,4 @@ module internal RTypeBuilder =
               yield ns, [ pty ]
               // add an error namespace (shown when typing `open RProvider.`)
               yield ns + ".Error: " + error, [ pty ]
-          | _ -> 
-              yield! generateTypes ns providerAssembly
           Logging.logf "initAndGenerate: finished" ]
