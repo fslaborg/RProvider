@@ -13,3 +13,5 @@
 * 1.0.15 - Fix bad upload to NuGet.org
 * 1.0.16 - Fix shadow copying (#122) and require specific R.NET version
 * 1.0.17 - Fix shadow copying when referenced via a NuGet package
+* 1.1.0-alpha - ILMerge FSharp.Core and experimental Mac support
+* 1.1.1-alpha - Support Paket project structure
