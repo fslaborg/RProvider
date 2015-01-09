@@ -34,18 +34,20 @@ let gitName = "FSharpRProvider"
 
 // Read release notes & version info from RELEASE_NOTES.md
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+let binDir = __SOURCE_DIRECTORY__ @@ "bin"
 let release = IO.File.ReadLines "RELEASE_NOTES.md" |> parseReleaseNotes
 
 // Generate assembly info files with the right version & up-to-date information
 Target "AssemblyInfo" (fun _ ->
   let fileName = "src/Common/AssemblyInfo.fs"
-  CreateFSharpAssemblyInfo fileName
+  CreateFSharpAssemblyInfoWithConfig fileName
       [ Attribute.Title projectName
         Attribute.Company companyName
         Attribute.Product projectName
         Attribute.Description projectSummary
         Attribute.Version release.AssemblyVersion
         Attribute.FileVersion release.AssemblyVersion ] 
+      (AssemblyInfoFileConfig(false))
 )
 
 // --------------------------------------------------------------------------------------
@@ -93,6 +95,31 @@ Target "BuildCore" (fun _ ->
     |> MSBuildRelease "" "Rebuild"
     |> Log "AppBuild-Output: "
 )
+
+Target "MergeRProviderServer" (fun _ -> 
+    let buildMergedDir = binDir @@ "merged"
+    CreateDir buildMergedDir
+
+    let toPack = 
+        (binDir @@ "RProvider.Server.exe") + " " +
+        (binDir @@ "../tools/FSharp.Core.dll") + " " +
+        (binDir @@ "RProvider.Runtime.dll")
+
+    let result = 
+        ExecProcess (fun info -> 
+            info.FileName <- currentDirectory @@ "tools" @@ "ILRepack" @@ "ILRepack.exe" 
+            info.Arguments <- 
+              sprintf 
+                "/internalize /verbose /lib:bin /ver:%s /out:%s %s" 
+                release.AssemblyVersion (buildMergedDir @@ "RProvider.Server.exe") toPack 
+            ) (TimeSpan.FromMinutes 5.) 
+
+    if result <> 0 then failwithf "Error during ILRepack execution." 
+
+    !! (buildMergedDir @@ "*.*") 
+    |> CopyFiles binDir
+    DeleteDir buildMergedDir
+) 
 
 // --------------------------------------------------------------------------------------
 // Run the unit tests using test runner & kill test runner when complete
@@ -197,11 +224,14 @@ Target "AllCore" DoNothing
   ==> "UpdateFsxVersions"
   ==> "AssemblyInfo"
   ==> "Build"
+  ==> "MergeRProviderServer"
   ==> "RunTests"
   ==> "All"
 
 "AssemblyInfo"
   ==> "BuildCore"
+  ==> "AllCore"
+"MergeRProviderServer" 
   ==> "AllCore"
 
 "All" 
