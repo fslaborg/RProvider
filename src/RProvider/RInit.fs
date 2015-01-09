@@ -15,10 +15,19 @@ type RInitResult<'T> =
 /// Find the R installation. First check "R_HOME" environment variable, then look 
 /// at the SOFTWARE\R-core\R\InstallPath value (using HKCU or, as a second try HKLM root)
 let private getRLocation () =
-    let getRLocationFromRCoreKey (rCore:RegistryKey) =
-        let key = rCore.OpenSubKey "R"
-        if key = null then RInitError "SOFTWARE\R-core exists but subkey R does not exist"
-        else key.GetValue "InstallPath" |> unbox<string> |> RInitResult
+    let rec getRLocationFromRCoreKey (rCore:RegistryKey) =
+        let rec keys (root:RegistryKey) =
+            seq { yield root
+                  for subKeyName in root.GetSubKeyNames() do
+                      yield! keys <| root.OpenSubKey(subKeyName) }
+
+        let hasInstallPath (key:RegistryKey) =
+            key.GetValueNames()
+            |> Array.exists (fun valueName -> valueName = "InstallPath")
+
+        match rCore |> keys |> Seq.tryFind (fun key -> key |> hasInstallPath) with
+        | Some(key) -> key.GetValue("InstallPath") |> unbox<string> |> RInitResult
+        | None      -> RInitError "SOFTWARE\R-core exists but no InstallPath value was found under it."
 
     let locateRfromRegistry () =
         match Registry.LocalMachine.OpenSubKey @"SOFTWARE\R-core", Registry.CurrentUser.OpenSubKey @"SOFTWARE\R-core" with
