@@ -13,6 +13,7 @@ NUGET
       FSharp.Compiler.Service (>= 0.0.44)
       Microsoft.AspNet.Razor (>= 2.0.30506.0)
       RazorEngine (>= 3.3.0)
+    ILRepack (1.25.0)
     Microsoft.AspNet.Razor (2.0.30506.0)
     NuGet.CommandLine (2.8.3)
     R.NET.Community (1.5.15)

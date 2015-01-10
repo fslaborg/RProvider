@@ -15,3 +15,4 @@
 * 1.0.17 - Fix shadow copying when referenced via a NuGet package
 * 1.1.0-alpha - ILMerge FSharp.Core and experimental Mac support
 * 1.1.1-alpha - Support Paket project structure, Fix ILMerge issues
+* 1.1.2-alpha - Reference ILRepack through NuGet, but disable it (breaks on Mono)

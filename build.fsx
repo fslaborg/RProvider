@@ -97,6 +97,7 @@ Target "BuildTests" (fun _ ->
 )
 
 Target "MergeRProviderServer" (fun _ -> 
+(*
     let buildMergedDir = binDir @@ "merged"
     CreateDir buildMergedDir
 
@@ -108,7 +109,7 @@ Target "MergeRProviderServer" (fun _ ->
 
     let result = 
         ExecProcess (fun info -> 
-            info.FileName <- currentDirectory @@ "tools" @@ "ILRepack" @@ "ILRepack.exe" 
+            info.FileName <- currentDirectory @@ "packages/ILRepack/tools/ILRepack.exe" 
             info.Arguments <- 
               sprintf 
                 "/internalize /verbose /lib:bin /ver:%s /out:%s %s" 
@@ -120,6 +121,7 @@ Target "MergeRProviderServer" (fun _ ->
     !! (buildMergedDir @@ "*.*") 
     |> CopyFiles binDir
     DeleteDir buildMergedDir
+*)
 ) 
 
 // --------------------------------------------------------------------------------------
