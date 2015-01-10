@@ -323,6 +323,22 @@ module RInterop =
         | Function of RParameter list * HasVarArgs
         | Value
 
+    /// Turn an `RValue` (which captures type information of a value or function)
+    /// into a serialized string that can be spliced in a quotation 
+    let serializeRValue = function
+      | RValue.Value -> ""
+      | RValue.Function(pars, hasVar) -> 
+          let prefix = if hasVar then "1" else "0"
+          prefix + (String.concat ";" pars)
+
+    /// Given a string produced by `serializeRValue`, reconstruct the original RValue object 
+    let deserializeRValue serialized = 
+      if serialized = null then invalidArg "serialized" "Unexpected null string"
+      elif serialized = "" then RValue.Value
+      else 
+        let hasVar = match serialized.[0] with '1' -> true | '0' -> false | _ -> invalidArg "serialized" "Should start with a flag"
+        RValue.Function(List.ofSeq (serialized.Substring(1).Split(';')), hasVar)
+        
     let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
 
     let internal bindingInfo (name: string) : RValue = 
@@ -357,7 +373,7 @@ module RInterop =
 
     let getFunctionDescriptions packageName =
         exec <| sprintf """rds = readRDS(system.file("Meta", "Rd.rds", package = "%s"))""" packageName
-        Array.zip ((eval "rds$Name").GetValue()) ((eval "rds$Title").GetValue())
+        Array.zip ((eval "rds$Name").GetValue<string[]>()) ((eval "rds$Title").GetValue<string[]>())
 
     let private packages = System.Collections.Generic.HashSet<string>()
 
@@ -416,7 +432,7 @@ module RInterop =
             | something ->
                 printfn "Ignoring name %s of type %s" name something
                 RValue.Value
-        name, value
+        name, serializeRValue value
 
     let getBindings packageName =
         // TODO: Maybe get these from the environments?
@@ -463,22 +479,6 @@ module RInterop =
             let expr = sprintf "%s::`%s`(%s)" packageName funcName (String.Join(", ", argList))
             eval expr
 
-    /// Turn an `RValue` (which captures type information of a value or function)
-    /// into a serialized string that can be spliced in a quotation 
-    let serializeRValue = function
-      | RValue.Value -> ""
-      | RValue.Function(pars, hasVar) -> 
-          let prefix = if hasVar then "1" else "0"
-          prefix + (String.concat ";" pars)
-
-    /// Given a string produced by `serializeRValue`, reconstruct the original RValue object 
-    let internal deserializeRValue serialized = 
-      if serialized = null then invalidArg "serialized" "Unexpected null string"
-      elif serialized = "" then RValue.Value
-      else 
-        let hasVar = match serialized.[0] with '1' -> true | '0' -> false | _ -> invalidArg "serialized" "Should start with a flag"
-        RValue.Function(List.ofSeq (serialized.Substring(1).Split(';')), hasVar)
-        
     let call (packageName: string) (funcName: string) (serializedRVal:string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
         //loadPackage packageName
 

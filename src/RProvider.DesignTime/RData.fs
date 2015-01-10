@@ -51,17 +51,17 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
     // For each key in the environment, provide a property..
     for name, typ in RInteropClient.getServer().GetRDataSymbols(longFileName) do
       match typ with 
-      | Some typ ->
+      | null ->
+          // Generate property of type 'SymbolicExpression'
+          ProvidedProperty(name, typeof<RDotNet.SymbolicExpression>, GetterCode = fun (Singleton self) ->  
+              <@@ ((%%self):REnv).Get(name) @@>)
+          |> resTy.AddMember
+      | typ ->
           // If there is a default convertor for the type, then generate
           // property of the statically known type (e.g. Frame<string, string>)
           // (otherwise, `Value` will throw)
           ProvidedProperty(name, typ, GetterCode = fun (Singleton self) -> 
               Expr.Coerce(<@@ ((%%self):REnv).Get(name).Value @@>, typ))
-          |> resTy.AddMember
-      | None ->
-          // Generate property of type 'SymbolicExpression'
-          ProvidedProperty(name, typeof<RDotNet.SymbolicExpression>, GetterCode = fun (Singleton self) ->  
-              <@@ ((%%self):REnv).Get(name) @@>)
           |> resTy.AddMember
 
     resTy

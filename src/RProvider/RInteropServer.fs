@@ -106,6 +106,6 @@ type RInteropServer() =
             let env = REnv(file) 
             [| for k in env.Keys ->
                   let v = env.Get(k)
-                  let typ = try Some(v.Value.GetType()) with _ -> None
+                  let typ = try v.Value.GetType() with _ -> null
                   k, typ |]
 

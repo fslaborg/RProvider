@@ -85,13 +85,13 @@ Target "CleanDocs" (fun _ ->
 // Build library & test project
 
 Target "Build" (fun _ ->
-    !! (projectName + "*.sln")
+    !! (projectName + ".sln")
     |> MSBuildRelease "" "Rebuild"
     |> Log "AppBuild-Output: "
 )
 
-Target "BuildCore" (fun _ ->
-    !! (projectName + ".sln")
+Target "BuildTests" (fun _ ->
+    !! (projectName + ".Tests.sln")
     |> MSBuildRelease "" "Rebuild"
     |> Log "AppBuild-Output: "
 )
@@ -103,6 +103,7 @@ Target "MergeRProviderServer" (fun _ ->
     let toPack = 
         (binDir @@ "RProvider.Server.exe") + " " +
         (binDir @@ "../tools/FSharp.Core.dll") + " " +
+        (binDir @@ "RDotNet.FSharp.dll") + " " +
         (binDir @@ "RProvider.Runtime.dll")
 
     let result = 
@@ -223,11 +224,11 @@ Target "AllCore" DoNothing
   ==> "AssemblyInfo"
   ==> "Build"
   ==> "MergeRProviderServer"
+  ==> "BuildTests"
   ==> "RunTests"
   ==> "All"
 
-"AssemblyInfo"
-  ==> "BuildCore"
+"MergeRProviderServer"
   ==> "AllCore"
 
 "All" 

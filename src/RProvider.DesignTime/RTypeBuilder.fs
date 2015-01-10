@@ -1,6 +1,5 @@
 ﻿namespace RProvider
 
-
 open System
 open System.Collections.Generic
 open System.Reflection
@@ -23,8 +22,10 @@ module internal RTypeBuilder =
     let generateTypes ns asm = withServer <| fun server ->
       [ // Expose all available packages as namespaces
         Logging.logf "generateTypes: getting packages"
-        for package in server.GetPackages() do
-            let pns = ns + "." + package
+        let packages = 
+          [ //yield "base", ns
+            for package in server.GetPackages() do yield package, ns + "." + package ]
+        for package, pns in packages do
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
             pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.GetPackageDescription package
@@ -36,14 +37,9 @@ module internal RTypeBuilder =
                 // We get the function descriptions for R the first time they are needed
                 let titles = lazy Map.ofSeq (withServer (fun s -> s.GetFunctionDescriptions package))
 
-                for name, rval in bindings do
+                for name, serializedRVal in bindings do
                     let memberName = makeSafeName name
-
-                    // Serialize RValue to a string, so that we can include it in the 
-                    // compiled quotation (and do not have to get the info again at runtime)
-                    let serializedRVal = RInterop.serializeRValue rval
-
-                    match rval with
+                    match RInterop.deserializeRValue serializedRVal with
                     | RValue.Function(paramList, hasVarArgs) ->
                         let paramList = [ for p in paramList -> 
                                                 ProvidedParameter(makeSafeName p,  typeof<obj>, optionalValue=null)

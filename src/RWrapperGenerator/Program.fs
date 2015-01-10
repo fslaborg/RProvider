@@ -76,7 +76,7 @@ let generatePackage (writer: TextWriter) (exposedNames: HashSet<string>) (packag
     for name, rval in getBindings packageName do
         let name = if exposedNames.Contains(name) then packageName + "." + name else name
                 
-        match rval with
+        match deserializeRValue rval with
         | RValue.Value -> generateProperty writer packageName name
         | RValue.Function(args, hasVarArgs) -> if isValidIdentifier name then generateFunction writer packageName name args hasVarArgs
 
