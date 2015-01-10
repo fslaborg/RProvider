@@ -97,7 +97,7 @@ Target "BuildTests" (fun _ ->
 )
 
 Target "MergeRProviderServer" (fun _ -> 
-(*
+  () (*
     let buildMergedDir = binDir @@ "merged"
     CreateDir buildMergedDir
 
