@@ -18,15 +18,11 @@ let server = "RProvider.Server.exe"
 /// Thrown when we want to show the specified string as a friendly error message to the user
 exception RInitializationError of string
 
-/// Asynchronously waits until the specifid file is deleted using FileSystemWatcher
-let waitUntilDeleted file = async {
-    use watcher = 
-        new FileSystemWatcher
-          ( Path.GetDirectoryName(file), Path.GetFileName(file), 
-            EnableRaisingEvents=true )
-    let! _ = Async.AwaitEvent(watcher.Deleted)
-    return () }
-
+let waitUntilFileDeleted file timeout = 
+    let dt = DateTime.Now 
+    while File.Exists(file) && (DateTime.Now - dt).TotalMilliseconds < timeout do
+      Thread.Sleep(10)
+    not (File.Exists(file))
 
 /// Creates a new channel name in the format: RInteropServer_<pid>_<time>_<random>
 let newChannelName() = 
@@ -75,8 +71,9 @@ let startNewServer() =
         with _ -> ()
 
     // Log some information about the process first
-    Logging.logf "Starting server '%s' with arguments '%s'" exePath arguments
-    Logging.logf "Exists: %A" (File.Exists(exePath))
+    Logging.logf 
+        "Starting server '%s' with arguments '%s' (exists=%b)" 
+        exePath arguments (File.Exists(exePath))
 
     // If we are running on Mono, then the safer way to start the process 
     // seems to be to use 'mono /foo/bar/RProvider.Server.exe'
@@ -92,10 +89,10 @@ let startNewServer() =
           ( UseShellExecute = false, CreateNoWindow = true, FileName=exePath, 
             Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden )
     
-    // Start the process and wait until it starts & deletes temp file
+    // Start the process and wait until it is initialized
+    // (after initialization, the process deletes the temp file)
     let p = Process.Start(startInfo)
-    try Async.RunSynchronously(waitUntilDeleted tempFile, 20*1000)
-    with :? System.TimeoutException ->
+    if not(waitUntilFileDeleted tempFile (20.*1000.)) then
         failwith
           ( "Failed to start the R.NET server within 20 seconds." +
             "To enable logging set RPROVIDER_LOG to an existing file name." )
