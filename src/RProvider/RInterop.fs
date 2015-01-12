@@ -337,7 +337,8 @@ module RInterop =
       elif serialized = "" then RValue.Value
       else 
         let hasVar = match serialized.[0] with '1' -> true | '0' -> false | _ -> invalidArg "serialized" "Should start with a flag"
-        RValue.Function(List.ofSeq (serialized.Substring(1).Split(';')), hasVar)
+        let args = if serialized.Length = 1 then [] else List.ofSeq (serialized.Substring(1).Split(';'))
+        RValue.Function(args, hasVar)
         
     let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
 

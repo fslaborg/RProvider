@@ -1,11 +1,11 @@
 ﻿#if INTERACTIVE
 #I "../../bin"
-#I "../../packages/xunit.1.9.2/lib/net20/"
+#I "../../packages/xunit/lib/net20/"
 #r "RDotNet.dll"
 #r "RProvider.dll"
 #r "RProvider.Runtime.dll"
-#r "../../packages/FsCheck.0.9.2.0/lib/net40-Client/FsCheck.dll"
-#r "../../packages/FsCheck.Xunit.0.4.0.2/lib/net40-Client/FsCheck.Xunit.dll"
+#r "../../packages/FsCheck/lib/net40-Client/FsCheck.dll"
+#r "../../packages/FsCheck.Xunit/lib/net40-Client/FsCheck.Xunit.dll"
 #r "xunit.dll"
 #else
 module Test.RProvider
@@ -103,6 +103,14 @@ let ``Complex scalar round-trip tests`` (r: double) (i: double) =
 let ``Printing of data frame returns string with frame data`` () =
   let df = namedParams [ "Test", box [| 1; 42; 2 |] ] |> R.data_frame
   Assert.Contains("42", df.Print())
+
+[<Property>]
+let ``Serialization of R values works`` (isValue:bool) (args:string list) (hasVar:bool) =
+  let rvalue = 
+    if isValue then RValue.Value 
+    else RValue.Function(args, hasVar)
+  let actual = deserializeRValue(serializeRValue(rvalue))
+  Assert.Equal(rvalue, actual)
 
 //[<Property>]
 // Has various issues - embedded nulls, etc.
