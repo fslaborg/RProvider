@@ -1,4 +1,4 @@
-﻿namespace RProviderServer
+﻿namespace RProvider.Server
 
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.Win32
@@ -69,9 +69,9 @@ module internal EventLoop =
 /// Server object that is exposed via remoting and is called by the editor
 /// to get information about R (packages, functions, RData files etc.)
 type RInteropServer() =
-    inherit MarshalByRefObject()
-    
-    member x.RInitValue =
+  inherit MarshalByRefObject()
+  interface IRInteropServer with
+    member x.InitializationErrorMessage =
         // No need for event loop here, because this is initialized
         // when the event loop starts (so initResult has value now)
         match RInit.initResult.Value with
@@ -97,10 +97,6 @@ type RInteropServer() =
         EventLoop.runServerCommandSafe <| fun () ->
             getPackageDescription package
         
-    member x.MakeSafeName(name) =
-        EventLoop.runServerCommandSafe <| fun () ->
-            makeSafeName name
-
     member x.GetRDataSymbols(file) =
         EventLoop.runServerCommandSafe <| fun () ->
             let env = REnv(file) 

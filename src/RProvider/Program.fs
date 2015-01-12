@@ -1,4 +1,4 @@
-﻿module RProviderServer.Main
+﻿module RProvider.Server.Main
 
 open System
 open System.Diagnostics

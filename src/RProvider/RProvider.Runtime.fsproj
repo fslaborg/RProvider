@@ -55,6 +55,7 @@
     <Compile Include="..\Common\AssemblyInfo.fs">
       <Link>AssemblyInfo.fs</Link>
     </Compile>
+    <Compile Include="RInteropInterface.fs" />
     <Compile Include="CharacterDeviceInterceptor.fs" />
     <Compile Include="Configuration.fs" />
     <Compile Include="Logging.fs" />

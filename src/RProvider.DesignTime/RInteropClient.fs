@@ -8,7 +8,6 @@ open System.Diagnostics
 open System.Threading
 open Microsoft.Win32
 open System.IO
-open RProviderServer
 open RProvider.Internal
 open System.Security.AccessControl
 open System.Security.Principal
@@ -18,9 +17,6 @@ let server = "RProvider.Server.exe"
 
 /// Thrown when we want to show the specified string as a friendly error message to the user
 exception RInitializationError of string
-
-/// true to load the server in-process, false load the server out-of-process
-let localServer = false
 
 /// Asynchronously waits until the specifid file is deleted using FileSystemWatcher
 let waitUntilDeleted file = async {
@@ -109,7 +105,7 @@ let startNewServer() =
       p.Exited.Add(fun _ -> lastServer <- None)
 
     Logging.logf "Attempting to connect via IPC"
-    Activator.GetObject(typeof<RInteropServer>, "ipc://" + channelName + "/RInteropServer") :?> RInteropServer
+    Activator.GetObject(typeof<IRInteropServer>, "ipc://" + channelName + "/RInteropServer") :?> IRInteropServer
 
 
 /// Returns an instance of `RInteropServer` started via IPC
@@ -120,19 +116,16 @@ let getServer() =
     match lastServer with
     | Some s -> s
     | None ->
-        match localServer with
-        | true -> new RInteropServer()
-        | false ->
-            let server = startNewServer()
-            lastServer <- Some server
-            Logging.logf "Got some server"
-            server )
+        let server = startNewServer()
+        lastServer <- Some server
+        Logging.logf "Got some server"
+        server )
 
 /// Returns Some("...") when there is an 'expected' kind of error that we want
 /// to show in the IntelliSense in a pleasant way (R is not installed, registry
 /// key is missing or .rprovider.conf is missing)
 let tryGetInitializationError () =
-    try getServer().RInitValue 
+    try getServer().InitializationErrorMessage 
     with RInitializationError err -> err
 
 let withServer f =

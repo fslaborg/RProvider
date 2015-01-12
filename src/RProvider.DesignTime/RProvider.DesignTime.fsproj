@@ -82,11 +82,6 @@
       <Project>{80fd4284-c7bd-4170-8cc3-41e8548402e4}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="../RProvider/RProvider.Server.fsproj">
-      <Name>RProvider.Server</Name>
-      <Project>{7ff9cfa3-2516-4970-9dd8-54c7d4ca24aa}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
