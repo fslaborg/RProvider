@@ -291,9 +291,7 @@ module internal RInteropInternal =
     let eval (expr: string) = 
         Logging.logWithOutput characterDevice (fun () ->
             Logging.logf "eval(%s)" expr
-            let res = engine.Value.Evaluate(expr) 
-            Logging.logf "eval(%s) returned %A" expr res
-            res )
+            engine.Value.Evaluate(expr) )
 
     let evalTo (expr: string) (symbol: string) = 
         Logging.logWithOutput characterDevice (fun () ->
@@ -509,13 +507,37 @@ module RInterop =
 /// [omit]
 [<AutoOpen>]
 module RDotNetExtensions2 = 
+    open RInterop
+
     type RDotNet.SymbolicExpression with
         /// Call the R print function and return output as a string
         member this.Print() : string = 
-            characterDevice.BeginCapture()
-            let rvalStr = RInterop.RValue.Function(["x"], true) |> RInterop.serializeRValue
-            RInterop.call "base" "print" rvalStr [| this |] [| |] |> ignore
-            characterDevice.EndCapture()
+            // Print by capturing the output in a registered character device
+            let printUsingDevice print =
+               characterDevice.BeginCapture()
+               print()
+               characterDevice.EndCapture()
+            
+            // Print by redirecting the output to a temp file (on Mono/Mac, 
+            // using character device hangs the R provider for some reason)
+            let printUsingTempFile print = 
+                let temp = Path.GetTempFileName()
+                try
+                    let rvalStr = Function(["file"], true) |> serializeRValue
+                    call "base" "sink" rvalStr [| temp |] [| |] |> ignore
+                    print()
+                    call "base" "sink" rvalStr [| |] [| |] |> ignore
+                    File.ReadAllText(temp)
+                finally File.Delete(temp)
+
+            let capturer = 
+                if RInit.isUnixOrMac () then printUsingTempFile
+                else printUsingDevice
+
+            capturer (fun () ->
+                let rvalStr = RInterop.RValue.Function(["x"], true) |> RInterop.serializeRValue
+                RInterop.call "base" "print" rvalStr [| this |] [| |] |> ignore )
+           
 
 /// The object represents an R environment loaded from RData file.
 /// This type is typically used through an `RData` type provider. To 

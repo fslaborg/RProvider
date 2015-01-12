@@ -12,7 +12,7 @@ type RInitResult<'T> =
   | RInitResult of 'T
   | RInitError of string
 
-let private isUnixOrMac () = 
+let internal isUnixOrMac () = 
     let platform = Environment.OSVersion.Platform 
     // The guide at www.mono-project.com/FAQ:_Technical says to also check for the
     // value 128, but that is only relevant to old versions of Mono without F# support

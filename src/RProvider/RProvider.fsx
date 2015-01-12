@@ -8,6 +8,10 @@
 #I "../packages/R.NET.Community.1.5.15/lib/net40"
 #I "../../packages/R.NET.Community.1.5.15/lib/net40"
 #I "../../../packages/R.NET.Community.1.5.15/lib/net40"
+#I "packages/R.NET.Community.FSharp.0.1.8/lib/net40"
+#I "../packages/R.NET.Community.FSharp.0.1.8/lib/net40"
+#I "../../packages/R.NET.Community.FSharp.0.1.8/lib/net40"
+#I "../../../packages/R.NET.Community.FSharp.0.1.8/lib/net40"
 #I "packages/RProvider.1.1.2-alpha/lib/net40"
 #I "../packages/RProvider.1.1.2-alpha/lib/net40"
 #I "../../packages/RProvider.1.1.2-alpha/lib/net40"
@@ -18,6 +22,7 @@
 #I "../../../packages/RProvider/lib/net40"
 // Reference RProvider and RDotNet 
 #r "RDotNet.dll"
+#r "RDotNet.FSharp.dll"
 #r "RProvider.dll"
 #r "RProvider.Runtime.dll"
 open RProvider
