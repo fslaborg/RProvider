@@ -3,7 +3,7 @@
 #r "RDotNet.dll"
 #r "RProvider.dll"
 #r "RProvider.Runtime.dll"
-#r "../../packages/xunit.1.9.2/lib/net20/xunit.dll"
+#r "../../packages/xunit/lib/net20/xunit.dll"
 #else
 module Test.RData
 #endif

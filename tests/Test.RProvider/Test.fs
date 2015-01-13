@@ -106,11 +106,12 @@ let ``Printing of data frame returns string with frame data`` () =
 
 [<Property>]
 let ``Serialization of R values works`` (isValue:bool) (args:string list) (hasVar:bool) =
-  let rvalue = 
-    if isValue then RValue.Value 
-    else RValue.Function(args, hasVar)
-  let actual = deserializeRValue(serializeRValue(rvalue))
-  Assert.Equal(rvalue, actual)
+  if args |> Seq.forall (fun a -> a <> null && not(a.Contains(";"))) then
+    let rvalue = 
+      if isValue then RValue.Value 
+      else RValue.Function(args, hasVar)
+    let actual = deserializeRValue(serializeRValue(rvalue))
+    Assert.Equal(rvalue, actual)
 
 //[<Property>]
 // Has various issues - embedded nulls, etc.
