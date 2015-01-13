@@ -3,7 +3,8 @@ source https://www.nuget.org/api/v2
 nuget FsCheck.Xunit
 nuget FSharp.Data
 nuget FSharp.Formatting
-nuget R.NET.Community.FSharp
+nuget R.NET.Community 1.5.16
+nuget R.NET.Community.FSharp 0.1.9
 nuget xunit.runners
 nuget FAKE
 nuget NuGet.CommandLine

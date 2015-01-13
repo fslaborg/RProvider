@@ -15,9 +15,8 @@
     <tags>@tags@</tags>
     <language>en-US</language>
     <dependencies>
-      <dependency id="R.NET.Community" version="[1.5.19]" />
-      <dependency id="R.NET.Community.FSharp" version="[0.1.11]" />
-      <dependency id="DynamicInterop" version="[0.7.1]" />
+      <dependency id="R.NET.Community" version="[1.5.16]" />
+      <dependency id="R.NET.Community.FSharp" version="[0.1.9]" />
     </dependencies>    
     <references>
       <reference file="RProvider.Runtime.dll" />

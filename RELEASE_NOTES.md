@@ -17,3 +17,5 @@
 * 1.1.1-alpha - Support Paket project structure, Fix ILMerge issues
 * 1.1.2-alpha - Reference ILRepack through NuGet, but disable it (breaks on Mono)
 * 1.1.3-alpha - Fix remaining Mono issues and add documentation
+* 1.1.4-alpha - Fix load script in the NuGet package
+* 1.1.5-alpha - Downgrade R.NET version and update load script
