@@ -95,7 +95,7 @@ PATH (and the R provider will be able to find it). To do that, open Terminal and
 `R --print-home`. This command should print the home folder and is used by the R type
 provider. 
 
-If this calling `R --print-home` does not work, you'll need to create an environemtn variable
+If calling `R --print-home` does not work, you'll need to create an environment variable
 `R_HOME` and point it to the R home folder. On Mac, this is something like 
 `/Library/Frameworks/R.framework/Resources` (check that `$R_HOME/lib/libR.dylib` exists).
 
