@@ -2,6 +2,7 @@
 ## Custom
 #################
 
+paket-files/
 Test.RProvider.dll.xml
 Test.RProvider.dll.html
 packages/

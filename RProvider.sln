@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{5FA7
 		build.cmd = build.cmd
 		build.fsx = build.fsx
 		LICENSE.md = LICENSE.md
+		paket.dependencies = paket.dependencies
 		README.md = README.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
 		nuget\RProvider.nuspec = nuget\RProvider.nuspec

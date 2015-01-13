@@ -105,7 +105,8 @@ let ``Printing of data frame returns string with frame data`` () =
   Assert.Contains("42", df.Print())
 
 [<Property>]
-let ``Serialization of R values works`` (isValue:bool) (args:string list) (hasVar:bool) =
+let ``Serialization of R values works`` (isValue:bool) (args:string[]) (hasVar:bool) =
+  let args = List.ofSeq args
   if args |> Seq.forall (fun a -> a <> null && not(a.Contains(";"))) then
     let rvalue = 
       if isValue then RValue.Value 
