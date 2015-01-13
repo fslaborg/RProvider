@@ -16,3 +16,4 @@
 * 1.1.0-alpha - ILMerge FSharp.Core and experimental Mac support
 * 1.1.1-alpha - Support Paket project structure, Fix ILMerge issues
 * 1.1.2-alpha - Reference ILRepack through NuGet, but disable it (breaks on Mono)
+* 1.1.3-alpha - Fix remaining Mono issues and add documentation
