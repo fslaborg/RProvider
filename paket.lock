@@ -7,6 +7,7 @@ NUGET
       FsCheck
       xunit (>= 1.9.2 <  3.0)
     FSharp.Compiler.Service (0.0.44)
+    FSharp.Core (3.0.2)
     FSharp.Data (2.0.7)
       Zlib.Portable (>= 1.9.2)
     FSharp.Formatting (2.4.8)

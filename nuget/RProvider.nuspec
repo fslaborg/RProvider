@@ -34,8 +34,8 @@
     <file src="..\bin\RProvider.pdb" target="lib\net40" />
     <file src="..\bin\RProvider.fsx" target="." />
     <file src="..\nuget\RProvider.Runtime.dll.config" target="lib\net40" />
-    <file src="..\tools\FSharp.Core.dll" target="lib\net40"/> 
-    <file src="..\tools\FSharp.Core.optdata" target="lib\net40"/> 
-    <file src="..\tools\FSharp.Core.sigdata" target="lib\net40"/> 
+    <file src="..\packages\FSharp.Core\lib\net40\FSharp.Core.dll" target="lib\net40"/> 
+    <file src="..\packages\FSharp.Core\lib\net40\FSharp.Core.optdata" target="lib\net40"/> 
+    <file src="..\packages\FSharp.Core\lib\net40\FSharp.Core.sigdata" target="lib\net40"/> 
   </files>
 </package>

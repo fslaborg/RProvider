@@ -9,7 +9,7 @@ temp/
 docs/output/
 *.DotSettings
 *.userprefs
-./paket/paket.exe
+.paket/paket.exe
 
 #################
 ## Eclipse

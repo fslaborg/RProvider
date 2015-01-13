@@ -67,11 +67,6 @@ Target "UpdateFsxVersions" (fun _ ->
 // --------------------------------------------------------------------------------------
 // Clean build results & restore NuGet packages
 
-Target "RestorePackages" (fun _ ->
-    !! "./**/packages.config"
-    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" }))
-)
-
 Target "Clean" (fun _ ->
     CleanDirs ["bin"; "temp" ]
     CleanDirs ["tests/Test.RProvider/bin"; "tests/Test.RProvider/obj" ]
@@ -163,7 +158,6 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = String.concat " " release.Notes
             Tags = tags
             OutputPath = "bin"
-            ToolPath = "nuget.exe"
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         "nuget/RProvider.nuspec"
@@ -221,7 +215,6 @@ Target "All" DoNothing
 Target "AllCore" DoNothing
 
 "Clean"
-  ==> "RestorePackages"
   ==> "UpdateFsxVersions"
   ==> "AssemblyInfo"
   ==> "Build"

@@ -18,3 +18,4 @@ nuget xunit.runners 1.9.2
 nuget FAKE
 nuget NuGet.CommandLine
 nuget ILRepack
+nuget FSharp.Core 3.0.2
