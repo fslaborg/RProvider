@@ -1,12 +1,12 @@
 ![logo](https://www.bluemountaincapital.com/media/logo.gif)
-F# R Provider
-=======
-An F# type provider for interoperating with [R](http://www.r-project.org/).
 
-[![Build Status](https://api.travis-ci.org/BlueMountainCapital/FSharpRProvider.svg?branch=master)](https://api.travis-ci.org/BlueMountainCapital/FSharpRProvider)
+F# R Provider [![Build Status](https://api.travis-ci.org/BlueMountainCapital/FSharpRProvider.svg?branch=master)](https://api.travis-ci.org/BlueMountainCapital/FSharpRProvider)
+=======
+An F# type provider for interoperating with [R](http://www.r-project.org/). For more information, see [detailed documentation with tutorials, examples and more](http://bluemountaincapital.github.io/FSharpRProvider/).
+
 
 What does it do?
-================
+----------------
 The R Provider discovers R packages that are available in your R installation and makes them available as .NET namespaces underneath the parent namespace RProvider.  For example, the stats package is available as RProvider.stats.  If you open the namespaces you want to use, functions and values will be available as R.name.  For example, consider this F# interactive script:
 
 ```fsharp
@@ -23,13 +23,13 @@ This creates an R numeric vector containing 1,2,3, and names it v.  Note that we
 And because type providers are used by Visual Studio, Xamaring Studio and other IDEs, you will get intellisense for R functions.  You will also get compile-time type-checking that the function exists.
 
 How to use it
-=============
+-------------
 Install using the [NuGet package](https://nuget.org/packages/RProvider/).  Many thanks to Mathias Brandewinder for producing the [FAKE](https://github.com/fsharp/FAKE) script to build the NuGet package, and to Steffen Forkmann for writing [FAKE](https://github.com/fsharp/FAKE).
 
 There is a lot of info on how to use the provider on our [documentation page](http://bluemountaincapital.github.io/FSharpRProvider/)
 
 License
-=======
+-------
 FSharpRProvider is covered by the BSD license.
 
 The library uses [RDotNet](http://rdotnet.codeplex.com/) which is also covered by the BSD license.
