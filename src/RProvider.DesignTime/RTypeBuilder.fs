@@ -1,6 +1,5 @@
 ﻿namespace RProvider
 
-
 open System
 open System.Collections.Generic
 open System.Reflection
@@ -20,13 +19,13 @@ open System.IO
 module internal RTypeBuilder =
     
     /// Assuming initialization worked correctly, generate the types using R engine
-    let generateTypes ns asm = 
-        withServer <| fun server ->
-        seq {
-        // Expose all available packages as namespaces
+    let generateTypes ns asm = withServer <| fun server ->
+      [ // Expose all available packages as namespaces
         Logging.logf "generateTypes: getting packages"
-        for package in server.GetPackages() do
-            let pns = ns + "." + package
+        let packages = 
+          [ yield "base", ns
+            for package in server.GetPackages() do yield package, ns + "." + package ]
+        for package, pns in packages do
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
             pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.GetPackageDescription package
@@ -36,16 +35,11 @@ module internal RTypeBuilder =
                 let bindings = serverDelayed.GetBindings package
 
                 // We get the function descriptions for R the first time they are needed
-                let titles = lazy withServer (fun s -> s.GetFunctionDescriptions package)
+                let titles = lazy Map.ofSeq (withServer (fun s -> s.GetFunctionDescriptions package))
 
-                for name, rval in Map.toSeq bindings do
+                for name, serializedRVal in bindings do
                     let memberName = makeSafeName name
-
-                    // Serialize RValue to a string, so that we can include it in the 
-                    // compiled quotation (and do not have to get the info again at runtime)
-                    let serializedRVal = RInterop.serializeRValue rval
-
-                    match rval with
+                    match RInterop.deserializeRValue serializedRVal with
                     | RValue.Function(paramList, hasVarArgs) ->
                         let paramList = [ for p in paramList -> 
                                                 ProvidedParameter(makeSafeName p,  typeof<obj>, optionalValue=null)
@@ -101,7 +95,7 @@ module internal RTypeBuilder =
                                 IsStatic = true,
                                 GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
                       
-            yield pns, [ pty ] }
+            yield pns, [ pty ] ]
     
     /// Check if R is installed - if no, generate type with properties displaying
     /// the error message, otherwise go ahead and use 'generateTypes'!
@@ -110,8 +104,10 @@ module internal RTypeBuilder =
           Logging.logf "initAndGenerate: starting"
           let ns = "RProvider"
 
-          match GetServer().RInitValue with
-          | Some error ->
+          match tryGetInitializationError() with
+          | null -> 
+              yield! generateTypes ns providerAssembly
+          | error ->
               // add an error static property (shown when typing `R.`)
               let pty = ProvidedTypeDefinition(providerAssembly, ns, "R", Some(typeof<obj>))
               let prop = ProvidedProperty("<Error>", typeof<string>, IsStatic = true, GetterCode = fun _ -> <@@ error @@>)
@@ -120,6 +116,4 @@ module internal RTypeBuilder =
               yield ns, [ pty ]
               // add an error namespace (shown when typing `open RProvider.`)
               yield ns + ".Error: " + error, [ pty ]
-          | _ -> 
-              yield! generateTypes ns providerAssembly
           Logging.logf "initAndGenerate: finished" ]

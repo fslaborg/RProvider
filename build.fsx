@@ -34,18 +34,20 @@ let gitName = "FSharpRProvider"
 
 // Read release notes & version info from RELEASE_NOTES.md
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+let binDir = __SOURCE_DIRECTORY__ @@ "bin"
 let release = IO.File.ReadLines "RELEASE_NOTES.md" |> parseReleaseNotes
 
 // Generate assembly info files with the right version & up-to-date information
 Target "AssemblyInfo" (fun _ ->
   let fileName = "src/Common/AssemblyInfo.fs"
-  CreateFSharpAssemblyInfo fileName
+  CreateFSharpAssemblyInfoWithConfig fileName
       [ Attribute.Title projectName
         Attribute.Company companyName
         Attribute.Product projectName
         Attribute.Description projectSummary
         Attribute.Version release.AssemblyVersion
         Attribute.FileVersion release.AssemblyVersion ] 
+      (AssemblyInfoFileConfig(false))
 )
 
 // --------------------------------------------------------------------------------------
@@ -65,11 +67,6 @@ Target "UpdateFsxVersions" (fun _ ->
 // --------------------------------------------------------------------------------------
 // Clean build results & restore NuGet packages
 
-Target "RestorePackages" (fun _ ->
-    !! "./**/packages.config"
-    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" }))
-)
-
 Target "Clean" (fun _ ->
     CleanDirs ["bin"; "temp" ]
     CleanDirs ["tests/Test.RProvider/bin"; "tests/Test.RProvider/obj" ]
@@ -83,24 +80,51 @@ Target "CleanDocs" (fun _ ->
 // Build library & test project
 
 Target "Build" (fun _ ->
-    !! (projectName + "*.sln")
-    |> MSBuildRelease "" "Rebuild"
-    |> Log "AppBuild-Output: "
-)
-
-Target "BuildCore" (fun _ ->
     !! (projectName + ".sln")
     |> MSBuildRelease "" "Rebuild"
     |> Log "AppBuild-Output: "
 )
+
+Target "BuildTests" (fun _ ->
+    !! (projectName + ".Tests.sln")
+    |> MSBuildRelease "" "Rebuild"
+    |> Log "AppBuild-Output: "
+)
+
+Target "MergeRProviderServer" (fun _ -> 
+  () (*
+    let buildMergedDir = binDir @@ "merged"
+    CreateDir buildMergedDir
+
+    let toPack = 
+        (binDir @@ "RProvider.Server.exe") + " " +
+        (binDir @@ "../tools/FSharp.Core.dll") + " " +
+        (binDir @@ "RDotNet.FSharp.dll") + " " +
+        (binDir @@ "RProvider.Runtime.dll")
+
+    let result = 
+        ExecProcess (fun info -> 
+            info.FileName <- currentDirectory @@ "packages/ILRepack/tools/ILRepack.exe" 
+            info.Arguments <- 
+              sprintf 
+                "/internalize /verbose /lib:bin /ver:%s /out:%s %s" 
+                release.AssemblyVersion (buildMergedDir @@ "RProvider.Server.exe") toPack 
+            ) (TimeSpan.FromMinutes 5.) 
+
+    if result <> 0 then failwithf "Error during ILRepack execution." 
+
+    !! (buildMergedDir @@ "*.*") 
+    |> CopyFiles binDir
+    DeleteDir buildMergedDir
+*)
+) 
 
 // --------------------------------------------------------------------------------------
 // Run the unit tests using test runner & kill test runner when complete
 
 
 Target "RunTests" (fun _ ->
-    let xunitVersion = GetPackageVersion "packages" "xunit.runners"
-    let xunitPath = sprintf "packages/xunit.runners.%s/tools/xunit.console.clr4.exe" xunitVersion
+    let xunitPath = "packages/xunit.runners/tools/xunit.console.clr4.exe"
 
     ActivateFinalTarget "CloseTestRunner"
 
@@ -124,7 +148,6 @@ FinalTarget "CloseTestRunner" (fun _ ->
 Target "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
     let projectDescription = projectDescription.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
-    let nugetPath = ".nuget/nuget.exe"
     NuGet (fun p -> 
         { p with   
             Authors = authors
@@ -135,7 +158,6 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = String.concat " " release.Notes
             Tags = tags
             OutputPath = "bin"
-            ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         "nuget/RProvider.nuspec"
@@ -193,15 +215,15 @@ Target "All" DoNothing
 Target "AllCore" DoNothing
 
 "Clean"
-  ==> "RestorePackages"
   ==> "UpdateFsxVersions"
   ==> "AssemblyInfo"
   ==> "Build"
+  ==> "MergeRProviderServer"
+  ==> "BuildTests"
   ==> "RunTests"
   ==> "All"
 
-"AssemblyInfo"
-  ==> "BuildCore"
+"MergeRProviderServer"
   ==> "AllCore"
 
 "All" 

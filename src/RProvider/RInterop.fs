@@ -321,6 +321,23 @@ module RInterop =
         | Function of RParameter list * HasVarArgs
         | Value
 
+    /// Turn an `RValue` (which captures type information of a value or function)
+    /// into a serialized string that can be spliced in a quotation 
+    let serializeRValue = function
+      | RValue.Value -> ""
+      | RValue.Function(pars, hasVar) -> 
+          let prefix = if hasVar then "1" else "0"
+          prefix + if List.isEmpty pars then "" else ";" + (String.concat ";" pars)
+
+    /// Given a string produced by `serializeRValue`, reconstruct the original RValue object 
+    let deserializeRValue serialized = 
+      if serialized = null then invalidArg "serialized" "Unexpected null string"
+      elif serialized = "" then RValue.Value
+      else 
+        let hasVar = match serialized.[0] with '1' -> true | '0' -> false | _ -> invalidArg "serialized" "Should start with a flag"
+        let args = if serialized.Length = 1 then [] else List.ofSeq (serialized.Substring(2).Split(';'))
+        RValue.Function(args, hasVar)
+        
     let makeSafeName (name: string) = name.Replace("_","__").Replace(".", "_")
 
     let internal bindingInfo (name: string) : RValue = 
@@ -353,9 +370,9 @@ module RInterop =
     let getPackageDescription packageName: string = 
         eval("packageDescription(\"" + packageName + "\")$Description").GetValue()
 
-    let getFunctionDescriptions packageName : Map<string, string> =
+    let getFunctionDescriptions packageName =
         exec <| sprintf """rds = readRDS(system.file("Meta", "Rd.rds", package = "%s"))""" packageName
-        Map.ofArray <| Array.zip ((eval "rds$Name").GetValue()) ((eval "rds$Title").GetValue())
+        Array.zip ((eval "rds$Name").GetValue<string[]>()) ((eval "rds$Title").GetValue<string[]>())
 
     let private packages = System.Collections.Generic.HashSet<string>()
 
@@ -414,14 +431,13 @@ module RInterop =
             | something ->
                 printfn "Ignoring name %s of type %s" name something
                 RValue.Value
-        name, value
+        name, serializeRValue value
 
-    let getBindings packageName : Map<string, RValue> =
+    let getBindings packageName =
         // TODO: Maybe get these from the environments?
         let bindings = getBindingsFromR.Value packageName
         [| for entry in bindings.AsList() -> entry.AsList() |]
         |> Array.map (fun (entry: GenericVector) -> bindingInfoFromR entry)
-        |> Map.ofSeq
 
     let callFunc (packageName: string) (funcName: string) (argsByName: seq<KeyValuePair<string, obj>>) (varArgs: obj[]) : SymbolicExpression =
             // We make sure we keep a reference to any temporary symbols until after exec is called, 
@@ -462,22 +478,6 @@ module RInterop =
             let expr = sprintf "%s::`%s`(%s)" packageName funcName (String.Join(", ", argList))
             eval expr
 
-    /// Turn an `RValue` (which captures type information of a value or function)
-    /// into a serialized string that can be spliced in a quotation 
-    let serializeRValue = function
-      | RValue.Value -> ""
-      | RValue.Function(pars, hasVar) -> 
-          let prefix = if hasVar then "1" else "0"
-          prefix + (String.concat ";" pars)
-
-    /// Given a string produced by `serializeRValue`, reconstruct the original RValue object 
-    let internal deserializeRValue serialized = 
-      if serialized = null then invalidArg "serialized" "Unexpected null string"
-      elif serialized = "" then RValue.Value
-      else 
-        let hasVar = match serialized.[0] with '1' -> true | '0' -> false | _ -> invalidArg "serialized" "Should start with a flag"
-        RValue.Function(List.ofSeq (serialized.Substring(1).Split(';')), hasVar)
-        
     let call (packageName: string) (funcName: string) (serializedRVal:string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
         //loadPackage packageName
 
@@ -507,13 +507,37 @@ module RInterop =
 /// [omit]
 [<AutoOpen>]
 module RDotNetExtensions2 = 
+    open RInterop
+
     type RDotNet.SymbolicExpression with
         /// Call the R print function and return output as a string
         member this.Print() : string = 
-            characterDevice.BeginCapture()
-            let rvalStr = RInterop.RValue.Function(["x"], true) |> RInterop.serializeRValue
-            RInterop.call "base" "print" rvalStr [| this |] [| |] |> ignore
-            characterDevice.EndCapture()
+            // Print by capturing the output in a registered character device
+            let printUsingDevice print =
+               characterDevice.BeginCapture()
+               print()
+               characterDevice.EndCapture()
+            
+            // Print by redirecting the output to a temp file (on Mono/Mac, 
+            // using character device hangs the R provider for some reason)
+            let printUsingTempFile print = 
+                let temp = Path.GetTempFileName()
+                try
+                    let rvalStr = Function(["file"], true) |> serializeRValue
+                    call "base" "sink" rvalStr [| temp |] [| |] |> ignore
+                    print()
+                    call "base" "sink" rvalStr [| |] [| |] |> ignore
+                    File.ReadAllText(temp)
+                finally File.Delete(temp)
+
+            let capturer = 
+                if RInit.isUnixOrMac () then printUsingTempFile
+                else printUsingDevice
+
+            capturer (fun () ->
+                let rvalStr = RInterop.RValue.Function(["x"], true) |> RInterop.serializeRValue
+                RInterop.call "base" "print" rvalStr [| this |] [| |] |> ignore )
+           
 
 /// The object represents an R environment loaded from RData file.
 /// This type is typically used through an `RData` type provider. To 

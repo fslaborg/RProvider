@@ -15,9 +15,13 @@
     <tags>@tags@</tags>
     <language>en-US</language>
     <dependencies>
-      <dependency id="R.NET.Community" version="[1.5.15]" />
-      <dependency id="R.NET.Community.FSharp" version="[0.1.8]" />
+      <dependency id="R.NET.Community" version="[1.5.16]" />
+      <dependency id="R.NET.Community.FSharp" version="[0.1.9]" />
     </dependencies>    
+    <references>
+      <reference file="RProvider.Runtime.dll" />
+      <reference file="RProvider.dll" />
+    </references>
   </metadata>
   <files>
     <file src="..\bin\RProvider.Server.exe" target="lib\net40" />
@@ -30,8 +34,8 @@
     <file src="..\bin\RProvider.pdb" target="lib\net40" />
     <file src="..\bin\RProvider.fsx" target="." />
     <file src="..\nuget\RProvider.Runtime.dll.config" target="lib\net40" />
-    <file src="..\nuget\FSharp.Core.dll" target="lib\net40"/>
-    <file src="..\nuget\FSharp.Core.optdata" target="lib\net40"/>
-    <file src="..\nuget\FSharp.Core.sigdata" target="lib\net40"/>
+    <file src="..\packages\FSharp.Core\lib\net40\FSharp.Core.dll" target="lib\net40"/> 
+    <file src="..\packages\FSharp.Core\lib\net40\FSharp.Core.optdata" target="lib\net40"/> 
+    <file src="..\packages\FSharp.Core\lib\net40\FSharp.Core.sigdata" target="lib\net40"/> 
   </files>
 </package>

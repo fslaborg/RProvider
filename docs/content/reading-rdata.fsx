@@ -76,8 +76,6 @@ can use the standard R functions for saving the `*.rdata` files. The easiest
 option is to call the `R.assign` function to define named values in the R environment
 and then use `R.save` to save the environment to a file:
 *)
-open RProvider.``base``
-
 // Calculate sum of square differences
 let avg = sample.volcanoList |> Array.average
 let sqrs = 

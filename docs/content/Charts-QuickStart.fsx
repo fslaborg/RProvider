@@ -1,7 +1,7 @@
 ﻿(*** hide ***)
 // Include the right directories so that the documentation tool tips work
 #nowarn "211" // Ignore warning that a search path does not exist on #I
-#I "../../packages/FSharp.Data.2.0.7/lib/net40/"
+#I "../../packages/FSharp.Data/lib/net40/"
 #I "../../bin/"
 
 (** 
@@ -25,7 +25,6 @@ you can reference the required libraries and packages this way:
 open System
 open RDotNet
 open RProvider
-open RProvider.``base``
 open RProvider.graphics
 
 (**

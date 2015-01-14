@@ -1,9 +1,8 @@
 ﻿#r @"../../bin/RDotNet.dll"
-#r @"../../bin/RProvider.dll"
+#load @"../../bin/RProvider.fsx"
  
 open RDotNet
 open RProvider
-open RProvider.``base``
 open RProvider.graphics
 open RProvider.stats
 // If either of the namespaces below are unrecognized, you need to install the package in R
