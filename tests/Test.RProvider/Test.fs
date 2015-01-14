@@ -15,7 +15,6 @@ open RDotNet
 open RDotNet.Internals
 open RProvider
 open RProvider.RInterop
-open RProvider.``base``
 open System
 open Xunit
 open FsCheck

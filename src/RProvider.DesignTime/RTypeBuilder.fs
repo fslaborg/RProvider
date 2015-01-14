@@ -23,7 +23,7 @@ module internal RTypeBuilder =
       [ // Expose all available packages as namespaces
         Logging.logf "generateTypes: getting packages"
         let packages = 
-          [ //yield "base", ns
+          [ yield "base", ns
             for package in server.GetPackages() do yield package, ns + "." + package ]
         for package, pns in packages do
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    

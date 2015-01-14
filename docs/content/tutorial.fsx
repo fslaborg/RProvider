@@ -1,7 +1,7 @@
 ﻿(*** hide ***)
 // Include the right directories so that the documentation tool tips work
 #nowarn "211" // Ignore warning that a search path does not exist on #I
-#I "../../packages/FSharp.Data.2.0.7/lib/net40/"
+#I "../../packages/FSharp.Data/lib/net40/"
 #I "../../bin/"
 
 (** 
@@ -22,7 +22,6 @@ we use `open` to reference a number of packages including `stats`, `tseries` and
  
 open RDotNet
 open RProvider
-open RProvider.``base``
 open RProvider.graphics
 open RProvider.stats
 open RProvider.tseries
@@ -30,7 +29,6 @@ open RProvider.zoo
 
 open System
 open System.Net
-
 (**
 If either of the namespaces above are unrecognized, you need to install the package in R
 using `install.packages("stats")`.

@@ -30,7 +30,6 @@ you can reference the required libraries and packages this way:
 open System
 open RDotNet
 open RProvider
-open RProvider.``base``
 open RProvider.graphics
 open RProvider.stats
 

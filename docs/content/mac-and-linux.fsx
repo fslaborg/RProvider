@@ -114,7 +114,6 @@ Now, type the following in the script file (with the correct R provider version)
 #load "RProvider.fsx"
 
 open RProvider
-open RProvider.``base``
 open RProvider.graphics
 open RProvider.grDevices
 open RProvider.datasets

@@ -1,5 +1,5 @@
 (*** hide ***)
-#I "../../packages/FSharp.Data.2.0.7/lib/net40/"
+#I "../../packages/FSharp.Data/lib/net40/"
 #I "../../bin/"
 #r "RDotNet.dll"
 #r "RDotNet.FSharp.dll"
@@ -8,7 +8,6 @@
 open System
 open RDotNet
 open RProvider
-open RProvider.``base``
 
 (**
 # Passing Data Between F# and R

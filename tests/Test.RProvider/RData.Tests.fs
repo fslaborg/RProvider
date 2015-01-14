@@ -11,7 +11,6 @@ module Test.RData
 open Xunit
 open System
 open RProvider
-open RProvider.``base``
 
 type Sample = RData<"data/sample.rdata">
 
