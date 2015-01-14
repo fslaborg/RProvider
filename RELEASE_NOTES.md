@@ -19,3 +19,4 @@
 * 1.1.3-alpha - Fix remaining Mono issues and add documentation
 * 1.1.4-alpha - Fix load script in the NuGet package
 * 1.1.5-alpha - Downgrade R.NET version and update load script
+* 1.1.6 - Mono support & use and support Paket + minor improvements
