@@ -92,13 +92,12 @@ Target "BuildTests" (fun _ ->
 )
 
 Target "MergeRProviderServer" (fun _ -> 
-  () (*
     let buildMergedDir = binDir @@ "merged"
     CreateDir buildMergedDir
 
     let toPack = 
         (binDir @@ "RProvider.Server.exe") + " " +
-        (binDir @@ "../tools/FSharp.Core.dll") + " " +
+        (binDir @@ "FSharp.Core.dll") + " " +
         (binDir @@ "RDotNet.FSharp.dll") + " " +
         (binDir @@ "RProvider.Runtime.dll")
 
@@ -116,7 +115,6 @@ Target "MergeRProviderServer" (fun _ ->
     !! (buildMergedDir @@ "*.*") 
     |> CopyFiles binDir
     DeleteDir buildMergedDir
-*)
 ) 
 
 // --------------------------------------------------------------------------------------

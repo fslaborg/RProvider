@@ -8,7 +8,7 @@ nuget R.NET.Community.FSharp 0.1.9
 nuget xunit.runners
 nuget FAKE
 nuget NuGet.CommandLine
-nuget ILRepack
+nuget ILRepack 1.22.2
 nuget FSharp.Core 3.0.2
 
 github fsprojects/FSharp.TypeProviders.StarterPack src/ProvidedTypes.fsi
