@@ -73,15 +73,23 @@ let resolveReferencedAssembly (asmName:string) =
       let idx = asmName.IndexOf(',') 
       if idx > 0 then asmName.Substring(0, idx) else asmName
 
-    let asm =
-      getProbingLocations()
-      |> Seq.tryPick (fun dir ->
-          let library = Path.Combine(dir, libraryName+".dll")
-          if File.Exists(library) then
-            // We do a ReflectionOnlyLoad so that we can check the version
-            let refAssem = Assembly.ReflectionOnlyLoadFrom(library)
-            // If it matches, we load the actual assembly
-            if refAssem.FullName = asmName then Some(Assembly.LoadFrom(library)) else None
-          else None)
+    let locations = getProbingLocations()
+    Logging.logf "Probing locations: %s" (String.concat ";" locations)
+
+    let asm = locations |> Seq.tryPick (fun dir ->
+      let library = Path.Combine(dir, libraryName+".dll")
+      if File.Exists(library) then
+        Logging.logf "Found assembly, checking version! (%s)" library
+        // We do a ReflectionOnlyLoad so that we can check the version
+        let refAssem = Assembly.ReflectionOnlyLoadFrom(library)
+        // If it matches, we load the actual assembly
+        if refAssem.FullName = asmName then 
+          Logging.logf "...version matches, returning!"
+          Some(Assembly.LoadFrom(library)) 
+        else 
+          Logging.logf "...version mismatch, skipping"
+          None
+      else None)
              
+    if asm = None then Logging.logf "Assembly not found!"
     defaultArg asm null
