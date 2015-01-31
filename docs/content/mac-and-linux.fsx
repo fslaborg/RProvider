@@ -51,6 +51,13 @@ following installs it into `/usr/local/mono64` (feel free to change this too):
     make
     make install
 
+You might get a timeout from `git` when running the `autogen`-command, if you are behind
+a firewall. To fix this just run the following, which will force `git` to clone using
+"https://" instead of "git://":
+
+    [lang=text]
+    git config --global url."https://".insteadOf git://
+
 Now we can run Mono in 64-bit explicitly using `/usr/local/mono64/bin/mono`. Next, we need 
 to create a launcher script that will start F# Interactive in 64 bit. 
 
@@ -88,7 +95,7 @@ line `MONO64=/usr/local/mono64/bin/mono`.
 You can create the file using the following command:
 
     [lang=text]
-    echo MONO64=$MONO_PREFIX > ~/.rprovider.conf
+    echo MONO64=$MONO_PREFIX/bin/mono > ~/.rprovider.conf
 
 And this is all you should need! One more thing to check is to make sure that R is in your
 PATH (and the R provider will be able to find it). To do that, open Terminal and type
