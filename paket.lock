@@ -1,6 +1,7 @@
 NUGET
   remote: https://www.nuget.org/api/v2
   specs:
+    DynamicInterop (0.7.4)
     FAKE (3.13.4)
     FsCheck (1.0.4)
     FsCheck.Xunit (1.0.4)
@@ -9,20 +10,21 @@ NUGET
     FSharp.Compiler.Service (0.0.81)
     FSharp.Core (3.0.2)
     FSharp.Data (2.1.1)
-      Zlib.Portable (>= 1.10.0)
+      Zlib.Portable (>= 1.10.0) - framework: portable-net40+sl50+wp80+win80
     FSharp.Formatting (2.6.0)
       FSharp.Compiler.Service (>= 0.0.81)
     ILRepack (1.25.0)
     NuGet.CommandLine (2.8.3)
-    R.NET.Community (1.5.16)
-    R.NET.Community.FSharp (0.1.9)
-      R.NET.Community (>= 1.5.16)
+    R.NET.Community (1.6)
+      DynamicInterop (>= 0.7.4)
+    R.NET.Community.FSharp (0.1.14)
+      R.NET.Community (>= 1.6)
     xunit (1.9.2)
     xunit.runners (1.9.2)
     Zlib.Portable (1.10.0)
 GITHUB
   remote: fsprojects/FSharp.TypeProviders.StarterPack
   specs:
-    src/DebugProvidedTypes.fs (66277f5f3b881706a2b7af30e0aedee3feee9bc0)
-    src/ProvidedTypes.fs (66277f5f3b881706a2b7af30e0aedee3feee9bc0)
-    src/ProvidedTypes.fsi (66277f5f3b881706a2b7af30e0aedee3feee9bc0)
+    src/DebugProvidedTypes.fs (877014bfa6244ac382642e113d7cd6c9bc27bc6d)
+    src/ProvidedTypes.fs (877014bfa6244ac382642e113d7cd6c9bc27bc6d)
+    src/ProvidedTypes.fsi (877014bfa6244ac382642e113d7cd6c9bc27bc6d)
