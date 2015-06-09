@@ -21,3 +21,4 @@
 * 1.1.5-alpha - Downgrade R.NET version and update load script
 * 1.1.6 - Mono support & use and support Paket + minor improvements
 * 1.1.8 - Simplify load script (RProvider.fsx), improve logging
+* 1.1.9 - Update to R.NET 1.6.3
