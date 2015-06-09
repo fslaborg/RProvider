@@ -28,6 +28,6 @@ NUGET
 GITHUB
   remote: fsprojects/FSharp.TypeProviders.StarterPack
   specs:
-    src/DebugProvidedTypes.fs (70080986a4226e8218af09386cceb42e7a0ff00e)
-    src/ProvidedTypes.fs (70080986a4226e8218af09386cceb42e7a0ff00e)
-    src/ProvidedTypes.fsi (70080986a4226e8218af09386cceb42e7a0ff00e)
+    src/DebugProvidedTypes.fs (c098da43ef99c9f15f7ed7ec4726dace9b95ad06)
+    src/ProvidedTypes.fs (c098da43ef99c9f15f7ed7ec4726dace9b95ad06)
+    src/ProvidedTypes.fsi (c098da43ef99c9f15f7ed7ec4726dace9b95ad06)

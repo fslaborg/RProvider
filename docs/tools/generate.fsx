@@ -20,16 +20,8 @@ let info =
 // For typical project, no changes are needed below
 // --------------------------------------------------------------------------------------
 
-#I "../../packages/FSharp.Compiler.Service/lib/net40"
-#I "../../packages/FSharp.Formatting/lib/net40"
-#I "../../packages/RazorEngine/lib/net40/"
-#r "../../packages/Microsoft.AspNet.Razor/lib/net40/System.Web.Razor.dll"
+#load "../../packages/FSharp.Formatting/FSharp.Formatting.fsx"
 #r "../../packages/FAKE/tools/FakeLib.dll"
-#r "RazorEngine.dll"
-#r "FSharp.Literate.dll"
-#r "FSharp.Markdown.dll"
-#r "FSharp.CodeFormat.dll"
-#r "FSharp.MetadataFormat.dll"
 open Fake
 open System.IO
 open Fake.FileHelper
