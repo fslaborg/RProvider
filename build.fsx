@@ -147,6 +147,7 @@ FinalTarget "CloseTestRunner" (fun _ ->
 
 Target "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
+    let specificVersion (name, version) = name, sprintf "[%s]" version
     let projectDescription = projectDescription.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
     NuGet (fun p -> 
         { p with   
@@ -158,6 +159,10 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = String.concat " " release.Notes
             Tags = tags
             OutputPath = "bin"
+            Dependencies = 
+              [ "R.NET.Community", GetPackageVersion "packages" "R.NET.Community"
+                "R.NET.Community.FSharp", GetPackageVersion "packages" "R.NET.Community.FSharp" ]
+              |> List.map specificVersion
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         "nuget/RProvider.nuspec"

@@ -14,10 +14,7 @@
     <copyright>Copyright 2014</copyright>
     <tags>@tags@</tags>
     <language>en-US</language>
-    <dependencies>
-      <dependency id="R.NET.Community" version="[1.5.16]" />
-      <dependency id="R.NET.Community.FSharp" version="[0.1.9]" />
-    </dependencies>    
+    @dependencies@
     <references>
       <reference file="RProvider.Runtime.dll" />
       <reference file="RProvider.dll" />
