@@ -23,3 +23,4 @@
 * 1.1.8 - Simplify load script (RProvider.fsx), improve logging
 * 1.1.9 - Update to R.NET 1.6.3
 * 1.1.10 - Update NuGet package to depend on R.NET 1.6.3
+* 1.1.11 - Update to R.NET 1.6.4 (support R version 2.14.1)
