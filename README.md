@@ -1,7 +1,9 @@
-![logo](https://www.bluemountaincapital.com/media/logo.gif)
-
 F# R Provider [![Build Status](https://api.travis-ci.org/BlueMountainCapital/FSharpRProvider.svg?branch=master)](https://api.travis-ci.org/BlueMountainCapital/FSharpRProvider)
 =======
+
+<img align="right" src="https://github.com/BlueMountainCapital/FSharpRProvider/raw/master/docs/files/images/bmc.png" alt="BlueMountain Capital logo" />
+
+
 An F# type provider for interoperating with [R](http://www.r-project.org/). For more information, see [detailed documentation with tutorials, examples and more](http://bluemountaincapital.github.io/FSharpRProvider/).
 
 
