@@ -57,7 +57,11 @@ let getProbingLocations() =
 let resolveReferencedAssembly (asmName:string) = 
   
   // Do not interfere with loading FSharp.Core resources, see #97
-  if asmName.StartsWith "FSharp.Core.resources" then null else
+  // This also breaks for "mscorlib.resources" and so it might be good idea to skip all 
+  // resources (both short format "foo.resources" and long format "foo.resources, Version=4.0.0.0...")
+  if asmName.EndsWith ".resources" || asmName.Contains ".resources," then 
+    (* Do not log when we skip, because that would cause recursive lookup for mscorlib.resources *) null else
+  Logging.logf "Attempting resolution for '%s'" asmName
 
   // First, try to find the assembly in the currently loaded assemblies
   let fullName = AssemblyName(asmName)

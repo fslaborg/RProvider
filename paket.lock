@@ -2,21 +2,21 @@ NUGET
   remote: https://www.nuget.org/api/v2
   specs:
     DynamicInterop (0.7.4)
-    FAKE (3.35.0)
+    FAKE (3.36.0)
     FsCheck (1.0.4)
     FsCheck.Xunit (1.0.4)
       FsCheck (>= 1.0.4)
       xunit (>= 1.9.2)
-    FSharp.Compiler.Service (0.0.89)
+    FSharp.Compiler.Service (1.3.1.0)
     FSharp.Core (3.0.2)
-    FSharp.Data (2.2.2)
+    FSharp.Data (2.2.5)
       Zlib.Portable (>= 1.10.0) - framework: portable-net40+sl50+wp80+win80
-    FSharp.Formatting (2.9.7)
+    FSharp.Formatting (2.9.10)
       FSharp.Compiler.Service (>= 0.0.87)
       FSharpVSPowerTools.Core (1.8.0)
     FSharpVSPowerTools.Core (1.8.0)
       FSharp.Compiler.Service (>= 0.0.87)
-    ILRepack (2.0.0)
+    ILRepack (2.0.2)
     NuGet.CommandLine (2.8.5)
     R.NET.Community (1.6.4)
       DynamicInterop (0.7.4)
@@ -24,7 +24,7 @@ NUGET
       R.NET.Community (>= 1.6.4)
     xunit (1.9.2)
     xunit.runners (1.9.2)
-    Zlib.Portable (1.10.0) - framework: portable-net40+sl50+wp80+win80
+    Zlib.Portable (1.11.0) - framework: portable-net40+sl50+wp80+win80
 GITHUB
   remote: fsprojects/FSharp.TypeProviders.StarterPack
   specs:
