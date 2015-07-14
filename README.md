@@ -4,8 +4,11 @@ F# R Provider [![Build Status](https://api.travis-ci.org/BlueMountainCapital/FSh
 <img align="right" src="https://github.com/BlueMountainCapital/FSharpRProvider/raw/master/docs/files/images/bmc.png" alt="BlueMountain Capital logo" />
 
 
-An F# type provider for interoperating with [R](http://www.r-project.org/). For more information, see [detailed documentation with tutorials, examples and more](http://bluemountaincapital.github.io/FSharpRProvider/).
+An F# type provider for interoperating with [R](http://www.r-project.org/). For more information, see [detailed documentation with tutorials, examples and more](http://bluemountaincapital.github.io/FSharpRProvider/). The following tutorials are a good place to start:
 
+ - [Quickstart: Using Statistical Packages](http://bluemountaincapital.github.io/FSharpRProvider/Statistics-QuickStart.html)
+ - [Quickstart: Creating Charts](http://bluemountaincapital.github.io/FSharpRProvider/Charts-QuickStart.html)
+ - [Tutorial: Analysing Stock Prices](http://bluemountaincapital.github.io/FSharpRProvider/tutorial.html)
 
 What does it do?
 ----------------
