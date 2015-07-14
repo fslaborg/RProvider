@@ -161,6 +161,7 @@ Target "NuGet" (fun _ ->
             OutputPath = "bin"
             Dependencies = 
               [ "R.NET.Community", GetPackageVersion "packages" "R.NET.Community"
+                "DynamicInterop", GetPackageVersion "packages" "DynamicInterop"
                 "R.NET.Community.FSharp", GetPackageVersion "packages" "R.NET.Community.FSharp" ]
               |> List.map specificVersion
             AccessKey = getBuildParamOrDefault "nugetkey" ""
