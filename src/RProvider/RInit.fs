@@ -91,7 +91,8 @@ let private setupPathVariable () =
                   Path.Combine(location, "bin", if Environment.Is64BitProcess then "x64" else "i386")
 
           // Set the path
-          if not ((Path.Combine(binPath, "libR.dylib") |> File.Exists) || 
+          if not ((Path.Combine(binPath, "libR.dylib") |> File.Exists) ||
+                  (Path.Combine(binPath, "libR.so") |> File.Exists) || 
                   (Path.Combine(binPath, "R.dll") |> File.Exists)) then
               RInitError (sprintf "No R engine at %s" binPath)
           else
