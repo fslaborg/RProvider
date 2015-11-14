@@ -361,7 +361,7 @@ module RInterop =
         | "double" | "character" | "list" | "logical" ->
             RValue.Value
         | something ->
-            printfn "Ignoring name %s of type %s" name something
+            Logging.logf "Ignoring name %s of type %s" name something
             RValue.Value      
 
     let getPackages() : string[] =
@@ -429,7 +429,7 @@ module RInterop =
             | "double" | "character" | "list" | "logical" ->
                 RValue.Value
             | something ->
-                printfn "Ignoring name %s of type %s" name something
+                Logging.logf "Ignoring name %s of type %s" name something
                 RValue.Value
         name, serializeRValue value
 

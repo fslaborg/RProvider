@@ -116,7 +116,7 @@ let internal engine = Lazy<_>(fun () ->
     try
         Logging.logf "engine: Creating and initializing instance (sizeof<IntPtr>=%d)" IntPtr.Size 
         initResult.Force() |> ignore
-        let engine = REngine.GetInstance(null, true, null, characterDevice)
+        let engine = REngine.GetInstance(null, true, null, characterDevice, AutoPrint=false)
         System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose()) 
         Logging.logf "engine: Created & initialized instance"
         engine
