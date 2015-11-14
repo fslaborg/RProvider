@@ -26,4 +26,5 @@
 * 1.1.11 - Update to R.NET 1.6.4 (support R version 2.14.1)
 * 1.1.12 - Include transitive dependency on DynamicInterop
 * 1.1.13 - Skip assembly resolution for mscorlib.resources (avoids recursive lookup error)
-* 1.1.14 - Improve Liinux compatibility - try searching for libR.so (#157)
+* 1.1.14 - Improve Linux compatibility - try searching for libR.so (#157)
+* 1.1.15 - Disable R.NET AutoPrint (fix #161 and perhaps #160)
