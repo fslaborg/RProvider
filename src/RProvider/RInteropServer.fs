@@ -27,7 +27,7 @@ module internal EventLoop =
     let startEventLoop () = 
         Logging.logf "server event loop: starting"
         try
-          let initResultValue = RInit.initResult.Force()
+          let initResultValue = RInit.rHomePath.Force()
           let mutable running = true
           while running do
             match queue.Take() with
@@ -74,7 +74,7 @@ type RInteropServer() =
     member x.InitializationErrorMessage =
         // No need for event loop here, because this is initialized
         // when the event loop starts (so initResult has value now)
-        match RInit.initResult.Value with
+        match RInit.rHomePath.Value with
         | RInit.RInitError error -> error
         | _ -> null
        

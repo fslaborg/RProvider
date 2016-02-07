@@ -78,9 +78,9 @@ let private getRLocation () =
 
 /// Find the R installation using 'getRLocation' and add the directory to the
 /// current environment varibale PATH (so that later loading can find 'R.dll')
-let private setupPathVariable () =
+let private findRHomePath () =
     try
-      Logging.logf "setupPathVariable"
+      Logging.logf "findRHomePath"
       match getRLocation() with
       | RInitError error -> RInitError error
       | RInitResult location ->
@@ -91,32 +91,41 @@ let private setupPathVariable () =
                   Path.Combine(location, "bin", if Environment.Is64BitProcess then "x64" else "i386")
 
           // Set the path
-          if not ((Path.Combine(binPath, "libR.dylib") |> File.Exists) ||
-                  (Path.Combine(binPath, "libR.so") |> File.Exists) || 
-                  (Path.Combine(binPath, "R.dll") |> File.Exists)) then
+          let optRLibrary = 
+              [ Path.Combine(binPath, "libR.dylib")
+                Path.Combine(binPath, "libR.so")
+                Path.Combine(binPath, "R.dll") ]
+              |> Seq.tryFind File.Exists
+          match optRLibrary with
+          | None ->
               RInitError (sprintf "No R engine at %s" binPath)
-          else
-              Logging.logf "setupPathVariable: path='%s', home='%s'" binPath location
-              REngine.SetEnvironmentVariables(binPath, location)
-              Logging.logf "setupPathVariable completed"
-              RInitResult ()
+          | Some libraryFile ->
+              Logging.logf "findRHomePath: file='%s'" libraryFile
+              RInitResult(libraryFile)
     with e ->
-      Logging.logf "setupPathVariable failed: %O" e
+      Logging.logf "findRHomePath failed: %O" e
       reraise()
 
 /// Global interceptor that captures R console output
 let internal characterDevice = new CharacterDeviceInterceptor()
 
-/// Lazily initialized value that, when evaluated, sets the PATH variable
-/// to include the R location, or fails and returns RInitError
-let initResult = Lazy<_>(fun () -> setupPathVariable())
+/// Lazily initialized value that, find the R location or fails and returns RInitError
+let rHomePath = Lazy<_>(fun () -> findRHomePath())
 
 /// Lazily initialized R engine.
 let internal engine = Lazy<_>(fun () ->
     try
         Logging.logf "engine: Creating and initializing instance (sizeof<IntPtr>=%d)" IntPtr.Size 
-        initResult.Force() |> ignore
-        let engine = REngine.GetInstance(null, true, null, characterDevice, AutoPrint=false)
+        let lib = 
+            // If the value was `RInitError`, the error has already been reported by
+            // `RInteropServer.InitializationErrorMessage` and so we never even get here
+            match rHomePath.Force() with
+            | RInitResult res -> res
+            | RInitError err -> 
+                Logging.logf "engine: Unexpected - error not reported: %s" err
+                null
+
+        let engine = REngine.GetInstance(lib, true, null, characterDevice, AutoPrint=false)
         System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose()) 
         Logging.logf "engine: Created & initialized instance"
         engine
