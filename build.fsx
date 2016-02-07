@@ -56,11 +56,13 @@ Target "AssemblyInfo" (fun _ ->
 open System.IO
 
 Target "UpdateFsxVersions" (fun _ ->
-    let pattern = "packages/RProvider.(.*)/lib"
-    let replacement = sprintf "packages/RProvider.%s/lib" release.NugetVersion
     let path = "./src/RProvider/RProvider.fsx"
-    let text = File.ReadAllText(path)
-    let text = Text.RegularExpressions.Regex.Replace(text, pattern, replacement)
+    let mutable text = File.ReadAllText(path)
+    for package in [ "DynamicInterop"; "R.NET.Community"; "R.NET.Community.FSharp" ] do
+      let version = GetPackageVersion "packages" package
+      let pattern = "\\.\\./" + package + ".([0-9\\.]*)/lib"
+      let replacement = sprintf "../%s.%s/lib" package version
+      text <- Text.RegularExpressions.Regex.Replace(text, pattern, replacement)
     File.WriteAllText(path, text)
 )
 

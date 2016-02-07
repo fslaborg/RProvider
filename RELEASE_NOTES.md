@@ -28,3 +28,4 @@
 * 1.1.13 - Skip assembly resolution for mscorlib.resources (avoids recursive lookup error)
 * 1.1.14 - Improve Linux compatibility - try searching for libR.so (#157)
 * 1.1.15 - Disable R.NET AutoPrint (fix #161 and perhaps #160)
+* 1.1.16 - Load correct dependencies in RProvider.fsx (fix #166)
