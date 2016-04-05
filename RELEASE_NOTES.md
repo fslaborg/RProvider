@@ -29,3 +29,4 @@
 * 1.1.14 - Improve Linux compatibility - try searching for libR.so (#157)
 * 1.1.15 - Disable R.NET AutoPrint (fix #161 and perhaps #160)
 * 1.1.16-alpha - Load correct dependencies in RProvider.fsx (fix #166)
+* 1.1.17 - Fix RProvider.fsx (#166), Mac loading and update dependenices
