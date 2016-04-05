@@ -1,14 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------
-// FAKE build script 
+// FAKE build script
 // --------------------------------------------------------------------------------------
 
 #I "packages/FAKE/tools"
 #r "packages/FAKE/tools/FakeLib.dll"
 open System
-open Fake 
+open Fake
 open Fake.Git
 open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
+open Fake.Testing
 
 // --------------------------------------------------------------------------------------
 // Information about the project to be used at NuGet and in AssemblyInfo files
@@ -18,8 +19,8 @@ let projectName = "RProvider"
 let projectSummary = "An F# Type Provider providing strongly typed access to the R statistical package."
 let projectDescription = """
   An F# Type Provider providing strongly typed access to the R statistical package.
-  The type provider automatically discovers available R packages and makes them 
-  easily accessible from F#, so you can easily call powerful packages and 
+  The type provider automatically discovers available R packages and makes them
+  easily accessible from F#, so you can easily call powerful packages and
   visualization libraries from code running on the .NET platform."""
 let authors = ["BlueMountain Capital"]
 let companyName = "BlueMountain Capital"
@@ -29,7 +30,7 @@ let gitHome = "https://github.com/BlueMountainCapital"
 let gitName = "FSharpRProvider"
 
 // --------------------------------------------------------------------------------------
-// The rest of the code is standard F# build script 
+// The rest of the code is standard F# build script
 // --------------------------------------------------------------------------------------
 
 // Read release notes & version info from RELEASE_NOTES.md
@@ -46,7 +47,7 @@ Target "AssemblyInfo" (fun _ ->
         Attribute.Product projectName
         Attribute.Description projectSummary
         Attribute.Version release.AssemblyVersion
-        Attribute.FileVersion release.AssemblyVersion ] 
+        Attribute.FileVersion release.AssemblyVersion ]
       (AssemblyInfoFileConfig(false))
 )
 
@@ -56,11 +57,13 @@ Target "AssemblyInfo" (fun _ ->
 open System.IO
 
 Target "UpdateFsxVersions" (fun _ ->
-    let pattern = "packages/RProvider.(.*)/lib"
-    let replacement = sprintf "packages/RProvider.%s/lib" release.NugetVersion
     let path = "./src/RProvider/RProvider.fsx"
-    let text = File.ReadAllText(path)
-    let text = Text.RegularExpressions.Regex.Replace(text, pattern, replacement)
+    let mutable text = File.ReadAllText(path)
+    for package in [ "DynamicInterop"; "R.NET.Community"; "R.NET.Community.FSharp" ] do
+      let version = GetPackageVersion "packages" package
+      let pattern = "\\.\\./" + package + ".([0-9\\.]*)/lib"
+      let replacement = sprintf "../%s.%s/lib" package version
+      text <- Text.RegularExpressions.Regex.Replace(text, pattern, replacement)
     File.WriteAllText(path, text)
 )
 
@@ -91,34 +94,6 @@ Target "BuildTests" (fun _ ->
     |> Log "AppBuild-Output: "
 )
 
-Target "MergeRProviderServer" (fun _ -> 
-  () (*
-    let buildMergedDir = binDir @@ "merged"
-    CreateDir buildMergedDir
-
-    let toPack = 
-        (binDir @@ "RProvider.Server.exe") + " " +
-        (binDir @@ "../tools/FSharp.Core.dll") + " " +
-        (binDir @@ "RDotNet.FSharp.dll") + " " +
-        (binDir @@ "RProvider.Runtime.dll")
-
-    let result = 
-        ExecProcess (fun info -> 
-            info.FileName <- currentDirectory @@ "packages/ILRepack/tools/ILRepack.exe" 
-            info.Arguments <- 
-              sprintf 
-                "/internalize /verbose /lib:bin /ver:%s /out:%s %s" 
-                release.AssemblyVersion (buildMergedDir @@ "RProvider.Server.exe") toPack 
-            ) (TimeSpan.FromMinutes 5.) 
-
-    if result <> 0 then failwithf "Error during ILRepack execution." 
-
-    !! (buildMergedDir @@ "*.*") 
-    |> CopyFiles binDir
-    DeleteDir buildMergedDir
-*)
-) 
-
 // --------------------------------------------------------------------------------------
 // Run the unit tests using test runner & kill test runner when complete
 
@@ -129,16 +104,15 @@ Target "RunTests" (fun _ ->
     ActivateFinalTarget "CloseTestRunner"
 
     !! "tests/Test.RProvider/bin/**/Test*.dll"
-    |> xUnit (fun p -> 
-            {p with 
+    |> xUnit (fun p ->
+            {p with
                 ToolPath = xunitPath
                 ShadowCopy = false
-                HtmlOutput = true
-                XmlOutput = true
-                OutputDir = "." })
+                HtmlOutputPath = Some "."
+                XmlOutputPath = Some "." })
 )
- 
-FinalTarget "CloseTestRunner" (fun _ ->  
+
+FinalTarget "CloseTestRunner" (fun _ ->
     ProcessHelper.killProcess "xunit.console.clr4.exe"
 )
 
@@ -149,8 +123,8 @@ Target "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
     let specificVersion (name, version) = name, sprintf "[%s]" version
     let projectDescription = projectDescription.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
-    NuGet (fun p -> 
-        { p with   
+    NuGet (fun p ->
+        { p with
             Authors = authors
             Project = projectName
             Summary = projectSummary
@@ -159,7 +133,7 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = String.concat " " release.Notes
             Tags = tags
             OutputPath = "bin"
-            Dependencies = 
+            Dependencies =
               [ "R.NET.Community", GetPackageVersion "packages" "R.NET.Community"
                 "DynamicInterop", GetPackageVersion "packages" "DynamicInterop"
                 "R.NET.Community.FSharp", GetPackageVersion "packages" "R.NET.Community.FSharp" ]
@@ -190,7 +164,7 @@ Target "ReleaseDocs" (fun _ ->
 )
 
 Target "ReleaseBinaries" (fun _ ->
-    Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/release" 
+    Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/release"
     Branches.checkoutBranch "temp/release" "release"
     CopyRecursive "bin" "temp/release" true |> printfn "%A"
     let cmd = sprintf """commit -a -m "Update binaries for version %s""" release.NugetVersion
@@ -224,21 +198,17 @@ Target "AllCore" DoNothing
   ==> "UpdateFsxVersions"
   ==> "AssemblyInfo"
   ==> "Build"
-  ==> "MergeRProviderServer"
   ==> "BuildTests"
   ==> "RunTests"
   ==> "All"
 
-"MergeRProviderServer"
-  ==> "AllCore"
-
-"All" 
-  ==> "CleanDocs" 
-  ==> "GenerateDocs" 
-  ==> "ReleaseDocs" 
-  ==> "ReleaseBinaries" 
+"All"
+  ==> "CleanDocs"
+  ==> "GenerateDocs"
+  ==> "ReleaseDocs"
+  ==> "ReleaseBinaries"
   ==> "Release"
-  
+
 "All" ==> "NuGet" ==> "Release"
 "All" ==> "TagRelease" ==> "Release"
 
