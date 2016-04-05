@@ -198,13 +198,9 @@ Target "AllCore" DoNothing
   ==> "UpdateFsxVersions"
   ==> "AssemblyInfo"
   ==> "Build"
-  ==> "MergeRProviderServer"
   ==> "BuildTests"
   ==> "RunTests"
   ==> "All"
-
-"MergeRProviderServer"
-  ==> "AllCore"
 
 "All"
   ==> "CleanDocs"
