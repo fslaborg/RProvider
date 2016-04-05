@@ -5,8 +5,8 @@
 
 // Standard NuGet locations for R.NET
 #I "../DynamicInterop.0.7.4/lib/net40"
-#I "../R.NET.Community.1.6.4/lib/net40"
-#I "../R.NET.Community.FSharp.1.6.4/lib/net40"
+#I "../R.NET.Community.1.6.5/lib/net40"
+#I "../R.NET.Community.FSharp.1.6.5/lib/net40"
 
 // Standard Paket locations for R.NET
 #I "../DynamicInterop/lib/net40"
