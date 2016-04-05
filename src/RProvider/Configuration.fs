@@ -97,3 +97,26 @@ let resolveReferencedAssembly (asmName:string) =
              
     if asm = None then Logging.logf "Assembly not found!"
     defaultArg asm null
+
+let isUnixOrMac () = 
+    let platform = Environment.OSVersion.Platform 
+    // The guide at www.mono-project.com/FAQ:_Technical says to also check for the
+    // value 128, but that is only relevant to old versions of Mono without F# support
+    platform = PlatformID.MacOSX || platform = PlatformID.Unix              
+
+/// On Mac (and Linux), we use ~/.rprovider.conf in user's home folder for 
+/// various configuration (64-bit mono and R location if we cannot determine it)
+let getRProviderConfValue key = 
+    Logging.logf "getRProviderConfValue '%s'" key
+    if isUnixOrMac() then
+        let home = Environment.GetEnvironmentVariable("HOME")
+        try
+            Logging.logf "getRProviderConfValue - Home: '%s'" home
+            let config = home + "/.rprovider.conf"
+            IO.File.ReadLines(config) 
+            |> Seq.tryPick (fun line ->
+                match line.Split('=') with
+                | [| key'; value |]  when key' = key -> Some value
+                | _ -> None )
+        with _ -> None
+    else None
