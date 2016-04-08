@@ -30,3 +30,4 @@
 * 1.1.15 - Disable R.NET AutoPrint (fix #161 and perhaps #160)
 * 1.1.16-alpha - Load correct dependencies in RProvider.fsx (fix #166)
 * 1.1.17 - Fix RProvider.fsx (#166), Mac loading and update dependenices
+* 1.1.18-alpha - Allow specifying of R path in .rprovider.conf (fix #165)
