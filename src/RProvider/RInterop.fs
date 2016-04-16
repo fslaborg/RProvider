@@ -530,8 +530,8 @@ module RDotNetExtensions2 =
                     File.ReadAllText(temp)
                 finally File.Delete(temp)
 
-            let capturer = 
-                if RInit.isUnixOrMac () then printUsingTempFile
+            let capturer =
+                if Configuration.isUnixOrMac () then printUsingTempFile
                 else printUsingDevice
 
             capturer (fun () ->
