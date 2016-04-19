@@ -35,18 +35,10 @@ let newChannelName() =
 /// On Mac and Linux, we need to run the server using 64 bit version of mono
 /// There is no standard location for this, so the user needs ~/.rprovider.conf 
 let get64bitMonoExecutable() = 
-    if Environment.OSVersion.Platform = PlatformID.Unix ||
-       Environment.OSVersion.Platform = PlatformID.MacOSX then
-        try
-            let home = Environment.GetEnvironmentVariable("HOME")
-            Logging.logf "get64bitMonoExecutable - Home: '%s'" home
-            let config = home + "/.rprovider.conf"
-            IO.File.ReadLines(config) 
-            |> Seq.pick (fun line ->
-                match line.Split('=') with
-                | [| "MONO64"; exe |] -> Some exe
-                | _ -> None )
-        with e -> raise (RInitializationError("Mono 64bit executable not set (~/.rprovider.conf missing or invalid)"))
+    if Configuration.isUnixOrMac() then
+        match Configuration.getRProviderConfValue "MONO64" with
+        | Some exe -> exe
+        | None -> raise (RInitializationError("Mono 64bit executable not set (~/.rprovider.conf missing or invalid)"))
     else "mono" // On non-*nix systems, we *try* running just mono
 
 // Global variables for remembering the current server

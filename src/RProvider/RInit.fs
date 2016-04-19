@@ -12,12 +12,6 @@ type RInitResult<'T> =
   | RInitResult of 'T
   | RInitError of string
 
-let internal isUnixOrMac () = 
-    let platform = Environment.OSVersion.Platform 
-    // The guide at www.mono-project.com/FAQ:_Technical says to also check for the
-    // value 128, but that is only relevant to old versions of Mono without F# support
-    platform = PlatformID.MacOSX || platform = PlatformID.Unix              
-
 /// Find the R installation. First check "R_HOME" environment variable, then look 
 /// at the SOFTWARE\R-core\R\InstallPath value (using HKCU or, as a second try HKLM root)
 let private getRLocation () =
@@ -49,6 +43,11 @@ let private getRLocation () =
         | null, x 
         | x, _ -> getRLocationFromRCoreKey x
 
+    let locateRfromConfFile () = 
+        let res = Configuration.getRProviderConfValue "R_HOME"
+        Logging.logf "Checking '~/.rprovider.conf' for R_HOME value: %A" res
+        res
+
     let locateRfromShellR () = 
         Logging.logf "Calling 'R --print-home'"
         try
@@ -63,16 +62,20 @@ let private getRLocation () =
             RInitResult(path.Trim())
         with e -> 
             Logging.logf "Calling 'R --print-home' failed with: %A" e
-            RInitError("R is not installed (running 'R --print-home' failed")
+            RInitError("R is not installed (R_HOME not set in ~/.rprovider.conf and 'R --print-home' failed")
 
     // First, check R_HOME. If that's not set, then on Mac or Unix, we use 
     // `R --print-home` and on Windows, we look at "SOFTWARE\R-core" in registry
     Logging.logf "getRLocation"
 
-    // On Mac and Unix we run "R --print-home" hoping that R is in PATH
+    // On Mac and Unix we first check `.rprovider.conf` in PATH for 
+    // R_HOME variable; then try to run "R --print-home" hoping that R is in PATH
     match Environment.GetEnvironmentVariable "R_HOME" with
     | null -> 
-        if isUnixOrMac() then locateRfromShellR()
+        if Configuration.isUnixOrMac() then 
+            match locateRfromConfFile() with
+            | Some rPath -> RInitResult rPath
+            | _ -> locateRfromShellR()
         else locateRfromRegistry()
     | rPath -> RInitResult rPath 
 
@@ -85,7 +88,7 @@ let private findRHomePath () =
       | RInitError error -> RInitError error
       | RInitResult location ->
           let binPath = 
-              if isUnixOrMac() then 
+              if Configuration.isUnixOrMac() then 
                   Path.Combine(location, "lib") 
               else
                   Path.Combine(location, "bin", if Environment.Is64BitProcess then "x64" else "i386")

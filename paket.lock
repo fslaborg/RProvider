@@ -158,3 +158,8 @@ GITHUB
   specs:
     src/ProvidedTypes.fs (ddfb906ecbac78dc9f0f5e172518a72cb5fdf651)
     src/ProvidedTypes.fsi (ddfb906ecbac78dc9f0f5e172518a72cb5fdf651)
+GROUP Release
+NUGET
+  remote: https://www.nuget.org/api/v2
+  specs:
+    FSharp.Core (3.0.2)
