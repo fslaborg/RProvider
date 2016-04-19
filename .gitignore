@@ -3,14 +3,14 @@
 #################
 
 paket-files/
-Test.RProvider.dll.xml
-Test.RProvider.dll.html
+Test.RProvider.dll*
 packages/
 temp/
 docs/output/
 *.DotSettings
 *.userprefs
 .paket/paket.exe
+.fake
 
 #################
 ## Eclipse
