@@ -32,3 +32,4 @@
 * 1.1.17 - Fix RProvider.fsx (#166), Mac loading and update dependenices
 * 1.1.18-alpha - Allow specifying of R path in .rprovider.conf (fix #165)
 * 1.1.19-alpha - Fix FSharp.Core.dll included in the package
+* 1.1.20 - Cross-platform improvements
