@@ -122,7 +122,7 @@ module internal RInteropInternal =
         let conv' rengine (value: obj) = unbox value |> conv rengine 
         toRConv.[typeof<'inType>] <- conv'
 
-    let internal convertToR<'inType> (engine: REngine) (value: 'inType) =
+    let internal convertToR (engine: REngine) (value: obj) =
         let concreteType = value.GetType()
         let gt = typedefof<IConvertToR<_>>
 
@@ -269,12 +269,6 @@ module internal RInteropInternal =
         registerToR<byte[,]>    (fun engine v -> upcast engine.CreateRawMatrix v)
         registerToR<double[,]>  (fun engine v -> upcast engine.CreateNumericMatrix v)
 
-    type RDotNet.REngine with
-        member this.SetValue(value: obj, ?symbolName: string) : SymbolicExpression =            
-            let se = convertToR this value
-            if symbolName.IsSome then engine.Value.SetSymbol(symbolName.Value, se)
-            se
-
     let mutable symbolNum = 0
     let pid = System.Diagnostics.Process.GetCurrentProcess().Id;
 
@@ -282,10 +276,13 @@ module internal RInteropInternal =
     let getNextSymbolName() : string =
         symbolNum <- symbolNum + 1
         sprintf "fsr_%d_%d" pid symbolNum
-    
+
+    let convertValue(value: obj) =
+        convertToR engine.Value value   
+
     let toR (value: obj) =
         let symbolName = getNextSymbolName()
-        let se = engine.Value.SetValue(value, symbolName)
+        let se = convertValue value
         symbolName, se
 
     let eval (expr: string) = 
@@ -456,7 +453,7 @@ module RInterop =
                                             -> match FSharpValue.GetTupleFields(arg) with
                                                | [| name; value |] when name.GetType() = typeof<string> ->
                                                     let name = name :?> string
-                                                    tempSymbols.Add(name, engine.Value.SetValue(value, name))
+                                                    tempSymbols.Add(name, convertValue(value))
                                                     name
                                                | _ -> failwithf "Pairs must be string * value"
                     | _                     -> let sym,se = toR arg
@@ -475,8 +472,16 @@ module RInterop =
                         passArg argVal
             |]
 
-            let expr = sprintf "%s::`%s`(%s)" packageName funcName (String.Join(", ", argList))
-            eval expr
+            let callargs = String.Join(", ", argList)
+            if tempSymbols.Count = 0 then
+                let expr = sprintf "%s::`%s`(%s)" packageName funcName callargs
+                eval expr
+            else
+                let formals = String.Join(", ", Seq.map fst tempSymbols)
+                let expr = sprintf "function(%s) {%s::`%s`(%s)}" formals packageName funcName callargs
+                let func = (eval expr).AsFunction()
+                let args = Array.init tempSymbols.Count (fun i -> snd tempSymbols.[i])
+                func.Invoke(args)
 
     let call (packageName: string) (funcName: string) (serializedRVal:string) (namedArgs: obj[]) (varArgs: obj[]) : SymbolicExpression =
         //loadPackage packageName
