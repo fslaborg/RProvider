@@ -65,7 +65,7 @@ let means =
 (**
 Note that the default conversions available depend on the plugins that are currently
 available. For example, when you install the enrie [FsLab](http://www.fslab.org) package
-with the [Deedle](http://bluemountaincapital.github.io/Deedle/) library, the `RData` 
+with the [Deedle](https://fslab.org/Deedle/) library, the `RData` 
 provider will automatically expose data frames as Deedle `Frame<string, string>` values.
 
 Passing data from F# to R

@@ -5,9 +5,9 @@
     <version>@build.number@</version>
     <authors>@authors@</authors>
     <owners>@authors@</owners>
-    <projectUrl>https://github.com/BlueMountainCapital/FSharpRProvider</projectUrl>
-    <licenseUrl>https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/LICENSE.md</licenseUrl>
-    <iconUrl>https://raw.github.com/BlueMountainCapital/FSharpRProvider/master/docs/files/misc/logo.png</iconUrl>
+    <projectUrl>https://github.com/fslaborg/RProvider</projectUrl>
+    <licenseUrl>https://github.com/fslaborg/RProvider/blob/master/LICENSE.md</licenseUrl>
+    <iconUrl>https://github.com/fslaborg/RProvider/tree/master/docs/files/images/logo.png</iconUrl>
     <summary>@summary@</summary>
     <description>@description@</description>
     <releaseNotes>@releaseNotes@</releaseNotes>
@@ -31,8 +31,8 @@
     <file src="..\bin\RProvider.pdb" target="lib\net40" />
     <file src="..\bin\RProvider.fsx" target="." />
     <file src="..\nuget\RProvider.Runtime.dll.config" target="lib\net40" />
-    <file src="..\packages\release\FSharp.Core\lib\net40\FSharp.Core.dll" target="lib\net40"/> 
-    <file src="..\packages\release\FSharp.Core\lib\net40\FSharp.Core.optdata" target="lib\net40"/> 
-    <file src="..\packages\release\FSharp.Core\lib\net40\FSharp.Core.sigdata" target="lib\net40"/> 
+    <file src="..\packages\release\FSharp.Core\lib\net45\FSharp.Core.dll" target="lib\net40"/> 
+    <file src="..\packages\release\FSharp.Core\lib\net45\FSharp.Core.optdata" target="lib\net40"/> 
+    <file src="..\packages\release\FSharp.Core\lib\net45\FSharp.Core.sigdata" target="lib\net40"/> 
   </files>
 </package>

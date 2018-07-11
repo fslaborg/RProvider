@@ -1,7 +1,6 @@
 F# R Type Provider
 =======
 
-<img src="http://www.bluemountaincapital.com/media/logo.gif" style="float:right;margin:10px;margin-top:0px;" />
 
 The F# Type Provider is a mechanism that enables smooth interoperability
 between F# and [R](http://www.r-project.org/). 
@@ -84,6 +83,6 @@ the project and submit pull requests.
 Many thanks to Mathias Brandewinder for producing the [FAKE](https://github.com/fsharp/FAKE) script
 to build the NuGet package, and to Steffen Forkman for writing [FAKE](https://github.com/fsharp/FAKE).
 
-[gh]: https://github.com/blueMountainCapital/FSharpRProvider
-[issues]: https://github.com/blueMountainCapital/FSharpRProvider/issues
-[license]: https://github.com/blueMountainCapital/FSharpRProvider/blob/master/LICENSE.md
+[gh]: https://github.com/fslaborg/RProvider
+[issues]: https://github.com/fslaborg/RProvider/issues
+[license]: https://github.com/fslaborg/RProvider/blob/master/LICENSE.md

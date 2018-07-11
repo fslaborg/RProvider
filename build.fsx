@@ -22,12 +22,12 @@ let projectDescription = """
   The type provider automatically discovers available R packages and makes them
   easily accessible from F#, so you can easily call powerful packages and
   visualization libraries from code running on the .NET platform."""
-let authors = ["BlueMountain Capital"]
-let companyName = "BlueMountain Capital"
+let authors = ["BlueMountain Capital"; "FsLab"]
+let companyName = "BlueMountain Capital, FsLab"
 let tags = "F# fsharp R TypeProvider visualization statistics"
 
-let gitHome = "https://github.com/BlueMountainCapital"
-let gitName = "FSharpRProvider"
+let gitHome = "https://github.com/fslaborg"
+let gitName = "RProvider"
 
 // --------------------------------------------------------------------------------------
 // The rest of the code is standard F# build script
@@ -179,9 +179,9 @@ Target "TagRelease" (fun _ ->
     let cmd = sprintf """tag -a %s -m "%s" """ tagName notes
     CommandHelper.runSimpleGitCommand "." cmd |> printfn "%s"
 
-    // Find the main remote (BlueMountain GitHub)
+    // Find the main remote (fslaborg GitHub)
     let _, remotes, _ = CommandHelper.runGitCommand "." "remote -v"
-    let main = remotes |> Seq.find (fun s -> s.Contains("(push)") && s.Contains("BlueMountainCapital/FSharpRProvider"))
+    let main = remotes |> Seq.find (fun s -> s.Contains("(push)") && s.Contains("fslaborg/RProvider"))
     let remoteName = main.Split('\t').[0]
     Fake.Git.Branches.pushTag "." remoteName tagName
 )
