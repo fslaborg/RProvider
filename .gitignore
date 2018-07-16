@@ -181,3 +181,5 @@ pip-log.txt
 
 # Generated documentation files
 Documentation/Output/*.html
+.vs/slnx.sqlite
+.paket/Paket.Restore.targets

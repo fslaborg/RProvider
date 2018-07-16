@@ -6,7 +6,7 @@ potential issues. If you encounter any issues with the R type provider, this
 page gives you all the information you need to create a log file with detailed
 trace of what is going one. This may give you some hints on what is wrong & a
 detailed report that you can send when [submitting an
-issue](https://github.com/BlueMountainCapital/FSharpRProvider/issues).
+issue](https://github.com/fslaborg/RProvider/issues).
 
 **TL;DR** The logging is enabled by setting an environment variable
 `RPROVIDER_LOG` to a file name where the log should be saved. The file does
@@ -49,4 +49,4 @@ Enabling logging in a custom build
 If you're building R provider from source, you can also enable logging by changing
 the `loggingEnabled` constant in the source code (and change `logFile` if you want
 to override the default location). See the [right place for this on
-GitHub](https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/src/RProvider/Logging.fs#L13).
+GitHub](https://github.com/fslaborg/RProvider/blob/master/src/RProvider/Logging.fs#L13).

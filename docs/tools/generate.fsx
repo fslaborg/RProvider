@@ -6,14 +6,14 @@
 // Binaries that have XML documentation (in a corresponding generated XML file)
 let referenceBinaries = [ "RProvider.Runtime.dll" ] 
 // Web site location for the generated documentation
-let website = "http://bluemountaincapital.github.io/FSharpRProvider"
+let website = "https://fslab.org/RProvider/"
 
 // Specify more information about your project
 let info =
   [ "project-name", "R Type Provider"
-    "project-author", "BlueMountain Capital"
+    "project-author", "BlueMountain Capital, FsLab"
     "project-summary", "An F# Type Provider providing strongly typed access to the R statistical package"
-    "project-github", "http://github.com/BlueMountainCapital/FSharpRProvider"
+    "project-github", "https://github.com/fslab/RProvider"
     "project-nuget", "https://nuget.org/packages/RProvider" ]
 
 // --------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ let buildReference () =
   MetadataFormat.Generate
     ( List.map ((@@) bin) referenceBinaries, output @@ "reference", layoutRoots, libDirs = [ bin ],
       parameters = ("root", root)::info,
-      sourceRepo = "https://github.com/BlueMountainCapital/FSharpRProvider/tree/master/",
+      sourceRepo = "https://github.com/fslaborg/RProvider/tree/master/",
       sourceFolder = __SOURCE_DIRECTORY__.Substring(0, __SOURCE_DIRECTORY__.Length - "\docs\tools".Length ) )
 
 // Build documentation from `fsx` and `md` files in `docs/content`

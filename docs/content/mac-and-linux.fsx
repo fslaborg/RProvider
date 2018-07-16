@@ -11,7 +11,7 @@ The most recent versions of the R type provider can be used on Mac and Linux usi
 Mono. However, there is a bit of setup that you need to go through first. This page
 describes the necessary steps for using R provider on Mac using Xamarin Studio, but
 it should be easily adaptable for other configuration. If no, please [edit this 
-file](https://github.com/BlueMountainCapital/FSharpRProvider/blob/master/docs/content/mac-and-linux.fsx)
+file](https://github.com/fslaborg/RProvider/blob/master/docs/content/mac-and-linux.fsx)
 to add more details!
 
 In summary, you need the following:
@@ -157,7 +157,7 @@ Diagnostics and debugging
 -------------------------
 
 If you encounter any issues, please do not hesitate to submit an issue! You can do that on the
-[GitHub page](https://github.com/BlueMountainCapital/FSharpRProvider/issues). Before submitting
+[GitHub page](https://github.com/fslaborg/RProvider/issues). Before submitting
 an issue, please see the [Diagnostics and debugging page](diagnostics.html), which tells you how
 to create a log file with more detailed information about the issues.
 
