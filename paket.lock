@@ -2,7 +2,7 @@ RESTRICTION: || (== net451) (== net452)
 NUGET
   remote: https://www.nuget.org/api/v2
     DynamicInterop (0.8.1)
-    FAKE (5.2)
+    FAKE (4.64.13)
     FsCheck (2.11)
       FSharp.Core (>= 4.0.0.1)
     FsCheck.Xunit (2.11)

@@ -9,7 +9,7 @@ nuget R.NET.Community
 nuget R.NET.Community.FSharp
 nuget xunit.runners 1.9.2
 nuget xunit 1.9.2
-nuget FAKE
+nuget FAKE 4.64.13
 nuget NuGet.CommandLine
 nuget FSharp.Core 4.3.4
 
