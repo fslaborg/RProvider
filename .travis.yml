@@ -6,7 +6,7 @@ install:
   - chmod 755 ./build.sh
 
 script: 
-  - ./build.sh AllCore
+  - ./build.sh Build
 
 branches:
   except:
