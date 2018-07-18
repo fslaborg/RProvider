@@ -105,10 +105,10 @@ let getServer() =
     match lastServer with
     | Some s -> s
     | None ->
-        let server = startNewServer()
-        lastServer <- Some server
+        let serverInstance = startNewServer()
+        lastServer <- Some serverInstance
         Logging.logf "Got some server"
-        server )
+        serverInstance )
 
 /// Returns Some("...") when there is an 'expected' kind of error that we want
 /// to show in the IntelliSense in a pleasant way (R is not installed, registry
@@ -119,5 +119,5 @@ let tryGetInitializationError () =
 
 let withServer f =
     lock serverlock <| fun () ->
-    let server = getServer()
-    f server
+    let serverInstance = getServer()
+    f serverInstance

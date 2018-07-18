@@ -21,6 +21,7 @@ let info =
 // --------------------------------------------------------------------------------------
 
 #load "../../packages/FSharp.Formatting/FSharp.Formatting.fsx"
+#r "netstandard"
 #r "../../packages/FAKE/tools/FakeLib.dll"
 open Fake
 open System.IO
