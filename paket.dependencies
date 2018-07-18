@@ -1,5 +1,7 @@
 source https://www.nuget.org/api/v2
+frameworks: net451, net452
 
+nuget FsCheck
 nuget FsCheck.Xunit
 nuget FSharp.Data
 nuget FSharp.Formatting
@@ -9,11 +11,12 @@ nuget xunit.runners 1.9.2
 nuget xunit 1.9.2
 nuget FAKE
 nuget NuGet.CommandLine
-nuget FSharp.Core 4.2.3
+nuget FSharp.Core 4.3.4
 
-github fsprojects/FSharp.TypeProviders.StarterPack src/ProvidedTypes.fsi
-github fsprojects/FSharp.TypeProviders.StarterPack src/ProvidedTypes.fs
+github fsprojects/FSharp.TypeProviders.SDK:ddfb906ecbac78dc9f0f5e172518a72cb5fdf651 src/ProvidedTypes.fsi
+github fsprojects/FSharp.TypeProviders.SDK:ddfb906ecbac78dc9f0f5e172518a72cb5fdf651 src/ProvidedTypes.fs
 
 group Release
   source https://www.nuget.org/api/v2
-  nuget FSharp.Core 3.0.2
+  framework: net451
+  nuget FSharp.Core 4.3.4
