@@ -6,14 +6,14 @@
 // Binaries that have XML documentation (in a corresponding generated XML file)
 let referenceBinaries = [ "RProvider.Runtime.dll" ] 
 // Web site location for the generated documentation
-let website = "https://fslab.org/RProvider/"
+let website = "https://fslab.org/RProvider"
 
 // Specify more information about your project
 let info =
   [ "project-name", "R Type Provider"
     "project-author", "BlueMountain Capital, FsLab"
     "project-summary", "An F# Type Provider providing strongly typed access to the R statistical package"
-    "project-github", "https://github.com/fslab/RProvider"
+    "project-github", "https://github.com/fslaborg/RProvider"
     "project-nuget", "https://nuget.org/packages/RProvider" ]
 
 // --------------------------------------------------------------------------------------
