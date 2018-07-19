@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>RProvider</RootNamespace>
     <AssemblyName>RProvider.Runtime</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Name>RProvider.Runtime</Name>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
