@@ -7,7 +7,7 @@
     <owners>@authors@</owners>
     <projectUrl>https://github.com/fslaborg/RProvider</projectUrl>
     <licenseUrl>https://github.com/fslaborg/RProvider/blob/master/LICENSE.md</licenseUrl>
-    <iconUrl>https://github.com/fslaborg/RProvider/tree/master/docs/files/images/logo.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/files/misc/logo.png</iconUrl>
     <summary>@summary@</summary>
     <description>@description@</description>
     <releaseNotes>@releaseNotes@</releaseNotes>

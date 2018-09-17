@@ -6,7 +6,7 @@ open System.Reflection
 [<assembly: AssemblyCompanyAttribute("BlueMountain Capital, FsLab")>]
 [<assembly: AssemblyProductAttribute("RProvider")>]
 [<assembly: AssemblyDescriptionAttribute("An F# Type Provider providing strongly typed access to the R statistical package.")>]
-[<assembly: AssemblyVersionAttribute("1.1.20")>]
-[<assembly: AssemblyFileVersionAttribute("1.1.20")>]
+[<assembly: AssemblyVersionAttribute("1.1.21")>]
+[<assembly: AssemblyFileVersionAttribute("1.1.21")>]
 do ()
 
