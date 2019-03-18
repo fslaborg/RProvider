@@ -1,3 +1,4 @@
+* 1.1.22 - Add ProbingLocations for latest Deedle.RPlugin
 * 1.1.21 - Fix ProbingLocations (#199)
 * 1.1.20 - Cross-platform improvements
 * 1.1.19-alpha - Fix FSharp.Core.dll included in the package
