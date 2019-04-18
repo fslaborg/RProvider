@@ -1,7 +1,8 @@
 F# R Provider [![Build Status](https://api.travis-ci.org/fslaborg/RProvider.svg?branch=master)](https://api.travis-ci.org/fslaborg/RProvider.svg?branch=master)
+[![Nuget Version](https://buildstats.info/nuget/RProvider)](https://www.nuget.org/packages/RProvider/)
 =======
 
-<img align="right" src="https://github.com/fslaborg/RProvider/tree/master/docs/files/images/logo.png" alt="RProvider logo" />
+<img align="right" src="https://github.com/fslaborg/RProvider/raw/master/docs/files/images/logo.png" alt="RProvider" />
 
 
 An F# type provider for interoperating with [R](http://www.r-project.org/). For more information, see [detailed documentation with tutorials, examples and more](https://fslab.org/RProvider//). The following tutorials are a good place to start:
