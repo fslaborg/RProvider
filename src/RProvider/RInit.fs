@@ -134,4 +134,4 @@ let internal engine = Lazy<_>(fun () ->
         engine
     with e -> 
         Logging.logf "engine: Creating instance failed:\r\n  %O" e
-        raise(Exception("Initialization of R.NET failed", e)) )
+        raise(Exception("Initialization of R.NET failed: " + e.Message, e)) )
