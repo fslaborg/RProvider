@@ -4,14 +4,14 @@
 #I "lib/net40"
 
 // Standard NuGet locations for R.NET
-#I "../DynamicInterop.0.8.1/lib/netstandard1.2"
-#I "../R.NET.1.7.0/lib/net40"
-#I "../R.NET.FSharp.1.7.0/lib/net40"
+#I "../DynamicInterop.0.9.1/lib/netstandard2.0"
+#I "../R.NET.1.8.0-alpha1/lib/netstandard2.0"
+#I "../R.NET.FSharp.1.8.0-alpha/lib/netstandard2.0"
 
 // Standard Paket locations for R.NET
-#I "../DynamicInterop/lib/netstandard1.2"
-#I "../R.NET/lib/net40"
-#I "../R.NET.FSharp/lib/net40"
+#I "../DynamicInterop/lib/netstandard2.0"
+#I "../R.NET/lib/netstandard2.0"
+#I "../R.NET.FSharp/lib/netstandard2.0"
 
 // Try various folders that people might like
 #I "bin"

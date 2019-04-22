@@ -59,7 +59,7 @@ open System.IO
 Target "UpdateFsxVersions" (fun _ ->
     let path = "./src/RProvider/RProvider.fsx"
     let mutable text = File.ReadAllText(path)
-    for package in [ "DynamicInterop"; "R.NET.Community"; "R.NET.Community.FSharp" ] do
+    for package in [ "DynamicInterop"; "R.NET"; "R.NET.FSharp" ] do
       let version = GetPackageVersion "packages" package
       let pattern = "\\.\\./" + package + ".([0-9\\.]*)/lib"
       let replacement = sprintf "../%s.%s/lib" package version
@@ -134,9 +134,9 @@ Target "NuGet" (fun _ ->
             Tags = tags
             OutputPath = "bin"
             Dependencies =
-              [ "R.NET.Community", GetPackageVersion "packages" "R.NET.Community"
+              [ "R.NET", GetPackageVersion "packages" "R.NET"
                 "DynamicInterop", GetPackageVersion "packages" "DynamicInterop"
-                "R.NET.Community.FSharp", GetPackageVersion "packages" "R.NET.Community.FSharp" ]
+                "R.NET.FSharp", GetPackageVersion "packages" "R.NET.FSharp" ]
               |> List.map specificVersion
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })

@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>RProvider</RootNamespace>
     <AssemblyName>RProvider.DesignTime</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <Name>RProvider</Name>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <TargetFSharpCoreVersion>4.4.3.0</TargetFSharpCoreVersion>
