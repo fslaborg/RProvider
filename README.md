@@ -1,4 +1,4 @@
-F# R Provider [![Build Status](https://api.travis-ci.org/fslaborg/RProvider.svg?branch=master)](https://api.travis-ci.org/fslaborg/RProvider.svg?branch=master)
+F# R Provider [![Build Status](https://api.travis-ci.org/fslaborg/RProvider.svg?branch=master)](https://travis-ci.org/fslaborg/RProvider/builds)
 [![Nuget Version](https://buildstats.info/nuget/RProvider)](https://www.nuget.org/packages/RProvider/)
 =======
 
