@@ -99,21 +99,22 @@ Target "BuildTests" (fun _ ->
 
 
 Target "RunTests" (fun _ ->
-    let xunitPath = "packages/xunit.runners/tools/xunit.console.clr4.exe"
+    let xunitPath = "packages/xunit.runner.console/tools/net472/xunit.console.exe"
 
     ActivateFinalTarget "CloseTestRunner"
 
     !! "tests/Test.RProvider/bin/**/Test*.dll"
-    |> xUnit (fun p ->
+    |> xUnit2 (fun p ->
             {p with
                 ToolPath = xunitPath
                 ShadowCopy = false
-                HtmlOutputPath = Some "."
-                XmlOutputPath = Some "." })
+                // HtmlOutputPath = Some "."
+                // XmlOutputPath = Some "." })
+                })
 )
 
 FinalTarget "CloseTestRunner" (fun _ ->
-    ProcessHelper.killProcess "xunit.console.clr4.exe"
+    ProcessHelper.killProcess "xunit.console.exe"
 )
 
 // --------------------------------------------------------------------------------------

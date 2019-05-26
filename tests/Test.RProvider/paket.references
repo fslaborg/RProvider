@@ -2,5 +2,5 @@ FsCheck
 FsCheck.Xunit
 R.NET
 xunit
-xunit.runners
+xunit.runner.visualstudio
 FSharp.Core
