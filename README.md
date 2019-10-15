@@ -38,7 +38,7 @@ License
 -------
 RProvider is covered by the BSD license.
 
-The library uses [RDotNet](http://rdotnet.codeplex.com/) which is also covered by the BSD license.
+The library uses [RDotNet](https://github.com/rdotnet/rdotnet) which is also covered by the BSD license.
 
 Pre-requisites
 --------------
