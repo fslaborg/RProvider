@@ -110,22 +110,22 @@ let private findRHomePath () =
       reraise()
 
 /// Global interceptor that captures R console output
-let internal characterDevice = new CharacterDeviceInterceptor()
+let internal characterDevice = CharacterDeviceInterceptor()
 
 /// Lazily initialized value that, find the R location or fails and returns RInitError
-let rHomePath = Lazy<_>(fun () -> findRHomePath())
+let rHomePath = lazy(findRHomePath())
 
 /// Lazily initialized R engine.
-let internal engine = Lazy<_>(fun () ->
+let internal engine = lazy(
     try
-        Logging.logf "engine: Creating and initializing instance (sizeof<IntPtr>=%d)" IntPtr.Size 
+        Logging.logf $"engine: Creating and initializing instance (sizeof<IntPtr>=%d{IntPtr.Size})" 
         let lib = 
             // If the value was `RInitError`, the error has already been reported by
             // `RInteropServer.InitializationErrorMessage` and so we never even get here
             match rHomePath.Force() with
             | RInitResult res -> res
             | RInitError err -> 
-                Logging.logf "engine: Unexpected - error not reported: %s" err
+                Logging.logf $"engine: Unexpected - error not reported: %s{err}"
                 null
 
         let engine = REngine.GetInstance(lib, true, null, characterDevice, AutoPrint=false)
@@ -133,5 +133,5 @@ let internal engine = Lazy<_>(fun () ->
         Logging.logf "engine: Created & initialized instance"
         engine
     with e -> 
-        Logging.logf "engine: Creating instance failed:\r\n  %O" e
+        Logging.logf $"engine: Creating instance failed:\r\n  {e}"
         raise(Exception("Initialization of R.NET failed", e)) )

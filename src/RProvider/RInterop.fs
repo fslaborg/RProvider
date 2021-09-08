@@ -16,7 +16,7 @@ open RProvider.Internal
 open RProvider.Internal.RInit
 open RProvider.Internal.Configuration
 
-/// This inteface can be used for providing new convertors that can convert
+/// This interface can be used for providing new convertors that can convert
 /// custom .NET data types to R values. The converter is used whenever the
 /// user calls an R function (such as `R.foo(...)`) with an arguments that 
 /// is of type `TInType`.
@@ -133,13 +133,13 @@ module internal RInteropInternal =
             yield vt
 
             // Now consider interfaces implemented on this type that are not implemented on the base
-            let baseInterfaces = if vt.BaseType = null then Array.empty else vt.BaseType.GetInterfaces()
+            let baseInterfaces = if isNull vt.BaseType then Array.empty else vt.BaseType.GetInterfaces()
             for iface in vt.GetInterfaces() do
                 if not(baseInterfaces.Contains(iface)) then
                     yield iface
 
             // Now consider the base type (plus its interfaces etc.)
-            if vt.BaseType <> null then
+            if isNull vt.BaseType then
                 yield! types vt.BaseType
         }
 
@@ -331,7 +331,7 @@ module RInterop =
 
     /// Given a string produced by `serializeRValue`, reconstruct the original RValue object 
     let deserializeRValue serialized = 
-      if serialized = null then invalidArg "serialized" "Unexpected null string"
+      if isNull serialized then invalidArg "serialized" "Unexpected null string"
       elif serialized = "" then RValue.Value
       else 
         let hasVar = match serialized.[0] with '1' -> true | '0' -> false | _ -> invalidArg "serialized" "Should start with a flag"
@@ -383,7 +383,7 @@ module RInterop =
             packages.Add packageName |> ignore
 
     [<Literal>]
-    let internal getBindingsDefn = """function (pkgName) {
+    let internal GetBindingsDefn = """function (pkgName) {
     require(pkgName, character.only=TRUE)
     pkgListing <- ls(paste("package:",pkgName,sep=""))
     lapply(
@@ -402,15 +402,15 @@ module RInterop =
     let internal getBindingsFromR =
         lazy
             let symbolName = getNextSymbolName()
-            evalTo (getBindingsDefn.Replace("\r", "")) symbolName
+            evalTo (GetBindingsDefn.Replace("\r", "")) symbolName
             fun (packageName) -> eval (sprintf "%s('%s')" symbolName packageName)
 
     let internal bindingInfoFromR (bindingEntry: GenericVector) =
         let entryList = bindingEntry.AsList()
         let name = entryList.[0].AsCharacter().[0]
-        let type_ = entryList.[1].AsCharacter().[0]
+        let ``type`` = entryList.[1].AsCharacter().[0]
         let value =
-            match type_ with
+            match ``type`` with
             | "closure" -> 
                 let argList =
                     let paramsAsEntry = entryList.[2]
@@ -437,7 +437,7 @@ module RInterop =
         // TODO: Maybe get these from the environments?
         let bindings = getBindingsFromR.Value packageName
         [| for entry in bindings.AsList() -> entry.AsList() |]
-        |> Array.map (fun (entry: GenericVector) -> bindingInfoFromR entry)
+        |> Array.map bindingInfoFromR
 
     let callFunc (packageName: string) (funcName: string) (argsByName: seq<KeyValuePair<string, obj>>) (varArgs: obj[]) : SymbolicExpression =
             // We make sure we keep a reference to any temporary symbols until after exec is called, 
@@ -466,11 +466,11 @@ module RInterop =
             let argList = [|
                 // Pass the named arguments as name=val pairs
                 for kvp in argsByName do
-                    if not(kvp.Value = null || kvp.Value :? Missing) then
+                    if not(isNull kvp.Value || kvp.Value :? Missing) then
                         yield kvp.Key + "=" + passArg kvp.Value
                             
                 // Now yield any varargs
-                if varArgs <> null then
+                if isNull varArgs then
                     for argVal in varArgs -> 
                         passArg argVal
             |]

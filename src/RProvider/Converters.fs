@@ -4,7 +4,6 @@ open RDotNet
 open RProvider
 open RInterop
 open System.ComponentModel.Composition
-open System.Linq
 
 /// Contains higher-level converters
 /// [omit]

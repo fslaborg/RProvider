@@ -19,7 +19,7 @@ type internal EventLoopMessage =
 /// So, this application implements a simple event loop (running 
 /// once everything is setup) that picks REngine operations from a
 /// concurrent queue (the RInteropServer instance initialized via
-/// .NET remoting sends thigns here) and processes them.
+/// .NET remoting sends things here) and processes them.
 module internal EventLoop = 
     let queue = new System.Collections.Concurrent.BlockingCollection<_>()
 

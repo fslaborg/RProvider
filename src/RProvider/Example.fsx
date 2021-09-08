@@ -1,6 +1,6 @@
-﻿#r @"../../bin/RDotNet.dll"
-#load @"../../bin/RProvider.fsx"
- 
+﻿#r "bin/Debug/net6.0/RDotNet.dll"
+#r "bin/Debug/net6.0/RProvider.dll"
+
 open RDotNet
 open RProvider
 open RProvider.graphics

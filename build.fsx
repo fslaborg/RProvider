@@ -2,10 +2,10 @@
 // FAKE build script
 // --------------------------------------------------------------------------------------
 
-#I "packages/FAKE/tools"
-#r "packages/FAKE/tools/FakeLib.dll"
+#r "paket: nuget Fake.Target //"
+#load "./.fake/build.fsx/intellisense.fsx"
 open System
-open Fake
+open Fake.Core
 open Fake.Git
 open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper

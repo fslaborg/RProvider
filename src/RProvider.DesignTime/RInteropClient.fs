@@ -1,22 +1,19 @@
 ﻿module internal RProvider.RInteropClient
 
 open System
-open System.Collections.Generic
 open System.Reflection
 open System.IO
 open System.Diagnostics
 open System.Threading
-open Microsoft.Win32
-open System.IO
 open RProvider.Internal
-open System.Security.AccessControl
-open System.Security.Principal
+open PipeMethodCalls
+open PipeMethodCalls.NetJson
 
 [<Literal>]
-let server = "RProvider.Server.exe"
+let Server = "RProvider.Server.exe"
 
 /// Thrown when we want to show the specified string as a friendly error message to the user
-exception RInitializationError of string
+exception RInitializationException of string
 
 let waitUntilFileDeleted file timeout = 
     let dt = DateTime.Now 
@@ -26,40 +23,41 @@ let waitUntilFileDeleted file timeout =
 
 /// Creates a new channel name in the format: RInteropServer_<pid>_<time>_<random>
 let newChannelName() = 
-    let randomSalt = System.Random()
-    let pid = System.Diagnostics.Process.GetCurrentProcess().Id
+    let randomSalt = Random()
+    let pid = Process.GetCurrentProcess().Id
     let salt = randomSalt.Next()
-    let tick = System.Environment.TickCount
-    sprintf "RInteropServer_%d_%d_%d" pid tick salt
+    let tick = Environment.TickCount
+    $"RInteropServer_%d{pid}_%d{tick}_%d{salt}"
 
 /// On Mac and Linux, we need to run the server using 64 bit version of mono
-/// There is no standard location for this, so the user needs ~/.rprovider.conf 
+/// There is no standard location for this, so the user needs ~/.rprovider.conf
+/// TODO Run on dotnet runtime rather than mono
 let get64bitMonoExecutable() = 
     if Configuration.isUnixOrMac() then
         match Configuration.getRProviderConfValue "MONO64" with
         | Some exe -> exe
-        | None -> raise (RInitializationError("Mono 64bit executable not set (~/.rprovider.conf missing or invalid)"))
+        | None -> raise (RInitializationException("Mono 64bit executable not set (~/.rprovider.conf missing or invalid)"))
     else "mono" // On non-*nix systems, we *try* running just mono
 
 // Global variables for remembering the current server
-let mutable lastServer = None
-let serverlock = obj()
+let mutable lastServer : IRInteropServer option = None
+let serverLock = obj()
 
-let startNewServer() = 
+let startNewServerAsync() : Async<IRInteropServer> = 
     let channelName = newChannelName()
     let tempFile = Path.GetTempFileName()
-            
+
     // Find the location of RProvider.Server.exe (based on non-shadow-copied path!)
     let assem = Assembly.GetExecutingAssembly()
-    let assemblyLocation = assem |> RProvider.Internal.Configuration.getAssemblyLocation
-    let exePath = Path.Combine(Path.GetDirectoryName(assemblyLocation), server)
+    let assemblyLocation = assem |> Configuration.getAssemblyLocation
+    let exePath = Path.Combine(Path.GetDirectoryName(assemblyLocation), Server)
     let arguments = channelName + " \"" + tempFile + "\""
 
     // If this is Mac or Linux, we try to run "chmod" to make the server executable
     if Environment.OSVersion.Platform = PlatformID.Unix ||
        Environment.OSVersion.Platform = PlatformID.MacOSX then
-        Logging.logf "Setting execute permission on '%s'" exePath
-        try System.Diagnostics.Process.Start("chmod", "+x " + exePath).WaitForExit()
+        Logging.logf $"Setting execute permission on '%s{exePath}'"
+        try Process.Start("chmod", "+x " + exePath).WaitForExit()
         with _ -> ()
 
     // Log some information about the process first
@@ -69,13 +67,13 @@ let startNewServer() =
 
     // If we are running on Mono, then the safer way to start the process 
     // seems to be to use 'mono /foo/bar/RProvider.Server.exe'
-    let runningOnMono = try System.Type.GetType("Mono.Runtime") <> null with e -> false 
+    let runningOnMono = try isNull (Type.GetType("Mono.Runtime")) with e -> false 
     let startInfo = 
       if runningOnMono then
         let monoExecutable = get64bitMonoExecutable ()
         ProcessStartInfo
          ( UseShellExecute = false, CreateNoWindow = true, FileName=monoExecutable, 
-           Arguments = sprintf "\"%s\" %s" exePath arguments, WindowStyle = ProcessWindowStyle.Hidden )
+           Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden )
       else 
         ProcessStartInfo
           ( UseShellExecute = false, CreateNoWindow = true, FileName=exePath, 
@@ -89,35 +87,39 @@ let startNewServer() =
           ( "Failed to start the R.NET server within 20 seconds." +
             "To enable logging set RPROVIDER_LOG to an existing file name." )
 
-    if p <> null then 
+    if isNull p then 
       p.EnableRaisingEvents <- true
       p.Exited.Add(fun _ -> lastServer <- None)
 
     Logging.logf "Attempting to connect via IPC"
-    Activator.GetObject(typeof<IRInteropServer>, "ipc://" + channelName + "/RInteropServer") :?> IRInteropServer
-
+    let pipeClient = new PipeClient<IRInteropServer>(NetJsonPipeSerializer(), channelName)
+    async {
+      do! pipeClient.ConnectAsync() |> Async.AwaitTask
+      return! pipeClient.InvokeAsync(id) |> Async.AwaitTask
+    }
 
 /// Returns an instance of `RInteropServer` started via IPC
 /// in a separate `RProvider.Server.exe` process (or if the server
 /// is already running, returns an existing instance)
 let getServer() =
-  lock serverlock (fun () ->
+  lock serverLock (fun () ->
     match lastServer with
     | Some s -> s
     | None ->
-        let serverInstance = startNewServer()
+        // TODO Remove RunSynchronously
+        let serverInstance = startNewServerAsync() |> Async.RunSynchronously
         lastServer <- Some serverInstance
         Logging.logf "Got some server"
-        serverInstance )
+        serverInstance)
 
 /// Returns Some("...") when there is an 'expected' kind of error that we want
 /// to show in the IntelliSense in a pleasant way (R is not installed, registry
 /// key is missing or .rprovider.conf is missing)
 let tryGetInitializationError () =
     try getServer().InitializationErrorMessage 
-    with RInitializationError err -> err
+    with RInitializationException err -> err
 
 let withServer f =
-    lock serverlock <| fun () ->
+    lock serverLock <| fun () ->
     let serverInstance = getServer()
     f serverInstance

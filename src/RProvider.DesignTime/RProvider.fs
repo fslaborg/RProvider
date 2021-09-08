@@ -11,12 +11,17 @@ open RProvider.Internal
 
 [<TypeProvider>]
 type public RProvider(cfg:TypeProviderConfig) as this =
-    inherit TypeProviderForNamespaces()
+    inherit TypeProviderForNamespaces(cfg)
 
-    let useReflectionOnly = true
-
+    let useReflectionOnly = false//true
+        
     let runtimeAssembly =
-        if useReflectionOnly then Assembly.ReflectionOnlyLoadFrom cfg.RuntimeAssembly
+        if useReflectionOnly
+        then
+            let coreAssembly = typeof<obj>.Assembly
+            let resolver = PathAssemblyResolver([ cfg.RuntimeAssembly; coreAssembly.Location ])
+            use mlc = new MetadataLoadContext(resolver, coreAssemblyName = coreAssembly.GetName().Name)
+            mlc.LoadFromAssemblyPath cfg.RuntimeAssembly
         else Assembly.LoadFrom cfg.RuntimeAssembly
 
     static do 
@@ -33,6 +38,6 @@ type public RProvider(cfg:TypeProviderConfig) as this =
           for ns, types in RTypeBuilder.initAndGenerate(runtimeAssembly) do
             this.AddNamespace(ns, types)
         with e ->
-          Logging.logf "RProvider constructor failed: %O" e
+          Logging.logf $"RProvider constructor failed: {e}"
           reraise()
     do buildTypes ()

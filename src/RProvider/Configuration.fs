@@ -29,8 +29,8 @@ let rec searchDirectories patterns dirs =
 /// Returns the real assembly location - when shadow copying is enabled, this
 /// returns the original assembly location (which may contain other files we need)
 let getAssemblyLocation (assem:Assembly) = 
-  if System.AppDomain.CurrentDomain.ShadowCopyFiles then
-      (new System.Uri(assem.EscapedCodeBase)).LocalPath
+  if AppDomain.CurrentDomain.ShadowCopyFiles then
+      (Uri(assem.Location)).LocalPath
   else assem.Location
 
 /// Reads the 'RProvider.dll.config' file and gets the 'ProbingLocations' 
@@ -39,9 +39,9 @@ let getAssemblyLocation (assem:Assembly) =
 let getProbingLocations() = 
   try
     let root = getRProviderRuntimeAssembly() |> getAssemblyLocation
-    let config = System.Configuration.ConfigurationManager.OpenExeConfiguration(root)
+    let config = ConfigurationManager.OpenExeConfiguration(root)
     let pattern = config.AppSettings.Settings.["ProbingLocations"]
-    if pattern <> null then
+    if isNull pattern then
       [ let pattern = pattern.Value.Split(';', ',') |> List.ofSeq
         for pat in pattern do 
           let roots = [ Path.GetDirectoryName(root) ]
@@ -66,7 +66,7 @@ let resolveReferencedAssembly (asmName:string) =
   // First, try to find the assembly in the currently loaded assemblies
   let fullName = AssemblyName(asmName)
   let loadedAsm = 
-    System.AppDomain.CurrentDomain.GetAssemblies()
+    AppDomain.CurrentDomain.GetAssemblies()
     |> Seq.tryFind (fun a -> AssemblyName.ReferenceMatchesDefinition(fullName, a.GetName()))
   match loadedAsm with
   | Some asm -> asm
@@ -84,8 +84,8 @@ let resolveReferencedAssembly (asmName:string) =
       let library = Path.Combine(dir, libraryName+".dll")
       if File.Exists(library) then
         Logging.logf "Found assembly, checking version! (%s)" library
-        // We do a ReflectionOnlyLoad so that we can check the version
-        let refAssem = Assembly.ReflectionOnlyLoadFrom(library)
+        // We do a ReflectionOnlyLoad / GetAssemblyName so that we can check the version
+        let refAssem = AssemblyName.GetAssemblyName(library)
         // If it matches, we load the actual assembly
         if refAssem.FullName = asmName then 
           Logging.logf "...version matches, returning!"
@@ -113,7 +113,7 @@ let getRProviderConfValue key =
         try
             Logging.logf "getRProviderConfValue - Home: '%s'" home
             let config = home + "/.rprovider.conf"
-            IO.File.ReadLines(config) 
+            File.ReadLines(config) 
             |> Seq.tryPick (fun line ->
                 match line.Split('=') with
                 | [| key'; value |]  when key' = key -> Some value
