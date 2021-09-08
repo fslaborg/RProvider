@@ -8,6 +8,7 @@ open System.Threading
 open RProvider.Internal
 open PipeMethodCalls
 open PipeMethodCalls.NetJson
+open System.IO.Pipes
 
 [<Literal>]
 let Server = "RProvider.Server.dll"
@@ -29,21 +30,12 @@ let newChannelName() =
     let tick = Environment.TickCount
     $"RInteropServer_%d{pid}_%d{tick}_%d{salt}"
 
-/// On Mac and Linux, we need to run the server using 64 bit version of mono
-/// There is no standard location for this, so the user needs ~/.rprovider.conf
-/// TODO Run on dotnet runtime rather than mono
-//let get64bitMonoExecutable() = 
-//    if Configuration.isUnixOrMac() then
-//        match Configuration.getRProviderConfValue "MONO64" with
-//        | Some exe -> exe
-//        | None -> raise (RInitializationException("Mono 64bit executable not set (~/.rprovider.conf missing or invalid)"))
-//    else "mono" // On non-*nix systems, we *try* running just mono
-
 // Global variables for remembering the current server
-let mutable lastServer : IRInteropServer option = None
+let mutable lastServer : PipeClient<IRInteropServer> option = None
 let serverLock = obj()
 
-let startNewServerAsync() : Async<IRInteropServer> = 
+let startNewServerAsync() : Async<PipeClient<IRInteropServer>> = 
+    Logging.logf "Starting new connection to server from client"
     let channelName = newChannelName()
     let tempFile = Path.GetTempFileName()
 
@@ -73,21 +65,13 @@ let startNewServerAsync() : Async<IRInteropServer> =
            Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden,
            WorkingDirectory = Path.GetDirectoryName(assemblyLocation) )
     
-//    let runningOnMono = try isNull (Type.GetType("Mono.Runtime")) with e -> false 
-//    let startInfo = 
-//      if runningOnMono then
-//        let monoExecutable = get64bitMonoExecutable ()
-//        ProcessStartInfo
-//         ( UseShellExecute = false, CreateNoWindow = true, FileName=monoExecutable, 
-//           Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden )
-//      else 
-//        ProcessStartInfo
-//          ( UseShellExecute = false, CreateNoWindow = true, FileName=exePath, 
-//            Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden )
-    
+    // TODO Dynamically get
+    startInfo.EnvironmentVariables.Add("R_HOME", "/Library/Frameworks/R.framework/Resources")
+
     // Start the process and wait until it is initialized
     // (after initialization, the process deletes the temp file)
     let p = Process.Start(startInfo)
+
     if not(waitUntilFileDeleted tempFile (20.*1000.)) then
         failwith
           ( "Failed to start the R.NET server within 20 seconds." +
@@ -97,21 +81,28 @@ let startNewServerAsync() : Async<IRInteropServer> =
       p.EnableRaisingEvents <- true
       p.Exited.Add(fun _ -> lastServer <- None)
 
-    Logging.logf "Attempting to connect via IPC"
-    let pipeClient = new PipeClient<IRInteropServer>(NetJsonPipeSerializer(), channelName)
+    Logging.logf "Attempting to connect via inter-process communication"
+    let rawPipeStream = new NamedPipeClientStream(".", channelName, PipeDirection.InOut, PipeOptions.Asynchronous)
+    let pipeClient = new PipeClient<IRInteropServer>(NetJsonPipeSerializer(), rawPipeStream)
+    Logging.logf "Made pipe client with state: %A" pipeClient.State
     async {
+      Logging.logf "Attempting to connect pipe client..."
+      pipeClient.SetLogger(fun a -> Logging.logf "[Client Pipe log]: %O" a)
       do! pipeClient.ConnectAsync() |> Async.AwaitTask
-      return! pipeClient.InvokeAsync(id) |> Async.AwaitTask
+      return pipeClient
     }
 
 /// Returns an instance of `RInteropServer` started via IPC
-/// in a separate `RProvider.Server.exe` process (or if the server
+/// in a separate `RProvider.Server.dll` process (or if the server
 /// is already running, returns an existing instance)
 let getServer() =
+  Logging.logf "[Get server]"
   lock serverLock (fun () ->
+    Logging.logf "[Check last server]"
     match lastServer with
     | Some s -> s
     | None ->
+        Logging.logf "[Make new server]"
         // TODO Remove RunSynchronously
         let serverInstance = startNewServerAsync() |> Async.RunSynchronously
         lastServer <- Some serverInstance
@@ -122,8 +113,11 @@ let getServer() =
 /// to show in the IntelliSense in a pleasant way (R is not installed, registry
 /// key is missing or .rprovider.conf is missing)
 let tryGetInitializationError () =
-    try getServer().InitializationErrorMessage 
-    with RInitializationException err -> err
+    try 
+      let server = getServer()
+      Logging.logf "Sending command: get init error message..."
+      server.InvokeAsync(fun s -> s.InitializationErrorMessage()) |> Async.AwaitTask
+    with RInitializationException err -> async { return err }
 
 let withServer f =
     lock serverLock <| fun () ->

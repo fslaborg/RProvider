@@ -45,10 +45,13 @@ module internal EventLoop =
     let runServerCommandSafe f =
         Logging.logf "Adding work item to queue"
         use evt = new System.Threading.AutoResetEvent(false)
+        Logging.logf "Debug 1"
         let result = ref (Choice1Of3())
+        Logging.logf "Debug 2"
 
         // Add function with exception handling to the queue & wait for result
         queue.Add(Run(fun () ->
+          Logging.logf "In queue"
           try     
             try
               result := Choice2Of3(f())
@@ -63,15 +66,18 @@ module internal EventLoop =
         match result.Value with
         | Choice1Of3() -> failwith "logic error: Item in the queue was not processed"
         | Choice2Of3 res -> res
-        | Choice3Of3 ex -> raise ex
+        | Choice3Of3 ex -> 
+          Logging.logf "There was an exception in the loop"
+          raise ex
 
 
 /// Server object that is exposed via remoting and is called by the editor
 /// to get information about R (packages, functions, RData files etc.)
 type RInteropServer() =
-  inherit MarshalByRefObject()
+  //inherit MarshalByRefObject()
   interface IRInteropServer with
-    member x.InitializationErrorMessage =
+
+    member x.InitializationErrorMessage() =
         // No need for event loop here, because this is initialized
         // when the event loop starts (so initResult has value now)
         match RInit.rHomePath.Value with

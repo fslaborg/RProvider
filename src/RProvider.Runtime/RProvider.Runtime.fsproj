@@ -5,7 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../Common/AssemblyInfo.fs" />
-    <Compile Include="RInteropInterface.fs" />
     <Compile Include="CharacterDeviceInterceptor.fs" />
     <Compile Include="Logging.fs" />
     <Compile Include="Configuration.fs" />

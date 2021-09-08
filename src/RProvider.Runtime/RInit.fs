@@ -6,11 +6,22 @@ open System.IO
 open Microsoft.Win32
 open RDotNet
 open RProvider
+open RDotNet.NativeLibrary
 
 /// Represents R value used in initialization or information about failure
 type RInitResult<'T> =
   | RInitResult of 'T
   | RInitError of string
+
+/// Sets the R_HOME environmental variable if it is not already set
+let setRHomeEnvironmentVariable rHomePath =
+    if String.IsNullOrEmpty (Environment.GetEnvironmentVariable("R_HOME")) then
+        match NativeUtility.GetPlatform() with
+        | PlatformID.MacOSX
+        | PlatformID.Unix -> 
+            Logging.logf "Setting R_HOME to: %s" rHomePath
+            Environment.SetEnvironmentVariable("R_HOME", rHomePath)
+        | _ -> ()
 
 /// Find the R installation. First check "R_HOME" environment variable, then look 
 /// at the SOFTWARE\R-core\R\InstallPath value (using HKCU or, as a second try HKLM root)
@@ -25,7 +36,7 @@ let private getRLocation () =
                 for subKeyName in root.GetSubKeyNames() do
                     yield! loop <| root.OpenSubKey(subKeyName) }
             seq { let key = rCore.OpenSubKey "R" 
-                  if key <> null then yield key
+                  if isNull key then yield key
                   yield! loop rCore }
 
         let hasInstallPath (key:RegistryKey) =
@@ -87,6 +98,7 @@ let private findRHomePath () =
       match getRLocation() with
       | RInitError error -> RInitError error
       | RInitResult location ->
+          setRHomeEnvironmentVariable location
           let binPath = 
               if Configuration.isUnixOrMac() then 
                   Path.Combine(location, "lib") 

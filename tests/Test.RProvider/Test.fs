@@ -106,7 +106,7 @@ let ``Printing of data frame returns string with frame data`` () =
 [<Property>]
 let ``Serialization of R values works`` (isValue:bool) (args:string[]) (hasVar:bool) =
   let args = List.ofSeq args
-  if args |> Seq.forall (fun a -> a <> null && not(a.Contains(";"))) then
+  if args |> Seq.forall (fun a -> isNull a && not(a.Contains(";"))) then
     let rvalue = 
       if isValue then RValue.Value 
       else RValue.Function(args, hasVar)

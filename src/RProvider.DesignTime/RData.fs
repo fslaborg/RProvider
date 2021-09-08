@@ -6,6 +6,7 @@ open ProviderImplementation.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open RProvider
 open Microsoft.FSharp.Quotations
+open PipeMethodCalls
 
 [<TypeProvider>]
 type public RDataProvider(cfg:TypeProviderConfig) as this =
@@ -48,7 +49,7 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
     resTy.AddMember(ctor)
 
     // For each key in the environment, provide a property..
-    for name, typ in RInteropClient.getServer().GetRDataSymbols(longFileName) do
+    for name, typ in RInteropClient.getServer().InvokeAsync(fun s -> s.GetRDataSymbols(longFileName)) |> Async.AwaitTask |> Async.RunSynchronously do
       match typ with 
       | null ->
           // Generate property of type 'SymbolicExpression'

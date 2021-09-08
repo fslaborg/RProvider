@@ -3,31 +3,36 @@
 open System
 open System.Diagnostics
 open System.IO
-open System.Linq
 open PipeMethodCalls
 open PipeMethodCalls.NetJson
 open RProvider.Internal
 open RProvider.Internal.Configuration
+open System.Reflection
+open System.IO.Pipes
 
 /// Process.WaitForExit does not seem to be working reliably
 /// on Mono, so instead we loop asynchronously until the process is gone
 let rec asyncWaitForExit pid = async {
-  let parentProcess = try Process.GetProcessById(pid) with _ -> null
-  if isNull parentProcess then
+  let parentProcess = try Process.GetProcessById(pid) |> Some with _ -> None
+  match parentProcess with
+  | Some _ ->
     do! Async.Sleep(1000)
-    return! asyncWaitForExit pid }
+    return! asyncWaitForExit pid
+  | None -> () }
 
 /// Start the server using the specified channel name (which
 /// contains the parent PID) and delete tempFile once we're running
 let startServer (pipeName:string) tempFile =
 
   // Create a pipe that exposes singleton RInteropServer instance
-  use pipeServer =
-      new PipeServer<RInteropServer>(
+  let rawPipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous)
+  let pipeServer =
+      new PipeServer<IRInteropServer>(
         NetJsonPipeSerializer(),
-        pipeName,
-        RInteropServer)
-  pipeServer.WaitForConnectionAsync() |> Async.AwaitTask |> Async.RunSynchronously // TODO Async handling
+        rawPipeStream,
+        fun () -> RInteropServer() :> IRInteropServer)
+  pipeServer.SetLogger(fun a -> Logging.logf "[Server Pipe log]: %O" a)
+  pipeServer.WaitForConnectionAsync() |> Async.AwaitTask |> Async.Start
   
   // Delete the temp file to signal that we're ready
   Logging.logf "Ready for connections.."
@@ -41,7 +46,6 @@ let startServer (pipeName:string) tempFile =
     do! asyncWaitForExit (int parentPid)
     Logging.logf "Posting Stop command"
     EventLoop.queue.Add(Stop) } |> Async.Start 
-
 
 
 [<STAThread>]

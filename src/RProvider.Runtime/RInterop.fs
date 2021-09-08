@@ -97,6 +97,7 @@ module internal RInteropInternal =
 
     let private mefContainer = 
         lazy
+            Logging.logf "[DEBUG] MEF Container"
             // Look for plugins co-located with RProvider.dll
             let assem = typeof<IConvertToR<_>>.Assembly
             
@@ -104,12 +105,15 @@ module internal RInteropInternal =
             /// If the assembly has been shadow-copied, this will be the assembly's
             /// original location, not the shadow-copied location.
             let assemblyLocation = assem |> getAssemblyLocation
+            Logging.logf "[DEBUG] MEF Container 2"
 
-            let dirs = getProbingLocations()
+            // TODO Add back in
+            //let dirs = getProbingLocations()
+            Logging.logf "[DEBUG] MEF Container 3"
             let catalogs : seq<Primitives.ComposablePartCatalog> = 
               seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName assemblyLocation,"*.Plugin.dll")
-                    for d in dirs do
-                      yield upcast new DirectoryCatalog(d,"*.Plugin.dll")
+                    // for d in dirs do
+                    //   yield upcast new DirectoryCatalog(d,"*.Plugin.dll")
                     yield upcast new AssemblyCatalog(assem) }
             new CompositionContainer(new AggregateCatalog(catalogs))
                 
@@ -230,6 +234,7 @@ module internal RInteropInternal =
         | _ ->                      None
 
     let internal defaultConvertFromR (sexp: SymbolicExpression) : obj =
+        Logging.logf "Converting value from R..."
         let converters = mefContainer.Value.GetExports<IDefaultConvertFromR>()
         match converters |> Seq.tryPick (fun conv -> conv.Value.Convert sexp) with
         | Some res  -> res
@@ -365,6 +370,9 @@ module RInterop =
             RValue.Value      
 
     let getPackages() : string[] =
+        Logging.logf "Communicating with R to get packages"
+        Logging.logf "Test: %O" (eval("1+4"))
+        Logging.logf "Test: %O" (eval("1+4").Value)
         eval(".packages(all.available=T)").GetValue()
 
     let getPackageDescription packageName: string = 

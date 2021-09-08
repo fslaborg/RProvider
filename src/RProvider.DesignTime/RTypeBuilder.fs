@@ -7,6 +7,7 @@ open RProvider
 open RProvider.Internal
 open RInterop
 open RInteropClient
+open PipeMethodCalls
 
 module internal RTypeBuilder =
     
@@ -16,18 +17,18 @@ module internal RTypeBuilder =
         Logging.logf "generateTypes: getting packages"
         let packages = 
           [ yield "base", ns
-            for package in server.GetPackages() do yield package, ns + "." + package ]
+            for package in server.InvokeAsync(fun s -> s.GetPackages()) |> Async.AwaitTask |> Async.RunSynchronously do yield package, ns + "." + package ]
         for package, pns in packages do
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
-            pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.GetPackageDescription package
+            pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.InvokeAsync(fun s -> s.GetPackageDescription package) |> Async.AwaitTask |> Async.RunSynchronously
             pty.AddMembersDelayed( fun () -> 
               withServer <| fun serverDelayed ->
-              [ serverDelayed.LoadPackage package
-                let bindings = serverDelayed.GetBindings package
+              [ serverDelayed.InvokeAsync(fun s -> s.LoadPackage package) |> Async.AwaitTask |> Async.RunSynchronously
+                let bindings = serverDelayed.InvokeAsync(fun s -> s.GetBindings package) |> Async.AwaitTask |> Async.RunSynchronously
 
                 // We get the function descriptions for R the first time they are needed
-                let titles = lazy Map.ofSeq (withServer (fun s -> s.GetFunctionDescriptions package))
+                let titles = lazy Map.ofSeq (withServer (fun s -> s.InvokeAsync(fun s -> s.GetFunctionDescriptions package)) |> Async.AwaitTask |> Async.RunSynchronously)
 
                 for name, serializedRVal in bindings do
                     let memberName = makeSafeName name
@@ -96,7 +97,7 @@ module internal RTypeBuilder =
           Logging.logf "initAndGenerate: starting"
           let ns = "RProvider"
 
-          match tryGetInitializationError() with
+          match tryGetInitializationError() |> Async.RunSynchronously with // TODO Remove synchronous
           | null -> 
               yield! generateTypes ns providerAssembly
           | error ->

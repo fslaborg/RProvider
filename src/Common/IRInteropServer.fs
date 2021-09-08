@@ -10,27 +10,24 @@ type IRInteropServer =
   
   /// If there was an initialization error when loading R provider, this
   /// string returns the error. Otherwise, the value is `null`.
-  abstract InitializationErrorMessage : string
+  abstract member InitializationErrorMessage : unit -> string
 
   /// Returns an array with the names of all installed packages (e.g. "base", "graphics" etc.)
-  abstract GetPackages : unit -> string[]
+  abstract member GetPackages : unit -> string[]
   /// Loads the package (using R's `require`). This should be called before `GetBindings`.
-  abstract LoadPackage : string -> unit
+  abstract member LoadPackage : string -> unit
   /// Returns an array with binding information. The first string is the name of the
   /// function. The second string is serialized `RValue` with information about the
   /// kind of the binding and function parameters (use `deserializeRValue`).
-  abstract GetBindings : string -> (string * string)[]
+  abstract member GetBindings : string -> (string * string)[]
 
   /// Returns an array with pairs consisting of function name and its description
-  abstract GetFunctionDescriptions : string -> (string * string)[]
+  abstract member GetFunctionDescriptions : string -> (string * string)[]
   /// Returns the description (documentation) for a given package
-  abstract GetPackageDescription : string -> string
+  abstract member GetPackageDescription : string -> string
 
   /// Given an `.rdata` file, returns the names of the symbols in the file, together
   /// with an F# type that it can be converted to (this is done by getting the type
   /// of `symExpr.Value` using currently installed convertors). If the type is not 
   /// available, this returns `null`.
-  abstract GetRDataSymbols : string -> (string * System.Type)[]
-
-
-
+  abstract member GetRDataSymbols : string -> (string * System.Type)[]
