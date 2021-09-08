@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\paket-files\fsprojects\FSharp.TypeProviders.SDK\src\ProvidedTypes.fsi">
@@ -14,11 +15,11 @@
       <Link>paket-files/ProvidedTypes.fs</Link>
     </Compile>
     <Compile Include="..\Common\AssemblyInfo.fs" />
-    <Compile Include="..\RProvider\CharacterDeviceInterceptor.fs" />
-    <Compile Include="..\RProvider\Logging.fs" />
-    <Compile Include="..\RProvider\Configuration.fs" />
-    <Compile Include="..\RProvider\RInit.fs" />
-    <Compile Include="..\RProvider\RInterop.fs" />
+    <Compile Include="..\RProvider.Runtime\CharacterDeviceInterceptor.fs" />
+    <Compile Include="..\RProvider.Runtime\Logging.fs" />
+    <Compile Include="..\RProvider.Runtime\Configuration.fs" />
+    <Compile Include="..\RProvider.Runtime\RInit.fs" />
+    <Compile Include="..\RProvider.Runtime\RInterop.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

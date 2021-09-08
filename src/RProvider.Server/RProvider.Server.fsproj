@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../Common/AssemblyInfo.fs" />
@@ -10,7 +11,7 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="RProvider.Runtime.fsproj" />
+    <ProjectReference Include="../RProvider.Runtime/RProvider.Runtime.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="PipeMethodCalls" Version="3.0.3" />

@@ -50,9 +50,9 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RWrapperGenerator", "src\RW
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.DesignTime", "src\RProvider.DesignTime\RProvider.DesignTime.fsproj", "{00496B70-99EA-4ED2-AFD5-6DB4A1DB7317}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.Server", "src\RProvider\RProvider.Server.fsproj", "{7FF9CFA3-2516-4970-9DD8-54C7D4CA24AA}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.Server", "src\RProvider.Server\RProvider.Server.fsproj", "{7FF9CFA3-2516-4970-9DD8-54C7D4CA24AA}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.Runtime", "src\RProvider\RProvider.Runtime.fsproj", "{80FD4284-C7BD-4170-8CC3-41E8548402E4}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.Runtime", "src\RProvider.Runtime\RProvider.Runtime.fsproj", "{80FD4284-C7BD-4170-8CC3-41E8548402E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,7 +10,7 @@ open PipeMethodCalls
 open PipeMethodCalls.NetJson
 
 [<Literal>]
-let Server = "RProvider.Server.exe"
+let Server = "RProvider.Server.dll"
 
 /// Thrown when we want to show the specified string as a friendly error message to the user
 exception RInitializationException of string
@@ -32,12 +32,12 @@ let newChannelName() =
 /// On Mac and Linux, we need to run the server using 64 bit version of mono
 /// There is no standard location for this, so the user needs ~/.rprovider.conf
 /// TODO Run on dotnet runtime rather than mono
-let get64bitMonoExecutable() = 
-    if Configuration.isUnixOrMac() then
-        match Configuration.getRProviderConfValue "MONO64" with
-        | Some exe -> exe
-        | None -> raise (RInitializationException("Mono 64bit executable not set (~/.rprovider.conf missing or invalid)"))
-    else "mono" // On non-*nix systems, we *try* running just mono
+//let get64bitMonoExecutable() = 
+//    if Configuration.isUnixOrMac() then
+//        match Configuration.getRProviderConfValue "MONO64" with
+//        | Some exe -> exe
+//        | None -> raise (RInitializationException("Mono 64bit executable not set (~/.rprovider.conf missing or invalid)"))
+//    else "mono" // On non-*nix systems, we *try* running just mono
 
 // Global variables for remembering the current server
 let mutable lastServer : IRInteropServer option = None
@@ -67,17 +67,23 @@ let startNewServerAsync() : Async<IRInteropServer> =
 
     // If we are running on Mono, then the safer way to start the process 
     // seems to be to use 'mono /foo/bar/RProvider.Server.exe'
-    let runningOnMono = try isNull (Type.GetType("Mono.Runtime")) with e -> false 
-    let startInfo = 
-      if runningOnMono then
-        let monoExecutable = get64bitMonoExecutable ()
+    let startInfo =
         ProcessStartInfo
-         ( UseShellExecute = false, CreateNoWindow = true, FileName=monoExecutable, 
-           Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden )
-      else 
-        ProcessStartInfo
-          ( UseShellExecute = false, CreateNoWindow = true, FileName=exePath, 
-            Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden )
+         ( UseShellExecute = false, CreateNoWindow = true, FileName="dotnet",
+           Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden,
+           WorkingDirectory = Path.GetDirectoryName(assemblyLocation) )
+    
+//    let runningOnMono = try isNull (Type.GetType("Mono.Runtime")) with e -> false 
+//    let startInfo = 
+//      if runningOnMono then
+//        let monoExecutable = get64bitMonoExecutable ()
+//        ProcessStartInfo
+//         ( UseShellExecute = false, CreateNoWindow = true, FileName=monoExecutable, 
+//           Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden )
+//      else 
+//        ProcessStartInfo
+//          ( UseShellExecute = false, CreateNoWindow = true, FileName=exePath, 
+//            Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden )
     
     // Start the process and wait until it is initialized
     // (after initialization, the process deletes the temp file)
