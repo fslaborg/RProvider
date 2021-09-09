@@ -1,17 +1,24 @@
 version 5.257.0
 source https://www.nuget.org/api/v2
-frameworks: net5.0
+frameworks: net6.0
 storage: none
 
-nuget FsCheck
-nuget FsCheck.Xunit
 nuget FSharp.Data
 nuget FSharp.Formatting
+nuget FsCheck 2.16.3
+nuget FsCheck.Xunit 2.16.3
+nuget xunit 2.4.1
+nuget xunit.runner.visualstudio 2.4.3
+nuget FSharp.Core 5.0.2
+nuget Microsoft.NET.Test.Sdk 16.11.0
+
+nuget Newtonsoft.Json 13.0.1
 nuget R.NET 1.9.0
 nuget R.NET.FSharp 1.9.0
-nuget xunit.runners 1.9.2
-nuget xunit 1.9.2
-nuget FSharp.Core 5.0.2
+nuget System.ComponentModel.Composition 5.0.0
+nuget System.Configuration.ConfigurationManager 5.0.0
+nuget System.Reflection.MetadataLoadContext 6.0.0-preview.7.21377.19 
+github andrewiom/PipeMethodCalls:69e5b6f7c1a130e20a2b8023638f6d6d65390b55
 
 github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fsi
 github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fs

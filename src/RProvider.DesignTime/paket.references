@@ -1,6 +1,4 @@
 File:ProvidedTypes.fsi
 File:ProvidedTypes.fs
 
-R.NET
-R.NET.FSharp
-FSharp.Core
+System.Reflection.MetadataLoadContext

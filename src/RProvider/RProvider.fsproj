@@ -13,5 +13,5 @@
     <ProjectReference Include="../RProvider.Server/RProvider.Server.fsproj" />
     <ProjectReference Include="../RProvider.DesignTime/RProvider.DesignTime.fsproj" />
   </ItemGroup>
-  <!--  <Import Project="..\..\.paket\Paket.Restore.targets" />-->
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

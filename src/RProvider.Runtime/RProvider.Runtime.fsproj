@@ -14,15 +14,7 @@
     <Compile Include="Serialisation.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../PipeMethodCalls/PipeMethodCalls.csproj" />
+    <ProjectReference Include="../../paket-files/andrewiom/PipeMethodCalls/PipeMethodCalls/PipeMethodCalls.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="R.NET" Version="1.9.0" />
-    <PackageReference Include="R.NET.FSharp" Version="1.9.0" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-    <PackageReference Include="System.Reflection.MetadataLoadContext" Version="6.0.0-preview.7.21377.19 " />
-  </ItemGroup>
-  <!-- <Import Project="..\..\.paket\Paket.Restore.targets" /> -->
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

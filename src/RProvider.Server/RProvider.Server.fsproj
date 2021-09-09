@@ -12,13 +12,7 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../PipeMethodCalls/PipeMethodCalls.csproj" />
     <ProjectReference Include="../RProvider.Runtime/RProvider.Runtime.fsproj" />
   </ItemGroup>
-  <ItemGroup>
-    <!-- <PackageReference Include="PipeMethodCalls" Version="3.0.3" /> -->
-    <PackageReference Include="PipeMethodCalls.NetJson" Version="3.0.0" />
-    <PackageReference Include="System.Reflection.MetadataLoadContext" Version="6.0.0-preview.7.21377.19 " />
-  </ItemGroup>
-<!--  <Import Project="..\..\.paket\Paket.Restore.targets" />-->
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
