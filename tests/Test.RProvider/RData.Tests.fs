@@ -12,6 +12,8 @@ open Xunit
 open System
 open RProvider
 
+type Sample = RData<"data/sample.rdata">
+
 [<Fact>]
 let ``Can read sample RData file`` () = 
   let sample = Sample()

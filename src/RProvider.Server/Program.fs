@@ -4,11 +4,10 @@ open System
 open System.Diagnostics
 open System.IO
 open PipeMethodCalls
-open PipeMethodCalls.NetJson
 open RProvider.Internal
 open RProvider.Internal.Configuration
-open System.Reflection
 open System.IO.Pipes
+open RProvider.Runtime.Serialisation
 
 /// Process.WaitForExit does not seem to be working reliably
 /// on Mono, so instead we loop asynchronously until the process is gone
@@ -28,7 +27,7 @@ let startServer (pipeName:string) tempFile =
   let rawPipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous)
   let pipeServer =
       new PipeServer<IRInteropServer>(
-        NetJsonPipeSerializer(),
+        NewtonsoftJsonPipeSerializer(),
         rawPipeStream,
         fun () -> RInteropServer() :> IRInteropServer)
   pipeServer.SetLogger(fun a -> Logging.logf "[Server Pipe log]: %O" a)

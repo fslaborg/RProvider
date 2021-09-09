@@ -1,14 +1,14 @@
 ﻿module internal RProvider.RInteropClient
 
 open System
+open System.IO.Pipes
 open System.Reflection
 open System.IO
 open System.Diagnostics
 open System.Threading
 open RProvider.Internal
 open PipeMethodCalls
-open PipeMethodCalls.NetJson
-open System.IO.Pipes
+open RProvider.Runtime.Serialisation
 
 [<Literal>]
 let Server = "RProvider.Server.dll"
@@ -66,7 +66,8 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
            WorkingDirectory = Path.GetDirectoryName(assemblyLocation) )
     
     // TODO Dynamically get
-    startInfo.EnvironmentVariables.Add("R_HOME", "/Library/Frameworks/R.framework/Resources")
+    if startInfo.EnvironmentVariables.ContainsKey("R_HOME") |> not 
+    then startInfo.EnvironmentVariables.Add("R_HOME", "/Library/Frameworks/R.framework/Resources")
 
     // Start the process and wait until it is initialized
     // (after initialization, the process deletes the temp file)
@@ -83,7 +84,7 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
 
     Logging.logf "Attempting to connect via inter-process communication"
     let rawPipeStream = new NamedPipeClientStream(".", channelName, PipeDirection.InOut, PipeOptions.Asynchronous)
-    let pipeClient = new PipeClient<IRInteropServer>(NetJsonPipeSerializer(), rawPipeStream)
+    let pipeClient = new PipeClient<IRInteropServer>(NewtonsoftJsonPipeSerializer(), rawPipeStream)
     Logging.logf "Made pipe client with state: %A" pipeClient.State
     async {
       Logging.logf "Attempting to connect pipe client..."

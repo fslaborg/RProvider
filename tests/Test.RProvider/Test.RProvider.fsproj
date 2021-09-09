@@ -5,7 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Test.fs" />
-    <Compile Include="Test.fs" />
     <Compile Include="RData.Tests.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -11,8 +11,13 @@
     <Compile Include="RInit.fs" />
     <Compile Include="RInterop.fs" />
     <Compile Include="Converters.fs" />
+    <Compile Include="Serialisation.fs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="../PipeMethodCalls/PipeMethodCalls.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="R.NET" Version="1.9.0" />
     <PackageReference Include="R.NET.FSharp" Version="1.9.0" />
     <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
