@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Test.fs" />
@@ -12,9 +13,23 @@
     <ProjectReference Include="../../src/RProvider.DesignTime/RProvider.DesignTime.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="fscheck.xunit" Version="2.16.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="1.3.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="fscheck.xunit" Version="2.16.3" />
     <PackageReference Include="fscheck" Version="2.16.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>  
   </ItemGroup>
   <!-- <Import Project="..\..\.paket\Paket.Restore.targets" /> -->
 </Project>

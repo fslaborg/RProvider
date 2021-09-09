@@ -10,7 +10,7 @@ type internal CharacterDeviceInterceptor() =
 
     interface ICharacterDevice with
         override _.WriteConsole(output, length, outputType) = 
-            if isNull sb then
+            if not <| isNull sb then
                 sb.Append(output) |> ignore
             else
                 base.WriteConsole(output, length, outputType)

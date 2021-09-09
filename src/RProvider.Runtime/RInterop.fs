@@ -478,7 +478,7 @@ module RInterop =
                         yield kvp.Key + "=" + passArg kvp.Value
                             
                 // Now yield any varargs
-                if isNull varArgs then
+                if not <| isNull varArgs then
                     for argVal in varArgs -> 
                         passArg argVal
             |]
