@@ -41,7 +41,7 @@ let getProbingLocations() =
     let root = getRProviderRuntimeAssembly() |> getAssemblyLocation
     let config = ConfigurationManager.OpenExeConfiguration(root)
     let pattern = config.AppSettings.Settings.["ProbingLocations"]
-    if isNull pattern then
+    if not <| isNull pattern then
       [ let pattern = pattern.Value.Split(';', ',') |> List.ofSeq
         for pat in pattern do 
           let roots = [ Path.GetDirectoryName(root) ]

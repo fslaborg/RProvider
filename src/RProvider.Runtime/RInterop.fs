@@ -107,13 +107,12 @@ module internal RInteropInternal =
             let assemblyLocation = assem |> getAssemblyLocation
             Logging.logf "[DEBUG] MEF Container 2"
 
-            // TODO Add back in
-            //let dirs = getProbingLocations()
+            let dirs = getProbingLocations()
             Logging.logf "[DEBUG] MEF Container 3"
             let catalogs : seq<Primitives.ComposablePartCatalog> = 
               seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName assemblyLocation,"*.Plugin.dll")
-                    // for d in dirs do
-                    //   yield upcast new DirectoryCatalog(d,"*.Plugin.dll")
+                    for d in dirs do
+                      yield upcast new DirectoryCatalog(d,"*.Plugin.dll")
                     yield upcast new AssemblyCatalog(assem) }
             new CompositionContainer(new AggregateCatalog(catalogs))
                 
