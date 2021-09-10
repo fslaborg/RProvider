@@ -142,7 +142,7 @@ module internal RInteropInternal =
                     yield iface
 
             // Now consider the base type (plus its interfaces etc.)
-            if isNull vt.BaseType then
+            if not <| isNull vt.BaseType then
                 yield! types vt.BaseType
         }
 

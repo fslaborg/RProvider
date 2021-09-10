@@ -15,7 +15,7 @@ type internal CharacterDeviceInterceptor() =
             else
                 base.WriteConsole(output, length, outputType)
 
-    member _.IsCapturing = isNull sb
+    member _.IsCapturing = not <| isNull sb
 
     member _.BeginCapture() =
         sb <- StringBuilder()

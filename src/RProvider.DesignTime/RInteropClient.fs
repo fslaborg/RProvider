@@ -78,7 +78,7 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
           ( "Failed to start the R.NET server within 20 seconds." +
             "To enable logging set RPROVIDER_LOG to an existing file name." )
 
-    if isNull p then 
+    if not <| isNull p then 
       p.EnableRaisingEvents <- true
       p.Exited.Add(fun _ -> lastServer <- None)
 

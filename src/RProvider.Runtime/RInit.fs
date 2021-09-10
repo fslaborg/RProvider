@@ -36,7 +36,7 @@ let private getRLocation () =
                 for subKeyName in root.GetSubKeyNames() do
                     yield! loop <| root.OpenSubKey(subKeyName) }
             seq { let key = rCore.OpenSubKey "R" 
-                  if isNull key then yield key
+                  if not <| isNull key then yield key
                   yield! loop rCore }
 
         let hasInstallPath (key:RegistryKey) =
