@@ -1,3 +1,9 @@
+---
+category: Documentation
+categoryindex: 1
+index: 3
+---
+
 # Whats and Whys
 
 ## What is R?

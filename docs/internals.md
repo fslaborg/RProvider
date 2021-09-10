@@ -1,3 +1,9 @@
+---
+category: Developer
+categoryindex: 2
+index: 3
+---
+
 # How does it work?
 
 ## How do we call into R?

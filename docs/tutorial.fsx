@@ -1,8 +1,27 @@
-﻿(*** hide ***)
-// Include the right directories so that the documentation tool tips work
-#nowarn "211" // Ignore warning that a search path does not exist on #I
-#I "../../packages/FSharp.Data/lib/net40/"
-#I "../../bin/"
+﻿(**
+---
+category: Documentation
+categoryindex: 1
+index: 1
+---
+*)
+
+(*** condition: prepare ***)
+#nowarn "211"
+#r "../src/RProvider/bin/Release/net6.0/RDotNet.dll"
+#r "../src/RProvider/bin/Release/net6.0/RProvider.Runtime.dll"
+#r "../src/RProvider/bin/Release/net6.0/RProvider.DesignTime.dll"
+#r "../src/RProvider/bin/Release/net6.0/RProvider.dll"
+#r "RProvider.dll"
+#r "RProvider.DesignTime.dll"
+(*** condition: fsx ***)
+#if FSX
+#r "nuget: RProvider,{{package-version}}"
+#endif // FSX
+(*** condition: ipynb ***)
+#if IPYNB
+#r "nuget: RProvider,{{package-version}}"
+#endif // IPYNB
 
 (** 
 # R Provider Tutorial
@@ -13,12 +32,6 @@ In order to use the R provider, you need to reference the `RDotNet.dll` library
 (which is a .NET connector for R) and the `RProvider.dll` itself. For this tutorial,
 we use `open` to reference a number of packages including `stats`, `tseries` and `zoo`:
 *)
-#I "../packages/RProvider.1.0.3/lib"
-#r "RDotNet.dll"
-#r "RDotNet.FSharp.dll"
-#r "RDotNet.NativeLibrary.dll"
-#r "RProvider.dll"
-#r "RProvider.Runtime.dll"
  
 open RDotNet
 open RProvider

@@ -1,3 +1,9 @@
+---
+category: Developer
+categoryindex: 2
+index: 3
+---
+
 Developer notes
 ===============
 

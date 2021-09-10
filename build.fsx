@@ -78,7 +78,7 @@ Target.create "Clean" (fun _ ->
 )
 
 Target.create "CleanDocs" (fun _ ->
-    Fake.IO.Shell.cleanDirs ["docs/output"]
+    Fake.IO.Shell.cleanDirs [".fsdocs"]
 )
 
 // --------------------------------------------------------------------------------------
@@ -138,21 +138,17 @@ Target.create "NuGet" (fun _ ->
 //Generate the documentation
 
 Target.create "GenerateDocs" (fun _ ->
-    Fsi.exec (fun p -> 
-        { p with 
-            TargetProfile = Fsi.Profile.NetStandard
-            WorkingDirectory = "docs/tools"
-            ToolPath = Fsi.FsiTool.Default
-        }) "generate.fsx" ["--define:RELEASE"] |> ignore
+   Fake.IO.Shell.cleanDir ".fsdocs"
+   DotNet.exec id "fsdocs" "build --clean" |> ignore
 )
 
 // --------------------------------------------------------------------------------------
 // Release Scripts
 
 Target.create "ReleaseDocs" (fun _ ->
-    Fake.Tools.Git.Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/gh-pages"
+    Fake.Tools.Git.Repository.clone "" gitHome "temp/gh-pages"
     Fake.Tools.Git.Branches.checkoutBranch "temp/gh-pages" "gh-pages"
-    Fake.IO.Shell.copyRecursive "docs/output" "temp/gh-pages" true |> printfn "%A"
+    Fake.IO.Shell.copyRecursive "output" "temp/gh-pages" true |> printfn "%A"
     Fake.Tools.Git.CommandHelper.runSimpleGitCommand "temp/gh-pages" "add ." |> printfn "%s"
     let cmd = sprintf """commit -a -m "Update generated documentation for version %s""" release.NugetVersion
     Fake.Tools.Git.CommandHelper.runSimpleGitCommand "temp/gh-pages" cmd |> printfn "%s"

@@ -1,7 +1,27 @@
-(*** hide ***)
-// Include the right directories so that the documentation tool tips work
-#nowarn "211" // Ignore warning that a search path does not exist on #I
-#I "../../bin/"
+(**
+---
+category: Documentation
+categoryindex: 1
+index: 3
+---
+*)
+
+(*** condition: prepare ***)
+#nowarn "211"
+#r "../src/RProvider/bin/Release/net6.0/RDotNet.dll"
+#r "../src/RProvider/bin/Release/net6.0/RProvider.Runtime.dll"
+#r "../src/RProvider/bin/Release/net6.0/RProvider.DesignTime.dll"
+#r "../src/RProvider/bin/Release/net6.0/RProvider.dll"
+#r "RProvider.dll"
+#r "RProvider.DesignTime.dll"
+(*** condition: fsx ***)
+#if FSX
+#r "nuget: RProvider,{{package-version}}"
+#endif // FSX
+(*** condition: ipynb ***)
+#if IPYNB
+#r "nuget: RProvider,{{package-version}}"
+#endif // IPYNB
 
 (** 
 Using R provider on Mac and Linux

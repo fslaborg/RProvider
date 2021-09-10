@@ -1,3 +1,9 @@
+---
+category: Developer
+categoryindex: 2
+index: 3
+---
+
 # Plugins
 
 RProvider supports plugins to support custom functionality.  It uses [MEF](http://msdn.microsoft.com/en-us/library/dd460648.aspx) to load plugins that export certain contracts.  See below for examples.
