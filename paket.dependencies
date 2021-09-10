@@ -23,7 +23,6 @@ github andrewiom/PipeMethodCalls:69e5b6f7c1a130e20a2b8023638f6d6d65390b55
 github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fsi
 github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fs
 
-nuget FAKE.Core
 
 group Release
   source https://www.nuget.org/api/v2

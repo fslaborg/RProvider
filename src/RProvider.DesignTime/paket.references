@@ -2,3 +2,4 @@ File:ProvidedTypes.fsi
 File:ProvidedTypes.fs
 
 System.Reflection.MetadataLoadContext
+FSharp.Core
