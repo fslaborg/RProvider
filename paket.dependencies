@@ -1,6 +1,6 @@
 version 5.257.0
 source https://www.nuget.org/api/v2
-frameworks: net6.0
+frameworks: net5.0
 storage: none
 
 nuget FSharp.Data
@@ -17,7 +17,7 @@ nuget R.NET 1.9.0
 nuget R.NET.FSharp 1.9.0
 nuget System.ComponentModel.Composition 5.0.0
 nuget System.Configuration.ConfigurationManager 5.0.0
-nuget System.Reflection.MetadataLoadContext 6.0.0-preview.7.21377.19 
+nuget System.Reflection.MetadataLoadContext 5.0.0
 github andrewiom/PipeMethodCalls:69e5b6f7c1a130e20a2b8023638f6d6d65390b55
 
 github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fsi
