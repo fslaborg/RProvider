@@ -2,11 +2,14 @@ language: csharp
 
 sudo: false
 
-install:
-  - chmod 755 ./build.sh
+dotnet: 5.0.400
 
-script: 
-  - ./build.sh Build
+script:
+  - dotnet tool restore
+  - dotnet fake run --parallel 3
+
+env:
+ - FAKE_DETAILED_ERRORS=true HOME=/home/travis APPDATA=/home/travis LocalAppData=/home/travis
 
 branches:
   except:
