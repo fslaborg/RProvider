@@ -20,6 +20,8 @@ jobs:
     - name: Restore paket dependencies
       run: dotnet paket restore
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore RProvider.sln
+    - name: Restore dependencies
+      run: dotnet restore RProvider.Tests.sln
     - name: Build
       run: dotnet fake build -t All
