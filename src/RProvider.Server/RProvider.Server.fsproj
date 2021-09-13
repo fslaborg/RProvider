@@ -7,11 +7,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../Common/AssemblyInfo.fs" />
-    <Compile Include="RProviderAttribute.fs" />
+    <Compile Include="../Common/IRInteropServer.fs" />
+    <Compile Include="RInteropServer.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../RProvider.Server/RProvider.Server.fsproj" />
-    <ProjectReference Include="../RProvider.DesignTime/RProvider.DesignTime.fsproj" />
+    <ProjectReference Include="../RProvider.Runtime/RProvider.Runtime.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

@@ -1,20 +1,13 @@
 ﻿namespace RProvider
 
-open System
 open System.Collections.Generic
 open System.Reflection
-open System.IO
-open System.Diagnostics
-open System.Threading
 open ProviderImplementation.ProvidedTypes
-open Microsoft.FSharp.Core.CompilerServices
 open RProvider
 open RProvider.Internal
 open RInterop
-open RInteropInternal
 open RInteropClient
-open Microsoft.Win32
-open System.IO
+open PipeMethodCalls
 
 module internal RTypeBuilder =
     
@@ -24,18 +17,18 @@ module internal RTypeBuilder =
         Logging.logf "generateTypes: getting packages"
         let packages = 
           [ yield "base", ns
-            for package in server.GetPackages() do yield package, ns + "." + package ]
+            for package in server.InvokeAsync(fun s -> s.GetPackages()) |> Async.AwaitTask |> Async.RunSynchronously do yield package, ns + "." + package ]
         for package, pns in packages do
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
-            pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.GetPackageDescription package
+            pty.AddXmlDocDelayed <| fun () -> withServer <| fun serverDelayed -> serverDelayed.InvokeAsync(fun s -> s.GetPackageDescription package) |> Async.AwaitTask |> Async.RunSynchronously
             pty.AddMembersDelayed( fun () -> 
               withServer <| fun serverDelayed ->
-              [ serverDelayed.LoadPackage package
-                let bindings = serverDelayed.GetBindings package
+              [ serverDelayed.InvokeAsync(fun s -> s.LoadPackage package) |> Async.AwaitTask |> Async.RunSynchronously
+                let bindings = serverDelayed.InvokeAsync(fun s -> s.GetBindings package) |> Async.AwaitTask |> Async.RunSynchronously
 
                 // We get the function descriptions for R the first time they are needed
-                let titles = lazy Map.ofSeq (withServer (fun s -> s.GetFunctionDescriptions package))
+                let titles = lazy Map.ofSeq (withServer (fun s -> s.InvokeAsync(fun s -> s.GetFunctionDescriptions package)) |> Async.AwaitTask |> Async.RunSynchronously)
 
                 for name, serializedRVal in bindings do
                     let memberName = makeSafeName name
@@ -54,8 +47,8 @@ module internal RTypeBuilder =
                                       methodName = memberName,
                                       parameters = paramList,
                                       returnType = typeof<RDotNet.SymbolicExpression>,
-                                      IsStaticMethod = true,
-                                      InvokeCode = fun args -> if args.Length <> paramCount then
+                                      isStatic = true,
+                                      invokeCode = fun args -> if args.Length <> paramCount then
                                                                  failwithf "Expected %d arguments and received %d" paramCount args.Length
                                                                if hasVarArgs then
                                                                  let namedArgs = 
@@ -80,8 +73,8 @@ module internal RTypeBuilder =
                                       methodName = memberName,
                                       parameters = [ ProvidedParameter("paramsByName",  typeof<IDictionary<string,obj>>) ],
                                       returnType = typeof<RDotNet.SymbolicExpression>,
-                                      IsStaticMethod = true,
-                                      InvokeCode = fun args -> if args.Length <> 1 then
+                                      isStatic = true,
+                                      invokeCode = fun args -> if args.Length <> 1 then
                                                                  failwithf "Expected 1 argument and received %d" args.Length
                                                                let argsByName = args.[0]
                                                                <@@  let vals = %%argsByName: IDictionary<string,obj>
@@ -92,8 +85,8 @@ module internal RTypeBuilder =
                         yield ProvidedProperty(
                                 propertyName = memberName,
                                 propertyType = typeof<RDotNet.SymbolicExpression>,
-                                IsStatic = true,
-                                GetterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
+                                isStatic = true,
+                                getterCode = fun _ -> <@@ RInterop.call package name serializedRVal [| |] [| |] @@>) :> MemberInfo  ] )
                       
             yield pns, [ pty ] ]
     
@@ -104,13 +97,13 @@ module internal RTypeBuilder =
           Logging.logf "initAndGenerate: starting"
           let ns = "RProvider"
 
-          match tryGetInitializationError() with
+          match tryGetInitializationError() |> Async.RunSynchronously with // TODO Remove synchronous
           | null -> 
               yield! generateTypes ns providerAssembly
           | error ->
               // add an error static property (shown when typing `R.`)
               let pty = ProvidedTypeDefinition(providerAssembly, ns, "R", Some(typeof<obj>))
-              let prop = ProvidedProperty("<Error>", typeof<string>, IsStatic = true, GetterCode = fun _ -> <@@ error @@>)
+              let prop = ProvidedProperty("<Error>", typeof<string>, isStatic = true, getterCode = fun _ -> <@@ error @@>)
               prop.AddXmlDoc error
               pty.AddMember prop
               yield ns, [ pty ]

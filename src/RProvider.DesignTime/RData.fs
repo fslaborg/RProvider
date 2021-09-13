@@ -1,18 +1,16 @@
 ﻿namespace RProvider
 
-open System
 open System.IO
 open System.Reflection
 open ProviderImplementation.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open RProvider
-open RProvider.Internal.Configuration
-open RProvider.Internal
 open Microsoft.FSharp.Quotations
-  
+open PipeMethodCalls
+
 [<TypeProvider>]
 type public RDataProvider(cfg:TypeProviderConfig) as this =
-  inherit TypeProviderForNamespaces()
+  inherit TypeProviderForNamespaces(cfg)
 
   // NOTE: No need to register 'AssemblyResolve' event handler
   // here, because this is already done in static constructor of RProvider.
@@ -33,34 +31,36 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
     let defaultResolutionFolder = cfg.ResolutionFolder
 
     // Provide default ctor and ctor taking another file as an argument
-    let createREnvExpr fileName =
+    let createREnvExpr (fileName:Expr<string>) =
       <@@ let longFileName =
             if Path.IsPathRooted(%fileName) then %fileName
             elif isHosted then Path.Combine(defaultResolutionFolder, %fileName)
             else Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, %fileName) 
           REnv(longFileName) @@>
 
-    let ctor = ProvidedConstructor([])
-    ctor.InvokeCode <- fun _ -> createREnvExpr <@ fileName @>
+    let ctor = ProvidedConstructor(
+                parameters = [], 
+                invokeCode = fun _ -> createREnvExpr <@ fileName @>)
     resTy.AddMember(ctor)
 
-    let ctor = ProvidedConstructor([ProvidedParameter("fileName", typeof<string>)])
-    ctor.InvokeCode <- fun (Singleton fn) -> createREnvExpr (Expr.Cast fn)
+    let ctor = ProvidedConstructor(
+                parameters = [ProvidedParameter("fileName", typeof<string>)],
+                invokeCode = fun (Singleton fn) -> createREnvExpr (Expr.Cast fn))
     resTy.AddMember(ctor)
 
     // For each key in the environment, provide a property..
-    for name, typ in RInteropClient.getServer().GetRDataSymbols(longFileName) do
+    for name, typ in RInteropClient.getServer().InvokeAsync(fun s -> s.GetRDataSymbols(longFileName)) |> Async.AwaitTask |> Async.RunSynchronously do
       match typ with 
       | null ->
           // Generate property of type 'SymbolicExpression'
-          ProvidedProperty(name, typeof<RDotNet.SymbolicExpression>, GetterCode = fun (Singleton self) ->  
+          ProvidedProperty(name, typeof<RDotNet.SymbolicExpression>, getterCode = fun (Singleton self) ->  
               <@@ ((%%self):REnv).Get(name) @@>)
           |> resTy.AddMember
       | typ ->
           // If there is a default convertor for the type, then generate
           // property of the statically known type (e.g. Frame<string, string>)
           // (otherwise, `Value` will throw)
-          ProvidedProperty(name, typ, GetterCode = fun (Singleton self) -> 
+          ProvidedProperty(name, typ, getterCode = fun (Singleton self) -> 
               Expr.Coerce(<@@ ((%%self):REnv).Get(name).Value @@>, typ))
           |> resTy.AddMember
 
@@ -68,7 +68,13 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
 
   // Register the main (parameterized) type with F# compiler
   // Provide tye 'RProvider.RData<FileName>' type
-  let asm = Assembly.ReflectionOnlyLoadFrom cfg.RuntimeAssembly
+  let asm =
+//    let coreAssembly = typeof<obj>.Assembly
+//    let resolver = PathAssemblyResolver([ cfg.RuntimeAssembly; coreAssembly.Location ])
+//    use mlc = new MetadataLoadContext(resolver, coreAssemblyName = coreAssembly.GetName().Name)
+//    mlc.LoadFromAssemblyPath cfg.RuntimeAssembly
+        Assembly.LoadFrom cfg.RuntimeAssembly
+    
   let rdata = ProvidedTypeDefinition(asm, "RProvider", "RData", Some(typeof<obj>))
   let parameter = ProvidedStaticParameter("FileName", typeof<string>)
   do rdata.DefineStaticParameters([parameter], generateTypes asm)

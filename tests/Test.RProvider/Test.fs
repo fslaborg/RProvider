@@ -17,7 +17,6 @@ open RProvider
 open RProvider.RInterop
 open System
 open Xunit
-open FsCheck
 open FsCheck.Xunit
 open System.Numerics
 open System.Text
@@ -106,7 +105,7 @@ let ``Printing of data frame returns string with frame data`` () =
 [<Property>]
 let ``Serialization of R values works`` (isValue:bool) (args:string[]) (hasVar:bool) =
   let args = List.ofSeq args
-  if args |> Seq.forall (fun a -> a <> null && not(a.Contains(";"))) then
+  if args |> Seq.forall (fun a -> not (isNull a) && not(a.Contains(";"))) then
     let rvalue = 
       if isValue then RValue.Value 
       else RValue.Function(args, hasVar)
@@ -117,7 +116,8 @@ let ``Serialization of R values works`` (isValue:bool) (args:string[]) (hasVar:b
 // Has various issues - embedded nulls, etc.
 let ``String arrays round-trip``(strings: string[]) =
     // We only want to test for ASCII strings
-    if Array.forall (fun s -> s = Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(s))) strings then
+    let ascii = ASCIIEncoding()
+    if Array.forall (fun (s:string) -> s = (s |> ascii.GetBytes |> ascii.GetString)) strings then
         let sexp = toR(strings)
 
         Assert.Equal<string[]>(strings, unbox sexp.Value)

@@ -183,3 +183,6 @@ pip-log.txt
 Documentation/Output/*.html
 .vs/slnx.sqlite
 .paket/Paket.Restore.targets
+
+# fsdocs cache
+.fsdocs

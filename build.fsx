@@ -2,14 +2,32 @@
 // FAKE build script
 // --------------------------------------------------------------------------------------
 
-#I "packages/FAKE/tools"
-#r "packages/FAKE/tools/FakeLib.dll"
-open System
-open Fake
-open Fake.Git
-open Fake.AssemblyInfoFile
-open Fake.ReleaseNotesHelper
-open Fake.Testing
+#if FAKE
+#r "paket:
+nuget FAKE.Core.Target
+nuget FAKE.Core.ReleaseNotes
+nuget FAKE.DotNet.Cli
+nuget FAKE.DotNet.Fsi
+nuget FAKE.DotNet.AssemblyInfoFile
+nuget FAKE.Tools.Git
+nuget FAKE.DotNet.Testing.XUnit2"
+#load "./.fake/build.fsx/intellisense.fsx"
+#else
+#r "nuget: FAKE.Core.Target"
+#r "nuget: FAKE.Core.ReleaseNotes"
+#r "nuget: FAKE.DotNet.Cli"
+#r "nuget: FAKE.DotNet.Fsi"
+#r "nuget: FAKE.DotNet.AssemblyInfoFile"
+#r "nuget: FAKE.Tools.Git"
+#r "nuget: FAKE.DotNet.Testing.XUnit2"
+let execContext = Fake.Core.Context.FakeExecutionContext.Create false "build.fsx" []
+Fake.Core.Context.setExecutionContext (Fake.Core.Context.RuntimeContext.Fake execContext)
+#endif
+
+open Fake.Core
+open Fake.Core.TargetOperators
+open Fake.IO.FileSystemOperators
+open Fake.DotNet
 
 // --------------------------------------------------------------------------------------
 // Information about the project to be used at NuGet and in AssemblyInfo files
@@ -34,96 +52,69 @@ let gitName = "RProvider"
 // --------------------------------------------------------------------------------------
 
 // Read release notes & version info from RELEASE_NOTES.md
-Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let binDir = __SOURCE_DIRECTORY__ @@ "bin"
-let release = IO.File.ReadLines "RELEASE_NOTES.md" |> parseReleaseNotes
+let release = System.IO.File.ReadLines "RELEASE_NOTES.md" |> Fake.Core.ReleaseNotes.parse
 
 // Generate assembly info files with the right version & up-to-date information
-Target "AssemblyInfo" (fun _ ->
+Target.create "AssemblyInfo" (fun _ ->
   let fileName = "src/Common/AssemblyInfo.fs"
-  CreateFSharpAssemblyInfoWithConfig fileName
-      [ Attribute.Title projectName
-        Attribute.Company companyName
-        Attribute.Product projectName
-        Attribute.Description projectSummary
-        Attribute.Version release.AssemblyVersion
-        Attribute.FileVersion release.AssemblyVersion ]
+  AssemblyInfoFile.createFSharpWithConfig fileName
+      [ Fake.DotNet.AssemblyInfo.Title projectName
+        Fake.DotNet.AssemblyInfo.Company companyName
+        Fake.DotNet.AssemblyInfo.Product projectName
+        Fake.DotNet.AssemblyInfo.Description projectSummary
+        Fake.DotNet.AssemblyInfo.Version release.AssemblyVersion
+        Fake.DotNet.AssemblyInfo.FileVersion release.AssemblyVersion ]
       (AssemblyInfoFileConfig(false))
-)
-
-// --------------------------------------------------------------------------------------
-// Update the assembly version numbers in the script file.
-
-open System.IO
-
-Target "UpdateFsxVersions" (fun _ ->
-    let path = "./src/RProvider/RProvider.fsx"
-    let mutable text = File.ReadAllText(path)
-    for package in [ "DynamicInterop"; "R.NET.Community"; "R.NET.Community.FSharp" ] do
-      let version = GetPackageVersion "packages" package
-      let pattern = "\\.\\./" + package + ".([0-9\\.]*)/lib"
-      let replacement = sprintf "../%s.%s/lib" package version
-      text <- Text.RegularExpressions.Regex.Replace(text, pattern, replacement)
-    File.WriteAllText(path, text)
 )
 
 // --------------------------------------------------------------------------------------
 // Clean build results & restore NuGet packages
 
-Target "Clean" (fun _ ->
-    CleanDirs ["bin"; "temp" ]
-    CleanDirs ["tests/Test.RProvider/bin"; "tests/Test.RProvider/obj" ]
+Target.create "Clean" (fun _ ->
+    Fake.IO.Shell.cleanDirs ["bin"; "temp" ]
+    Fake.IO.Shell.cleanDirs ["tests/Test.RProvider/bin"; "tests/Test.RProvider/obj" ]
 )
 
-Target "CleanDocs" (fun _ ->
-    CleanDirs ["docs/output"]
+Target.create "CleanDocs" (fun _ ->
+    Fake.IO.Shell.cleanDirs [".fsdocs"]
 )
 
 // --------------------------------------------------------------------------------------
 // Build library & test project
 
-Target "Build" (fun _ ->
-    !! (projectName + ".sln")
-    |> MSBuildRelease "" "Rebuild"
-    |> Log "AppBuild-Output: "
+Target.create "Build" (fun _ ->
+    Trace.log " --- Building the app --- "
+    Fake.DotNet.DotNet.build id (projectName + ".sln")
 )
 
-Target "BuildTests" (fun _ ->
-    !! (projectName + ".Tests.sln")
-    |> MSBuildRelease "" "Rebuild"
-    |> Log "AppBuild-Output: "
+Target.create "BuildTests" (fun _ ->
+    Trace.log " --- Building tests --- "
+    Fake.DotNet.DotNet.build id (projectName + ".Tests.sln")
 )
 
 // --------------------------------------------------------------------------------------
 // Run the unit tests using test runner & kill test runner when complete
 
 
-Target "RunTests" (fun _ ->
-    let xunitPath = "packages/xunit.runners/tools/xunit.console.clr4.exe"
-
-    ActivateFinalTarget "CloseTestRunner"
-
-    !! "tests/Test.RProvider/bin/**/Test*.dll"
-    |> xUnit (fun p ->
-            {p with
-                ToolPath = xunitPath
-                ShadowCopy = false
-                HtmlOutputPath = Some "."
-                XmlOutputPath = Some "." })
+Target.create "RunTests" (fun _ ->
+    Target.activateFinal "CloseTestRunner"
+    Fake.DotNet.DotNet.test id (projectName + ".Tests.sln")
 )
 
-FinalTarget "CloseTestRunner" (fun _ ->
-    ProcessHelper.killProcess "xunit.console.clr4.exe"
+Target.createFinal "CloseTestRunner" (fun _ ->
+    Process.killAllByName "xunit.console.clr4.exe"
 )
 
 // --------------------------------------------------------------------------------------
 // Build a NuGet package
 
-Target "NuGet" (fun _ ->
+Target.create "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
     let specificVersion (name, version) = name, sprintf "[%s]" version
     let projectDescription = projectDescription.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
-    NuGet (fun p ->
+    Fake.DotNet.NuGet.NuGet.NuGet (fun p ->
         { p with
             Authors = authors
             Project = projectName
@@ -134,68 +125,68 @@ Target "NuGet" (fun _ ->
             Tags = tags
             OutputPath = "bin"
             Dependencies =
-              [ "R.NET.Community", GetPackageVersion "packages" "R.NET.Community"
-                "DynamicInterop", GetPackageVersion "packages" "DynamicInterop"
-                "R.NET.Community.FSharp", GetPackageVersion "packages" "R.NET.Community.FSharp" ]
+              [ "R.NET.Community", Fake.DotNet.NuGet.NuGet.GetPackageVersion "packages" "R.NET.Community"
+                "DynamicInterop", Fake.DotNet.NuGet.NuGet.GetPackageVersion "packages" "DynamicInterop"
+                "R.NET.Community.FSharp", Fake.DotNet.NuGet.NuGet.GetPackageVersion "packages" "R.NET.Community.FSharp" ]
               |> List.map specificVersion
-            AccessKey = getBuildParamOrDefault "nugetkey" ""
-            Publish = hasBuildParam "nugetkey" })
+            AccessKey = Fake.Core.Environment.environVarOrDefault "nugetkey" ""
+            Publish = Fake.Core.Environment.hasEnvironVar "nugetkey" })
         "nuget/RProvider.nuspec"
 )
 
-// --------------------------------------------------------------------------------------
-// Generate the documentation
+//--------------------------------------------------------------------------------------
+//Generate the documentation
 
-Target "GenerateDocs" (fun _ ->
-    executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"] [] |> ignore
+Target.create "GenerateDocs" (fun _ ->
+   Fake.IO.Shell.cleanDir ".fsdocs"
+   DotNet.exec id "fsdocs" "build --clean" |> ignore
 )
 
 // --------------------------------------------------------------------------------------
 // Release Scripts
 
-Target "ReleaseDocs" (fun _ ->
-    Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/gh-pages"
-    Branches.checkoutBranch "temp/gh-pages" "gh-pages"
-    CopyRecursive "docs/output" "temp/gh-pages" true |> printfn "%A"
-    CommandHelper.runSimpleGitCommand "temp/gh-pages" "add ." |> printfn "%s"
+Target.create "ReleaseDocs" (fun _ ->
+    Fake.Tools.Git.Repository.clone "" gitHome "temp/gh-pages"
+    Fake.Tools.Git.Branches.checkoutBranch "temp/gh-pages" "gh-pages"
+    Fake.IO.Shell.copyRecursive "output" "temp/gh-pages" true |> printfn "%A"
+    Fake.Tools.Git.CommandHelper.runSimpleGitCommand "temp/gh-pages" "add ." |> printfn "%s"
     let cmd = sprintf """commit -a -m "Update generated documentation for version %s""" release.NugetVersion
-    CommandHelper.runSimpleGitCommand "temp/gh-pages" cmd |> printfn "%s"
-    Branches.push "temp/gh-pages"
+    Fake.Tools.Git.CommandHelper.runSimpleGitCommand "temp/gh-pages" cmd |> printfn "%s"
+    Fake.Tools.Git.Branches.push "temp/gh-pages"
 )
 
-Target "ReleaseBinaries" (fun _ ->
-    Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/release"
-    Branches.checkoutBranch "temp/release" "release"
-    CopyRecursive "bin" "temp/release" true |> printfn "%A"
+Target.create "ReleaseBinaries" (fun _ ->
+    Fake.Tools.Git.Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/release"
+    Fake.Tools.Git.Branches.checkoutBranch "temp/release" "release"
+    Fake.IO.Shell.copyRecursive "bin" "temp/release" true |> printfn "%A"
     let cmd = sprintf """commit -a -m "Update binaries for version %s""" release.NugetVersion
-    CommandHelper.runSimpleGitCommand "temp/release" cmd |> printfn "%s"
-    Branches.push "temp/release"
+    Fake.Tools.Git.CommandHelper.runSimpleGitCommand "temp/release" cmd |> printfn "%s"
+    Fake.Tools.Git.Branches.push "temp/release"
 )
 
-Target "TagRelease" (fun _ ->
+Target.create "TagRelease" (fun _ ->
     // Concatenate notes & create a tag in the local repository
     let notes = (String.concat " " release.Notes).Replace("\n", ";").Replace("\r", "")
     let tagName = "v" + release.NugetVersion
     let cmd = sprintf """tag -a %s -m "%s" """ tagName notes
-    CommandHelper.runSimpleGitCommand "." cmd |> printfn "%s"
+    Fake.Tools.Git.CommandHelper.runSimpleGitCommand "." cmd |> printfn "%s"
 
     // Find the main remote (fslaborg GitHub)
-    let _, remotes, _ = CommandHelper.runGitCommand "." "remote -v"
+    let _, remotes, _ = Fake.Tools.Git.CommandHelper.runGitCommand "." "remote -v"
     let main = remotes |> Seq.find (fun s -> s.Contains("(push)") && s.Contains("fslaborg/RProvider"))
     let remoteName = main.Split('\t').[0]
-    Fake.Git.Branches.pushTag "." remoteName tagName
+    Fake.Tools.Git.Branches.pushTag "." remoteName tagName
 )
 
-Target "Release" DoNothing
+Target.create "Release" ignore
 
 // --------------------------------------------------------------------------------------
 // Run all targets by default. Invoke 'build <Target>' to override
 
-Target "All" DoNothing
-Target "AllCore" DoNothing
+Target.create "All" ignore
+Target.create "AllCore" ignore
 
 "Clean"
-  ==> "UpdateFsxVersions"
   ==> "AssemblyInfo"
   ==> "Build"
   ==> "BuildTests"
@@ -212,4 +203,4 @@ Target "AllCore" DoNothing
 "All" ==> "NuGet" ==> "Release"
 "All" ==> "TagRelease" ==> "Release"
 
-RunTargetOrDefault "All"
+Target.runOrDefault "All"
