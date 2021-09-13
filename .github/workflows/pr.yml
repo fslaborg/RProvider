@@ -22,4 +22,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet fake build
+      run: dotnet fake build -t All
