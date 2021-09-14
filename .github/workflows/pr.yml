@@ -13,11 +13,24 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-    - uses: r-lib/actions/setup-R@v1
+    - uses: actions/checkout@v2
+    - uses: r-lib/actions/setup-r@master
       name: Setup R environment
       with:
-          r-version: '4.1.1'
-    - uses: actions/checkout@v2
+        r-version: '4.1.1'
+    - name: Set R_HOME environment variable
+      run:   |
+         if [ "$RUNNER_OS" == "Linux" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         elif [ "$RUNNER_OS" == "macOS" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         elif [ "$RUNNER_OS" == "Windows" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         else
+              echo "$RUNNER_OS not supported"
+              exit 1
+         fi
+      shell: bash
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
