@@ -65,9 +65,9 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
            Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden,
            WorkingDirectory = Path.GetDirectoryName(assemblyLocation) )
     
-    // TODO Dynamically get
-    if startInfo.EnvironmentVariables.ContainsKey("R_HOME") |> not 
-    then startInfo.EnvironmentVariables.Add("R_HOME", "/Library/Frameworks/R.framework/Resources")
+    // TODO Dynamically get R_HOME here
+    //if startInfo.EnvironmentVariables.ContainsKey("R_HOME") |> not 
+    //then startInfo.EnvironmentVariables.Add("R_HOME", "/Library/Frameworks/R.framework/Resources")
 
     // Start the process and wait until it is initialized
     // (after initialization, the process deletes the temp file)
