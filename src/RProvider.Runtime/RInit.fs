@@ -116,7 +116,7 @@ let private findRHomePath () =
               RInitError (sprintf "No R engine at %s" binPath)
           | Some libraryFile ->
               Logging.logf "findRHomePath: file='%s'" libraryFile
-              RInitResult(libraryFile)
+              RInitResult(location, libraryFile)
     with e ->
       Logging.logf "findRHomePath failed: %O" e
       reraise()
@@ -138,9 +138,9 @@ let internal engine = lazy(
             | RInitResult res -> res
             | RInitError err -> 
                 Logging.logf $"engine: Unexpected - error not reported: %s{err}"
-                null
+                null, null
 
-        let engine = REngine.GetInstance(lib, true, null, characterDevice, AutoPrint=false)
+        let engine = REngine.GetInstance(snd lib, true, null, characterDevice, AutoPrint=false)
         System.AppDomain.CurrentDomain.DomainUnload.Add(fun _ -> engine.Dispose()) 
         Logging.logf "engine: Created & initialized instance"
         engine
