@@ -69,9 +69,9 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
     then 
         Logging.logf "R_HOME not set"
         match RProvider.Internal.RInit.rHomePath.Force() with
-        | RInit.RInitResult (dir,dll) -> 
-            Logging.logf $"Setting R_HOME as %s{dir}"
-            startInfo.EnvironmentVariables.Add("R_HOME", dir)
+        | RInit.RInitResult config -> 
+            Logging.logf $"Setting R_HOME as %s{config.RHome}"
+            startInfo.EnvironmentVariables.Add("R_HOME", config.RHome)
         | RInit.RInitError err ->
             Logging.logf $"Starting server process: Unexpected - error not reported: %s{err}"
             ()
