@@ -13,6 +13,8 @@ jobs:
       matrix:
         os: [macos-latest]
 
+    env: 
+      R_HOME: /Library/Frameworks/R.framework/Resources 
     steps:
     - uses: actions/checkout@master
     - uses: r-lib/actions/setup-r@v1
