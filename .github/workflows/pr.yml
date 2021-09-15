@@ -2,9 +2,8 @@ name: .NET
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ master ] 
   push:
- 
 
 jobs:
   build:
@@ -14,6 +13,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
+    env: 
+      R_HOME: /usr/local/bin/R 
     steps:
     - uses: actions/checkout@master
     - uses: r-lib/actions/setup-r@v1
