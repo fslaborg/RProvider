@@ -9,9 +9,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [macos-latest]
+
+    env: 
+      R_HOME: /Library/Frameworks/R.framework/Resources 
 
     steps:
+    - uses: actions/checkout@master
+    - uses: r-lib/actions/setup-r@v1
+      name: Setup R environment
+      with:
+          r-version: '4.1.1'
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -34,3 +42,7 @@ jobs:
         publish_dir: ./output
         publish_branch: gh-pages
         force_orphan: true
+    - name: Examine bin
+      run: ls -r bin
+    - name: Publish NuGets (if this version not published before)
+      run: dotnet nuget push bin\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGETKEY }} --skip-duplicate

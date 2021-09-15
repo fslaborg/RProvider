@@ -3,7 +3,6 @@ name: .NET
 on:
   pull_request:
     branches: [ master ] 
-  push:
 
 jobs:
   build:
@@ -15,6 +14,7 @@ jobs:
 
     env: 
       R_HOME: /Library/Frameworks/R.framework/Resources 
+
     steps:
     - uses: actions/checkout@master
     - uses: r-lib/actions/setup-r@v1
