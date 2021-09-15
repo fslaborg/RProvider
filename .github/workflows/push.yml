@@ -34,7 +34,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore RProvider.Tests.sln
     - name: Build
-      run: dotnet fake build -t Build
+      run: dotnet fake build -t All
     - name: Deploy documentation from master
       uses: peaceiris/actions-gh-pages@v3
       with:
