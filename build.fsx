@@ -40,12 +40,13 @@ let projectDescription = """
   The type provider automatically discovers available R packages and makes them
   easily accessible from F#, so you can easily call powerful packages and
   visualization libraries from code running on the .NET platform."""
-let authors = ["BlueMountain Capital"; "FsLab"]
+let authors = "BlueMountain Capital;FsLab"
 let companyName = "BlueMountain Capital, FsLab"
 let tags = "F# fsharp R TypeProvider visualization statistics"
 
-let gitHome = "https://github.com/fslaborg"
-let gitName = "RProvider"
+let packageProjectUrl = "https://fslaborg.org/RProvider/"
+let repositoryType = "git"
+let repositoryUrl = "https://github.com/fslaborg/RProvider"
 
 // --------------------------------------------------------------------------------------
 // The rest of the code is standard F# build script
@@ -97,14 +98,9 @@ Target.create "BuildTests" (fun _ ->
 // --------------------------------------------------------------------------------------
 // Run the unit tests using test runner & kill test runner when complete
 
-
 Target.create "RunTests" (fun _ ->
     Target.activateFinal "CloseTestRunner"
     Fake.DotNet.DotNet.test id (projectName + ".Tests.sln")
-)
-
-Target.createFinal "CloseTestRunner" (fun _ ->
-    Process.killAllByName "xunit.console.clr4.exe"
 )
 
 // --------------------------------------------------------------------------------------
@@ -114,25 +110,36 @@ Target.create "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
     let specificVersion (name, version) = name, sprintf "[%s]" version
     let projectDescription = projectDescription.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
-    Fake.DotNet.NuGet.NuGet.NuGet (fun p ->
+    
+    // Format the release notes
+    let releaseNotes = release.Notes |> String.concat "\n"
+
+    let properties = [
+        ("Version", release.NugetVersion)
+        ("Authors", authors)
+        ("PackageProjectUrl", packageProjectUrl)
+        ("PackageTags", tags)
+        ("RepositoryType", repositoryType)
+        ("RepositoryUrl", repositoryUrl)
+        //("PackageLicenseExpression", license) // TODO Enable license after stop packing PipeMethodCalls
+        ("PackageReleaseNotes", releaseNotes)
+        ("Summary", projectSummary)
+        ("PackageDescription", projectDescription)
+        ("EnableSourceLink", "true")
+        ("PublishRepositoryUrl", "true")
+        ("EmbedUntrackedSources", "true")
+        //("IncludeSymbols", "true") //TODO Enable symbols
+        ("IncludeSymbols", "false")
+        ("SymbolPackageFormat", "snupkg")
+    ]
+
+    DotNet.pack (fun p ->
         { p with
-            Authors = authors
-            Project = projectName
-            Summary = projectSummary
-            Description = projectDescription
-            Version = release.NugetVersion
-            ReleaseNotes = String.concat " " release.Notes
-            Tags = tags
-            OutputPath = "bin"
-            Dependencies =
-              [ "R.NET.Community", Fake.DotNet.NuGet.NuGet.GetPackageVersion "packages" "R.NET.Community"
-                "DynamicInterop", Fake.DotNet.NuGet.NuGet.GetPackageVersion "packages" "DynamicInterop"
-                "R.NET.Community.FSharp", Fake.DotNet.NuGet.NuGet.GetPackageVersion "packages" "R.NET.Community.FSharp" ]
-              |> List.map specificVersion
-            AccessKey = Fake.Core.Environment.environVarOrDefault "nugetkey" ""
-            Publish = Fake.Core.Environment.hasEnvironVar "nugetkey" })
-        "nuget/RProvider.nuspec"
-)
+            Configuration = DotNet.BuildConfiguration.Release
+            OutputPath = Some "bin"
+            MSBuildParams = { p.MSBuildParams with Properties = properties}
+        }
+    ) "src/RProvider/RProvider.fsproj")
 
 //--------------------------------------------------------------------------------------
 //Generate the documentation
@@ -143,64 +150,14 @@ Target.create "GenerateDocs" (fun _ ->
 )
 
 // --------------------------------------------------------------------------------------
-// Release Scripts
-
-Target.create "ReleaseDocs" (fun _ ->
-    Fake.Tools.Git.Repository.clone "" gitHome "temp/gh-pages"
-    Fake.Tools.Git.Branches.checkoutBranch "temp/gh-pages" "gh-pages"
-    Fake.IO.Shell.copyRecursive "output" "temp/gh-pages" true |> printfn "%A"
-    Fake.Tools.Git.CommandHelper.runSimpleGitCommand "temp/gh-pages" "add ." |> printfn "%s"
-    let cmd = sprintf """commit -a -m "Update generated documentation for version %s""" release.NugetVersion
-    Fake.Tools.Git.CommandHelper.runSimpleGitCommand "temp/gh-pages" cmd |> printfn "%s"
-    Fake.Tools.Git.Branches.push "temp/gh-pages"
-)
-
-Target.create "ReleaseBinaries" (fun _ ->
-    Fake.Tools.Git.Repository.clone "" (gitHome + "/" + gitName + ".git") "temp/release"
-    Fake.Tools.Git.Branches.checkoutBranch "temp/release" "release"
-    Fake.IO.Shell.copyRecursive "bin" "temp/release" true |> printfn "%A"
-    let cmd = sprintf """commit -a -m "Update binaries for version %s""" release.NugetVersion
-    Fake.Tools.Git.CommandHelper.runSimpleGitCommand "temp/release" cmd |> printfn "%s"
-    Fake.Tools.Git.Branches.push "temp/release"
-)
-
-Target.create "TagRelease" (fun _ ->
-    // Concatenate notes & create a tag in the local repository
-    let notes = (String.concat " " release.Notes).Replace("\n", ";").Replace("\r", "")
-    let tagName = "v" + release.NugetVersion
-    let cmd = sprintf """tag -a %s -m "%s" """ tagName notes
-    Fake.Tools.Git.CommandHelper.runSimpleGitCommand "." cmd |> printfn "%s"
-
-    // Find the main remote (fslaborg GitHub)
-    let _, remotes, _ = Fake.Tools.Git.CommandHelper.runGitCommand "." "remote -v"
-    let main = remotes |> Seq.find (fun s -> s.Contains("(push)") && s.Contains("fslaborg/RProvider"))
-    let remoteName = main.Split('\t').[0]
-    Fake.Tools.Git.Branches.pushTag "." remoteName tagName
-)
-
-Target.create "Release" ignore
-
-// --------------------------------------------------------------------------------------
 // Run all targets by default. Invoke 'build <Target>' to override
 
 Target.create "All" ignore
-Target.create "AllCore" ignore
 
-"Clean"
-  ==> "AssemblyInfo"
-  ==> "Build"
-  ==> "BuildTests"
-  ==> "RunTests"
-  ==> "All"
-
-"All"
-  ==> "CleanDocs"
-  ==> "GenerateDocs"
-  ==> "ReleaseDocs"
-  ==> "ReleaseBinaries"
-  ==> "Release"
-
-"All" ==> "NuGet" ==> "Release"
-"All" ==> "TagRelease" ==> "Release"
+"Clean" ==> "AssemblyInfo" ==> "Build"
+"Build" ==> "CleanDocs" ==> "GenerateDocs" ==> "All"
+"Build" ==> "NuGet" ==> "All"
+"Build" ==> "All"
+"BuildTests" ==> "RunTests" ==> "All"
 
 Target.runOrDefault "All"
