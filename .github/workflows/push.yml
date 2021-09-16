@@ -32,9 +32,9 @@ jobs:
               exit 1
          fi
       shell: bash
-    - name: Verify R
+    - name: Verify R Home
       run: |
-        Rscript -e '1+1'
+        Rscript -e 'R.home()'
         echo "${{ env.R_HOME }}"
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
