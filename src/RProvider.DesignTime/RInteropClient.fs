@@ -65,9 +65,18 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
            Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden,
            WorkingDirectory = Path.GetDirectoryName(assemblyLocation) )
     
-    // TODO Dynamically get
     if startInfo.EnvironmentVariables.ContainsKey("R_HOME") |> not 
-    then startInfo.EnvironmentVariables.Add("R_HOME", "/Library/Frameworks/R.framework/Resources")
+    then 
+        Logging.logf "R_HOME not set"
+        match RProvider.Internal.RInit.rHomePath.Force() with
+        | RInit.RInitResult config -> 
+            Logging.logf $"Setting R_HOME as %s{config.RHome}"
+            startInfo.EnvironmentVariables.Add("R_HOME", config.RHome)
+        | RInit.RInitError err ->
+            Logging.logf $"Starting server process: Unexpected - error not reported: %s{err}"
+            ()
+
+    Logging.logf "R_HOME set as %O" startInfo.EnvironmentVariables.["R_HOME"]
 
     // Start the process and wait until it is initialized
     // (after initialization, the process deletes the temp file)

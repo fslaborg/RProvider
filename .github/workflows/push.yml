@@ -2,17 +2,34 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, fix-ci ]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [macos-latest]
 
     steps:
     - uses: actions/checkout@v2
+    - uses: r-lib/actions/setup-r@master
+      name: Setup R environment
+      with:
+        r-version: '4.1.1'
+    - name: Set R_HOME environment variable
+      run:   |
+         if [ "$RUNNER_OS" == "Linux" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         elif [ "$RUNNER_OS" == "macOS" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         elif [ "$RUNNER_OS" == "Windows" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         else
+              echo "$RUNNER_OS not supported"
+              exit 1
+         fi
+      shell: bash
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -26,7 +43,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore RProvider.Tests.sln
     - name: Build
-      run: dotnet fake build -t Build
+      run: dotnet fake build -t GenerateDocs
     - name: Deploy documentation from master
       uses: peaceiris/actions-gh-pages@v3
       with:

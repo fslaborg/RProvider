@@ -90,11 +90,17 @@ let private getRLocation () =
         else locateRfromRegistry()
     | rPath -> RInitResult rPath 
 
+type RLocation = {
+    DllFile: string
+    RPath: string
+    RHome: string
+}
+
 /// Find the R installation using 'getRLocation' and add the directory to the
 /// current environment varibale PATH (so that later loading can find 'R.dll')
-let private findRHomePath () =
+let private findRLocation () =
     try
-      Logging.logf "findRHomePath"
+      Logging.logf "findRLocation"
       match getRLocation() with
       | RInitError error -> RInitError error
       | RInitResult location ->
@@ -115,17 +121,21 @@ let private findRHomePath () =
           | None ->
               RInitError (sprintf "No R engine at %s" binPath)
           | Some libraryFile ->
-              Logging.logf "findRHomePath: file='%s'" libraryFile
-              RInitResult(libraryFile)
+              Logging.logf "findRLocation: file='%s'" libraryFile
+              RInitResult({
+                  DllFile = libraryFile
+                  RPath = binPath
+                  RHome = location
+              })
     with e ->
-      Logging.logf "findRHomePath failed: %O" e
+      Logging.logf "findRLocation failed: %O" e
       reraise()
 
 /// Global interceptor that captures R console output
 let internal characterDevice = CharacterDeviceInterceptor()
 
 /// Lazily initialized value that, find the R location or fails and returns RInitError
-let rHomePath = lazy(findRHomePath())
+let rHomePath = lazy(findRLocation())
 
 /// Lazily initialized R engine.
 let internal engine = lazy(
@@ -135,7 +145,9 @@ let internal engine = lazy(
             // If the value was `RInitError`, the error has already been reported by
             // `RInteropServer.InitializationErrorMessage` and so we never even get here
             match rHomePath.Force() with
-            | RInitResult res -> res
+            | RInitResult res ->
+                REngine.SetEnvironmentVariables(rPath = res.RPath, rHome = res.RHome)
+                res.DllFile
             | RInitError err -> 
                 Logging.logf $"engine: Unexpected - error not reported: %s{err}"
                 null
