@@ -15,16 +15,20 @@ jobs:
         os: [macos-latest,ubuntu-latest,windows-latest]
 
     steps:
-    - name: set mac R_HOME
-      if: matrix.os == 'macOS-latest'
-      run: echo "R_HOME=/Library/Frameworks/R.framework/Resources" >> $GITHUB_ENV
-    - name: set ubuntu R_HOME
-      if: matrix.os == 'ubuntu-latest'
-      run: echo "R_HOME=/usr/local/bin/R" >> $GITHUB_ENV
-    - name: set windows R_HOME
-      if: matrix.os == 'windows-latest'
-      run: echo "R_HOME=C:\R" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-    - name: verify R
+    - name: Set R_HOME environment variable
+      run:   |
+         if [ "$RUNNER_OS" == "Linux" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         elif [ "$RUNNER_OS" == "macOS" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         elif [ "$RUNNER_OS" == "Windows" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         else
+              echo "$RUNNER_OS not supported"
+              exit 1
+         fi
+      shell: bash
+    - name: Verify R
       run: |
         Rscript -e '1+1'
         echo "${{ env.R_HOME }}"
@@ -33,7 +37,6 @@ jobs:
       name: Setup R environment
       with:
           r-version: '4.1.1'
-    
     - name: find home
       run: |
           R --print-home
