@@ -40,6 +40,7 @@ jobs:
     - name: Identify R Home
       run: |
           R --print-home
+      shell: bash
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
