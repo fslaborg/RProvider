@@ -99,7 +99,6 @@ Target.create "BuildTests" (fun _ ->
 // Run the unit tests using test runner & kill test runner when complete
 
 Target.create "RunTests" (fun _ ->
-    Target.activateFinal "CloseTestRunner"
     Fake.DotNet.DotNet.test id (projectName + ".Tests.sln")
 )
 
