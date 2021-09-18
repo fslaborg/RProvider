@@ -5,6 +5,7 @@ open System.Reflection
 open ProviderImplementation.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open RProvider
+open RProvider.Internal
 open Microsoft.FSharp.Quotations
 open PipeMethodCalls
 
@@ -20,7 +21,7 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
 
   /// Given a file name, generate static type inherited from REnv
   let generateTypes asm typeName (args:obj[]) =
-
+    Logging.logf $"Generating type for {typeName}"
     // Load the environment and generate the type
     let fileName = args.[0] :?> string
     let longFileName = 
@@ -50,6 +51,7 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
 
     // For each key in the environment, provide a property..
     for name, typ in RInteropClient.getServer().InvokeAsync(fun s -> s.GetRDataSymbols(longFileName)) |> Async.AwaitTask |> Async.RunSynchronously do
+      Logging.logf $"Adding member {name}"
       match typ with 
       | null ->
           // Generate property of type 'SymbolicExpression'
@@ -63,7 +65,8 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
           ProvidedProperty(name, typ, getterCode = fun (Singleton self) -> 
               Expr.Coerce(<@@ ((%%self):REnv).Get(name).Value @@>, typ))
           |> resTy.AddMember
-
+    
+    Logging.logf $"Finished generating types for {longFileName}"
     resTy
 
   // Register the main (parameterized) type with F# compiler
@@ -77,5 +80,11 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
     
   let rdata = ProvidedTypeDefinition(asm, "RProvider", "RData", Some(typeof<obj>))
   let parameter = ProvidedStaticParameter("FileName", typeof<string>)
-  do rdata.DefineStaticParameters([parameter], generateTypes asm)
-  do this.AddNamespace("RProvider", [ rdata ])
+  do 
+    rdata.DefineStaticParameters([parameter], generateTypes asm)
+    Logging.logf $"Defined static Parameters {parameter}"
+  do 
+    this.AddNamespace("RProvider", [ rdata ])
+    Logging.logf $"RData added namespace {rdata.FullName}"
+
+
