@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: [macos-latest,ubuntu-latest,windows-latest]
     env:
-      RPROVIDER_LOG=rlog.txt
+      RPROVIDER_LOG: rlog.txt
 
     steps:
     - uses: actions/checkout@master
