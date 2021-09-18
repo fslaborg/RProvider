@@ -13,6 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest,ubuntu-latest,windows-latest]
+    env:
+      RPROVIDER_LOG=rlog.txt
 
     steps:
     - uses: actions/checkout@master
@@ -51,3 +53,5 @@ jobs:
       run: dotnet restore RProvider.Tests.sln
     - name: Build
       run: dotnet fake build -t All
+    - name: Check R log
+      run: cat rlog.txt
