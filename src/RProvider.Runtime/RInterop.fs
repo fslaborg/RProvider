@@ -188,6 +188,10 @@ module internal RInteropInternal =
         | NumericVector(v) when at = typeof<DateTime list>  -> retype <| [ for n in v -> DateTime.FromOADate(n + RDateOffset) ]
         | NumericVector(v) when at = typeof<DateTime[]>     -> retype <| [| for n in v -> DateTime.FromOADate(n + RDateOffset) |]
         | NumericVector(v) when at = typeof<DateTime>       -> retype <| DateTime.FromOADate(v.Single() + RDateOffset)
+        | NumericMatrix(v) when at = typeof<double[,]>      -> retype <| v.ToArray()
+        | CharacterMatrix(v) when at = typeof<string[,]>    -> retype <| v.ToArray()
+        | IntegerMatrix(v) when at = typeof<int[,]>         -> retype <| v.ToArray()
+        | LogicalMatrix(v) when at = typeof<int[,]>         -> retype <| v.ToArray()
         // Empty vectors in R are represented as null
         | Null() when at = typeof<string list>              -> retype <| List.empty<string>
         | Null() when at = typeof<string[]>                 -> retype <| Array.empty<string>
@@ -225,7 +229,12 @@ module internal RInteropInternal =
         | NumericVector(v) ->       match v.GetAttribute("class") with
                                     | CharacterVector(cv) when cv.ToArray() = [| "Date" |] 
                                         -> wrap <| [| for n in v -> DateTime.FromOADate(n + RDateOffset) |]
-                                    | _ -> wrap <| v.ToArray()        
+                                    | _ -> wrap <| v.ToArray()
+        | CharacterMatrix(v) ->     wrap <| v.ToArray()
+        | ComplexMatrix(v) ->       wrap <| v.ToArray()
+        | IntegerMatrix(v) ->       wrap <| v.ToArray()
+        | LogicalMatrix(v) ->       wrap <| v.ToArray()
+        | NumericMatrix(v) ->       wrap <| v.ToArray()
         | List(v) ->                wrap <| v
         | Pairlist(pl) ->           wrap <| (pl |> Seq.map (fun sym -> sym.PrintName, sym.AsSymbol().Value))
         | Null() ->                 wrap <| null
@@ -370,8 +379,8 @@ module RInterop =
 
     let getPackages() : string[] =
         Logging.logf "Communicating with R to get packages"
-        Logging.logf "Test: %O" (eval("1+4"))
-        Logging.logf "Test: %O" (eval("1+4").Value)
+        Logging.logf "Test: %A" (eval("1+4"))
+        Logging.logf "Test: %A" (eval("1+4").Value)
         eval(".packages(all.available=T)").GetValue()
 
     let getPackageDescription packageName: string = 
