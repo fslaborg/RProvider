@@ -99,7 +99,10 @@ Target.create "BuildTests" (fun _ ->
 // Run the unit tests using test runner & kill test runner when complete
 
 Target.create "RunTests" (fun _ ->
-    Fake.DotNet.DotNet.test id (projectName + ".Tests.sln")
+    let rHome = Environment.environVarOrFail "R_HOME"
+    Trace.logf "R_HOME is set as %s" rHome
+    let result = Fake.DotNet.DotNet.exec id "test" (projectName + ".Tests.sln")
+    if result.ExitCode <> 0 then failwith "Tests failed"
 )
 
 // --------------------------------------------------------------------------------------
