@@ -110,7 +110,9 @@ let getServer() =
   lock serverLock (fun () ->
     Logging.logf "[Check last server]"
     match lastServer with
-    | Some s -> s
+    | Some s -> 
+        Logging.logf "[Found lastServer]"
+        s
     | None ->
         Logging.logf "[Make new server]"
         // TODO Remove RunSynchronously

@@ -37,6 +37,7 @@ type public RProvider(cfg:TypeProviderConfig) as this =
         try 
           for ns, types in RTypeBuilder.initAndGenerate(runtimeAssembly) do
             this.AddNamespace(ns, types)
+          Logging.logf $"RProvider constructor succeeded"
         with e ->
           Logging.logf $"RProvider constructor failed: {e}"
           reraise()

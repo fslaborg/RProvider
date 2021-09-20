@@ -2,21 +2,23 @@ name: .NET
 
 on:
   push:
-    branches: [ master, fix-ci ]
+    branches: [ master ]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
+      fail-fast: false
       matrix:
-        os: [macos-latest]
+        os: [macos-latest,windows-latest]
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: r-lib/actions/setup-r@master
+    - uses: actions/checkout@master
+    - uses: r-lib/actions/setup-r@v1
       name: Setup R environment
       with:
-        r-version: '4.1.1'
+          r-version: '4.0.2'
     - name: Set R_HOME environment variable
       run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
@@ -30,6 +32,10 @@ jobs:
               exit 1
          fi
       shell: bash
+    - name: Verify R Home
+      run: |
+        Rscript -e 'R.home()'
+        echo "${{ env.R_HOME }}"
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -43,7 +49,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore RProvider.Tests.sln
     - name: Build
-      run: dotnet fake build -t GenerateDocs
+      run: dotnet fake build -t All
     - name: Deploy documentation from master
       uses: peaceiris/actions-gh-pages@v3
       with:
@@ -51,3 +57,7 @@ jobs:
         publish_dir: ./output
         publish_branch: gh-pages
         force_orphan: true
+    - name: Examine bin
+      run: ls -r bin
+    - name: Publish NuGets (if this version not published before)
+      run: dotnet nuget push bin\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGETKEY }} --skip-duplicate

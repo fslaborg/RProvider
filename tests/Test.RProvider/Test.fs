@@ -21,6 +21,9 @@ open FsCheck.Xunit
 open System.Numerics
 open System.Text
 
+[<assembly: CollectionBehavior(DisableTestParallelization = true)>]
+do()
+
 // Generic function to test that a value round-trips
 // when SEXP is asked for the value by-type
 let testRoundTrip (x: 'a) (typeof: SymbolicExpressionType) (clsName: Option<string>) =
