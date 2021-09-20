@@ -588,7 +588,7 @@ NUGET
     xunit.runner.visualstudio (2.4.3)
 GITHUB
   remote: andrewiom/PipeMethodCalls
-    FULLPROJECT (69e5b6f7c1a130e20a2b8023638f6d6d65390b55)
+    FULLPROJECT (7306482212444920ff07b0c5db5f2e71a4077bdf)
   remote: fsprojects/FSharp.TypeProviders.SDK
     src/ProvidedTypes.fs (f4aca36af04aa84b16ec04df6f6bf55ac2f17a73)
     src/ProvidedTypes.fsi (f4aca36af04aa84b16ec04df6f6bf55ac2f17a73)
