@@ -92,7 +92,10 @@ Target.create "Build" (fun _ ->
 
 Target.create "BuildTests" (fun _ ->
     Trace.log " --- Building tests --- "
-    Fake.DotNet.DotNet.build id (projectName + ".Tests.sln")
+    //Fake.DotNet.DotNet.build id (projectName + ".Tests.sln")
+    let result = Fake.DotNet.DotNet.exec (fun args -> 
+        { args with Verbosity = Some Fake.DotNet.DotNet.Verbosity.Normal}) "build" (projectName + ".Tests.sln")
+    if result.ExitCode <> 0 then failwith "Building tests failed"
 )
 
 // --------------------------------------------------------------------------------------

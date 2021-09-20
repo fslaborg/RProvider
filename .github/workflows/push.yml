@@ -18,7 +18,7 @@ jobs:
     - uses: r-lib/actions/setup-r@v1
       name: Setup R environment
       with:
-          r-version: '4.1.1'
+          r-version: '4.0.2'
     - name: Set R_HOME environment variable
       run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
