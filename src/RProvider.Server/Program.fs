@@ -12,18 +12,21 @@ open RProvider.Runtime.Serialisation
 /// Process.WaitForExit does not seem to be working reliably
 /// on Mono, so instead we loop asynchronously until the process is gone
 let rec asyncWaitForExit pid = async {
-  let parentProcess = 
-    try 
-      let p = Process.GetProcessById(pid) 
-      match p.HasExited with
-      | true -> None
-      | false -> Some p
-    with _ -> None
-  match parentProcess with
-  | Some _ ->
-    do! Async.Sleep(1000)
-    return! asyncWaitForExit pid
-  | None -> () }
+      do! Async.Sleep(30000)
+      ()
+  }
+  // let parentProcess = 
+  //   try 
+  //     let p = Process.GetProcessById(pid) 
+  //     match p.HasExited with
+  //     | true -> None
+  //     | false -> Some p
+  //   with _ -> None
+  // match parentProcess with
+  // | Some _ ->
+  //   do! Async.Sleep(1000)
+  //   return! asyncWaitForExit pid
+  // | None -> () }
 
 /// Start the server using the specified channel name (which
 /// contains the parent PID) and delete tempFile once we're running
