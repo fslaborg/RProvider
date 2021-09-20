@@ -101,7 +101,8 @@ Target.create "BuildTests" (fun _ ->
 Target.create "RunTests" (fun _ ->
     let rHome = Environment.environVarOrFail "R_HOME"
     Trace.logf "R_HOME is set as %s" rHome
-    let result = Fake.DotNet.DotNet.exec id "test" (projectName + ".Tests.sln")
+    let result = Fake.DotNet.DotNet.exec (fun args -> 
+        { args with Verbosity = Some Fake.DotNet.DotNet.Verbosity.Normal}) "test" (projectName + ".Tests.sln")
     if result.ExitCode <> 0 then failwith "Tests failed"
 )
 
@@ -160,6 +161,6 @@ Target.create "All" ignore
 "Build" ==> "CleanDocs" ==> "GenerateDocs" ==> "All"
 "Build" ==> "NuGet" ==> "All"
 "Build" ==> "All"
-"BuildTests" ==> "RunTests" ==> "All"
+"Build" ==> "BuildTests" ==> "RunTests" ==> "All"
 
 Target.runOrDefault "All"
