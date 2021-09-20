@@ -1,3 +1,4 @@
+* 2.0.0-beta - .NET 5 support with R 4.x compatability
 * 1.1.22 - Add ProbingLocations for latest Deedle.RPlugin
 * 1.1.21 - Fix ProbingLocations (#199)
 * 1.1.20 - Cross-platform improvements

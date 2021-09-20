@@ -60,4 +60,5 @@ jobs:
     - name: Examine bin
       run: ls -r bin
     - name: Publish NuGets (if this version not published before)
+      if: matrix.os == 'windows-latest'
       run: dotnet nuget push bin\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGETKEY }} --skip-duplicate
