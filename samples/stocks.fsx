@@ -1,5 +1,8 @@
-﻿#r "bin/Debug/net5.0/RDotNet.dll"
-#r "bin/Debug/net5.0/RProvider.dll"
+#I "../src/RProvider/bin/Release/net5.0/"
+#r "RDotNet.dll"
+#r "RProvider.DesignTime.dll"
+#r "RProvider.Runtime.dll"
+#r "RProvider.dll"
 
 open RDotNet
 open RProvider
@@ -12,15 +15,18 @@ open RProvider.zoo
 open System
 open System.Net
 
+// You can add an API key for AlphaVantage here.
+// NB The 'demo' key has very limited usage.
+let apiKey = "demo"
+
 // URL of a service that generates price data
-let url = "http://ichart.finance.yahoo.com/table.csv?s="
- 
-/// Returns prices (as tuple) of a given stock for a
-/// specified number of days (starting from the most recent)
+let url stock = sprintf "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s&datatype=csv" stock apiKey
+
+/// Returns prices (as tuple) of a given stock
 let getStockPrices stock count =
     // Download the data and split it into lines
     let wc = new WebClient()
-    let data = wc.DownloadString(url + stock)
+    let data = wc.DownloadString(url stock)
     let dataLines = data.Split([| '\n' |], StringSplitOptions.RemoveEmptyEntries)
  
     // Parse lines of the CSV file and take specified
@@ -28,7 +34,7 @@ let getStockPrices stock count =
     seq { for line in dataLines |> Seq.skip 1 do
               let infos = line.Split(',')
               yield float infos.[4] }
-    |> Seq.take count |> Array.ofSeq |> Array.rev
+    |> Seq.truncate count |> Array.ofSeq |> Array.rev
 
 //retrieve stock price time series and compute returns
 let msft = getStockPrices "MSFT" 255 |> R.log |> R.diff 
