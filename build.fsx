@@ -43,6 +43,7 @@ let projectDescription = """
 let authors = "BlueMountain Capital;FsLab"
 let companyName = "BlueMountain Capital, FsLab"
 let tags = "F# fsharp R TypeProvider visualization statistics"
+let license = "BSD-2-Clause"
 
 let packageProjectUrl = "https://fslaborg.org/RProvider/"
 let repositoryType = "git"
@@ -114,7 +115,6 @@ Target.create "RunTests" (fun _ ->
 
 Target.create "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
-    let specificVersion (name, version) = name, sprintf "[%s]" version
     let projectDescription = projectDescription.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
     
     // Format the release notes
@@ -127,14 +127,14 @@ Target.create "NuGet" (fun _ ->
         ("PackageTags", tags)
         ("RepositoryType", repositoryType)
         ("RepositoryUrl", repositoryUrl)
-        //("PackageLicenseExpression", license) // TODO Enable license after stop packing PipeMethodCalls
+        ("PackageLicenseExpression", license)
         ("PackageReleaseNotes", releaseNotes)
         ("Summary", projectSummary)
         ("PackageDescription", projectDescription)
         ("EnableSourceLink", "true")
         ("PublishRepositoryUrl", "true")
         ("EmbedUntrackedSources", "true")
-        //("IncludeSymbols", "true") //TODO Enable symbols
+        ("IncludeSymbols", "true")
         ("IncludeSymbols", "false")
         ("SymbolPackageFormat", "snupkg")
     ]
