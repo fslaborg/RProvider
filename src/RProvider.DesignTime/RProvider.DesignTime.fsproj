@@ -22,7 +22,6 @@
     <Compile Include="RData.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../../paket-files/andrewiom/PipeMethodCalls/PipeMethodCalls/PipeMethodCalls.csproj" />
     <ProjectReference Include="../RProvider.Runtime/RProvider.Runtime.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

@@ -107,9 +107,9 @@ type RInteropServer() =
         EventLoop.runServerCommandSafe <| fun () ->
             let env = REnv(file) 
             [| for k in env.Keys ->
-                  Logging.logf $"GetRDataSymbols: key={k}"
+                  Logging.logf "GetRDataSymbols: key={%O}" k
                   let v = env.Get(k)
-                  Logging.logf $"GetRDataSymbols: value=%O{(v.Value)}"
+                  Logging.logf "GetRDataSymbols: value=%O" v.Value
                   let typ = try v.Value.GetType() with _ -> null
                   k, typ |]
 

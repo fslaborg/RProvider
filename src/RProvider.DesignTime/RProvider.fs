@@ -21,6 +21,7 @@ type public RProvider(cfg:TypeProviderConfig) as this =
             let coreAssembly = typeof<obj>.Assembly
             let resolver = PathAssemblyResolver([ cfg.RuntimeAssembly; coreAssembly.Location ])
             use mlc = new MetadataLoadContext(resolver, coreAssemblyName = coreAssembly.GetName().Name)
+            Logging.logf "Loading runtime assembly %O" mlc
             mlc.LoadFromAssemblyPath cfg.RuntimeAssembly
         else Assembly.LoadFrom cfg.RuntimeAssembly
 
@@ -30,15 +31,17 @@ type public RProvider(cfg:TypeProviderConfig) as this =
       // RProvider.dll.config which has this pattern in custom key "ProbingLocations".
       // Here, we resolve assemblies by looking into the specified search paths.
       AppDomain.CurrentDomain.add_AssemblyResolve(fun source args ->
+        Logging.logf "Assembly resolve: %O" args.Name
         resolveReferencedAssembly args.Name)
       
     // Generate all the types and log potential errors
     let buildTypes () =
         try 
+          Logging.logf "Starting build types."
           for ns, types in RTypeBuilder.initAndGenerate(runtimeAssembly) do
             this.AddNamespace(ns, types)
-          Logging.logf $"RProvider constructor succeeded"
+          Logging.logf "RProvider constructor succeeded"
         with e ->
-          Logging.logf $"RProvider constructor failed: {e}"
+          Logging.logf "RProvider constructor failed: %O" e
           reraise()
     do buildTypes ()

@@ -44,10 +44,14 @@ let authors = "BlueMountain Capital;FsLab"
 let companyName = "BlueMountain Capital, FsLab"
 let tags = "F# fsharp R TypeProvider visualization statistics"
 let license = "BSD-2-Clause"
+let iconUrl = "https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/files/misc/logo.png"
+let copyright = "(C) 2014 BlueMountain Capital"
 
 let packageProjectUrl = "https://fslaborg.org/RProvider/"
 let repositoryType = "git"
 let repositoryUrl = "https://github.com/fslaborg/RProvider"
+
+let serverRuntimes = [ "win-x64"; "osx-x64"; "linux-x64" ]
 
 // --------------------------------------------------------------------------------------
 // The rest of the code is standard F# build script
@@ -91,6 +95,17 @@ Target.create "Build" (fun _ ->
     Fake.DotNet.DotNet.build id (projectName + ".sln")
 )
 
+Target.create "MakeServerExes" (fun _ ->
+    Trace.log " --- Publishing the RProvider.Server executables --- "
+    serverRuntimes
+    |> List.iter(fun runtime ->
+        Trace.logf " --- Publishing RProvider.Server for %s --- " runtime
+        Fake.DotNet.DotNet.publish(fun args ->
+            { args with Runtime = Some runtime; SelfContained = Some false
+                        OutputPath = Some (sprintf "src/RProvider/bin/Debug/net5.0/server/%s/" runtime) })
+            "src/RProvider.Server" )
+)
+
 Target.create "BuildTests" (fun _ ->
     Trace.log " --- Building tests --- "
     //Fake.DotNet.DotNet.build id (projectName + ".Tests.sln")
@@ -128,15 +143,19 @@ Target.create "NuGet" (fun _ ->
         ("RepositoryType", repositoryType)
         ("RepositoryUrl", repositoryUrl)
         ("PackageLicenseExpression", license)
+        ("PackageRequireLicenseAcceptance", "false")
         ("PackageReleaseNotes", releaseNotes)
         ("Summary", projectSummary)
         ("PackageDescription", projectDescription)
+        ("PackageIcon", "logo.png")
+        ("PackageIconUrl", iconUrl)
         ("EnableSourceLink", "true")
         ("PublishRepositoryUrl", "true")
         ("EmbedUntrackedSources", "true")
         ("IncludeSymbols", "true")
         ("IncludeSymbols", "false")
         ("SymbolPackageFormat", "snupkg")
+        ("Copyright", copyright)
     ]
 
     DotNet.pack (fun p ->
@@ -160,7 +179,7 @@ Target.create "GenerateDocs" (fun _ ->
 
 Target.create "All" ignore
 
-"Clean" ==> "AssemblyInfo" ==> "Build"
+"Clean" ==> "AssemblyInfo" ==> "MakeServerExes" ==> "Build"
 "Build" ==> "CleanDocs" ==> "GenerateDocs" ==> "All"
 "Build" ==> "NuGet" ==> "All"
 "Build" ==> "All"
