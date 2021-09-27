@@ -52,7 +52,7 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
       else if RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
       then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/linux-x64", Server)
       else if RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-      then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/win-x64", Server, ".exe")
+      then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/win-x64", Server + ".exe")
       else failwithf "Your OS (%s) is not currently supported by RProvider." RuntimeInformation.FrameworkDescription
 
     // If this is Mac or Linux, we try to run "chmod" to make the server executable
