@@ -9,9 +9,10 @@ open System.Threading
 open RProvider.Internal
 open PipeMethodCalls
 open RProvider.Runtime.Serialisation
+open System.Runtime.InteropServices
 
 [<Literal>]
-let Server = "RProvider.Server.dll"
+let Server = "RProvider.Server"
 
 /// Thrown when we want to show the specified string as a friendly error message to the user
 exception RInitializationException of string
@@ -28,7 +29,7 @@ let newChannelName() =
     let pid = Process.GetCurrentProcess().Id
     let salt = randomSalt.Next()
     let tick = Environment.TickCount
-    $"RInteropServer_%d{pid}_%d{tick}_%d{salt}"
+    sprintf "RInteropServer_%d_%d_%d" pid tick salt
 
 // Global variables for remembering the current server
 let mutable lastServer : PipeClient<IRInteropServer> option = None
@@ -42,13 +43,22 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
     // Find the location of RProvider.Server.exe (based on non-shadow-copied path!)
     let assem = Assembly.GetExecutingAssembly()
     let assemblyLocation = assem |> Configuration.getAssemblyLocation
-    let exePath = Path.Combine(Path.GetDirectoryName(assemblyLocation), Server)
     let arguments = channelName + " \"" + tempFile + "\""
+
+    // Find RProvider.Server relevant platform-specific self-contained executable
+    let exePath = 
+      if RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+      then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/osx-x64", Server)
+      else if RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+      then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/linux-x64", Server)
+      else if RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+      then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/win-x64", Server + ".exe")
+      else failwithf "Your OS (%s) is not currently supported by RProvider." RuntimeInformation.FrameworkDescription
 
     // If this is Mac or Linux, we try to run "chmod" to make the server executable
     if Environment.OSVersion.Platform = PlatformID.Unix ||
        Environment.OSVersion.Platform = PlatformID.MacOSX then
-        Logging.logf $"Setting execute permission on '%s{exePath}'"
+        Logging.logf "Setting execute permission on '%s'" exePath
         try Process.Start("chmod", "+x " + exePath).WaitForExit()
         with _ -> ()
 
@@ -57,12 +67,10 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
         "Starting server '%s' with arguments '%s' (exists=%b)" 
         exePath arguments (File.Exists(exePath))
 
-    // If we are running on Mono, then the safer way to start the process 
-    // seems to be to use 'mono /foo/bar/RProvider.Server.exe'
     let startInfo =
         ProcessStartInfo
-         ( UseShellExecute = false, CreateNoWindow = true, FileName="dotnet",
-           Arguments = $"\"%s{exePath}\" %s{arguments}", WindowStyle = ProcessWindowStyle.Hidden,
+         ( UseShellExecute = false, CreateNoWindow = true, FileName = exePath,
+           Arguments = arguments, WindowStyle = ProcessWindowStyle.Hidden,
            WorkingDirectory = Path.GetDirectoryName(assemblyLocation) )
     
     if startInfo.EnvironmentVariables.ContainsKey("R_HOME") |> not 
@@ -70,10 +78,10 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
         Logging.logf "R_HOME not set"
         match RProvider.Internal.RInit.rHomePath.Force() with
         | RInit.RInitResult config -> 
-            Logging.logf $"Setting R_HOME as %s{config.RHome}"
+            Logging.logf "Setting R_HOME as %s" config.RHome
             startInfo.EnvironmentVariables.Add("R_HOME", config.RHome)
         | RInit.RInitError err ->
-            Logging.logf $"Starting server process: Unexpected - error not reported: %s{err}"
+            Logging.logf "Starting server process: Unexpected - error not reported: %s" err
             ()
 
     Logging.logf "R_HOME set as %O" startInfo.EnvironmentVariables.["R_HOME"]

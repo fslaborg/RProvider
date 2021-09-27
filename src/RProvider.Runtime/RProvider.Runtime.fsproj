@@ -13,8 +13,5 @@
     <Compile Include="Converters.fs" />
     <Compile Include="Serialisation.fs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="../../paket-files/andrewiom/PipeMethodCalls/PipeMethodCalls/PipeMethodCalls.csproj" />
-  </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

@@ -9,8 +9,10 @@ nuget FsCheck 2.16.3
 nuget FsCheck.Xunit 2.16.3
 nuget xunit 2.4.1
 nuget xunit.runner.visualstudio 2.4.3
-nuget FSharp.Core 5.0.2
+nuget FSharp.Core 4.6.2
 nuget Microsoft.NET.Test.Sdk 16.11.0
+nuget ILRepack.MSBuild.Task 2.0.13
+nuget PipeMethodCalls 3.0.4
 
 nuget Newtonsoft.Json 13.0.1
 nuget R.NET 1.9.0
@@ -18,13 +20,6 @@ nuget R.NET.FSharp 1.9.0
 nuget System.ComponentModel.Composition 5.0.0
 nuget System.Configuration.ConfigurationManager 5.0.0
 nuget System.Reflection.MetadataLoadContext 5.0.0
-github andrewiom/PipeMethodCalls:7306482212444920ff07b0c5db5f2e71a4077bdf
 
 github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fsi
 github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fs
-
-
-group Release
-  source https://www.nuget.org/api/v2
-  framework: net451
-  nuget FSharp.Core 4.3.4

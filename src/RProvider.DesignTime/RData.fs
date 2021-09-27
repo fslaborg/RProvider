@@ -21,7 +21,7 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
 
   /// Given a file name, generate static type inherited from REnv
   let generateTypes asm typeName (args:obj[]) =
-    Logging.logf $"Generating type for {typeName}"
+    Logging.logf "Generating type for %s" typeName
     // Load the environment and generate the type
     let fileName = args.[0] :?> string
     let longFileName = 
@@ -51,7 +51,7 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
 
     // For each key in the environment, provide a property..
     for name, typ in RInteropClient.getServer().InvokeAsync(fun s -> s.GetRDataSymbols(longFileName)) |> Async.AwaitTask |> Async.RunSynchronously do
-      Logging.logf $"Adding member {name}"
+      Logging.logf "Adding member %s" name
       match typ with 
       | null ->
           // Generate property of type 'SymbolicExpression'
@@ -66,7 +66,7 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
               Expr.Coerce(<@@ ((%%self):REnv).Get(name).Value @@>, typ))
           |> resTy.AddMember
     
-    Logging.logf $"Finished generating types for {longFileName}"
+    Logging.logf "Finished generating types for %s" longFileName
     resTy
 
   // Register the main (parameterized) type with F# compiler
@@ -82,9 +82,9 @@ type public RDataProvider(cfg:TypeProviderConfig) as this =
   let parameter = ProvidedStaticParameter("FileName", typeof<string>)
   do 
     rdata.DefineStaticParameters([parameter], generateTypes asm)
-    Logging.logf $"Defined static Parameters {parameter}"
+    Logging.logf "Defined static Parameters %O" parameter
   do 
     this.AddNamespace("RProvider", [ rdata ])
-    Logging.logf $"RData added namespace {rdata.FullName}"
+    Logging.logf "RData added namespace %s" rdata.FullName
 
 
