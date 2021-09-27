@@ -11,10 +11,14 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../RProvider.DesignTime/RProvider.DesignTime.fsproj" PrivateAssets="All" />
+    <ProjectReference Include="../RProvider.Runtime/RProvider.Runtime.fsproj" PrivateAssets="All" />
     <ProjectReference Include="../RProvider.Server/RProvider.Server.fsproj" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../../docs/img/logo.png" Pack="true" PackagePath="/">
+        <PackageCopyToOutput>true</PackageCopyToOutput>
+    </None>
+    <None Include="bin/Debug/net5.0/server/**" Pack="true" PackagePath="/lib/net5.0/server/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
   </ItemGroup>
