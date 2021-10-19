@@ -1,4 +1,4 @@
-name: .NET
+name: Push to master
 
 on:
   push:
