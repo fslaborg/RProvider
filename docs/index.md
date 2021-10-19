@@ -20,17 +20,16 @@ from a wide variety of sources via Type Providers.
 ### A Quick Demo
 
 <div style="text-align:center;">
-<iframe width="420" height="315" src="//www.youtube.com/embed/cCuGgA9Yqrs?rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="https://www.youtube.com/watch?v=tOd-qsjKU8Y" frameborder="0" allowfullscreen></iframe>
 </div>
 
 ## What are R and F#?
 
-[F#](http://msdn.microsoft.com/en-us/vstudio/hh388569) is a mixed-paradigm language 
-that supports functional, object-oriented and imperative programming, 
-with the emphasis on functional. F# runs on the .NET runtime and is a compiled, 
+[F#](http://fsharp.org) is a multi-paradigm language 
+that supports functional, object and imperative programming, 
+with the emphasis on functional-first programming. F# runs on the .NET runtime and is a compiled, 
 statically typed language with a strong type system and type inference. 
-F# is a general purpose programming language, 
-and is particularly well-suited for scientific/numerical computing.
+F# is a general purpose programming language, and is particularly well-suited for scientific/numerical computing.
 
 [R](http://www.r-project.org/) is an Open Source language for statistical computing. 
 R offers a wide range of high-quality, community-developed packages, 
@@ -68,20 +67,14 @@ If you are using R 2.15 or later, you should not try to load the RProvider insid
 that is passed to FSI via the `--use` flag.  It seems that something about the way R
 initializes causes it to hang in that context.  Works fine if you load later.
 
-For compilation you will need VS2012 / F# 3.0 or later.  For runtime you'll need .NET 4.5.
+For compilation you will need F# 5.0 or later.  For runtime you'll need .NET 5.
 
 Contributing and copyright
 --------------------------
 
-The project has been developed by [BlueMountain Capital](https://www.bluemountaincapital.com/)
-and contributors. It is available under the BSD license. The library uses
-[RDotNet](http://rdotnet.codeplex.com/) which is also covered by the BSD license.
-For more information see the [License file][license] in the GitHub repository.
+The project has been originally developed by [BlueMountain Capital](https://www.bluemountaincapital.com/) and contributors.
 
-The project is hosted on [GitHub][gh] where you can [report issues][issues], fork
-the project and submit pull requests.
-Many thanks to Mathias Brandewinder for producing the [FAKE](https://github.com/fsharp/FAKE) script
-to build the NuGet package, and to Steffen Forkman for writing [FAKE](https://github.com/fsharp/FAKE).
+The project is hosted on [GitHub][gh] where you can [report issues][issues], fork the project and submit pull requests.
 
 [gh]: https://github.com/fslaborg/RProvider
 [issues]: https://github.com/fslaborg/RProvider/issues
