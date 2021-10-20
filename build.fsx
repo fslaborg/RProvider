@@ -93,7 +93,9 @@ Target.create "CleanDocs" (fun _ ->
 
 Target.create "Build" (fun _ ->
     Trace.log " --- Building the app --- "
-    Fake.DotNet.DotNet.build id (projectName + ".sln")
+    Fake.DotNet.DotNet.build (fun args ->
+        { args with Configuration = DotNet.BuildConfiguration.Release })
+        (projectName + ".sln")
 )
 
 Target.create "MakeServerExes" (fun _ ->
@@ -101,18 +103,18 @@ Target.create "MakeServerExes" (fun _ ->
     serverRuntimes
     |> List.iter(fun runtime ->
         Trace.logf " --- Publishing RProvider.Server for %s --- " runtime
-        Fake.DotNet.DotNet.publish(fun args ->
+        DotNet.publish(fun args ->
             { args with Runtime = Some runtime; SelfContained = Some false
-                        OutputPath = Some (sprintf "src/RProvider/bin/Debug/net5.0/server/%s/" runtime) })
+                        Configuration = DotNet.BuildConfiguration.Release
+                        OutputPath = Some (sprintf "src/RProvider/bin/Release/net5.0/server/%s/" runtime) })
             "src/RProvider.Server" )
 )
 
 Target.create "BuildTests" (fun _ ->
     Trace.log " --- Building tests --- "
-    //Fake.DotNet.DotNet.build id (projectName + ".Tests.sln")
-    let result = Fake.DotNet.DotNet.exec (fun args -> 
-        { args with Verbosity = Some Fake.DotNet.DotNet.Verbosity.Normal}) "build" (projectName + ".Tests.sln")
-    if result.ExitCode <> 0 then failwith "Building tests failed"
+    DotNet.build (fun args ->
+        { args with Configuration = DotNet.BuildConfiguration.Release })
+        "tests/Test.RProvider/Test.RProvider.fsproj"
 )
 
 // --------------------------------------------------------------------------------------
@@ -121,8 +123,9 @@ Target.create "BuildTests" (fun _ ->
 Target.create "RunTests" (fun _ ->
     let rHome = Environment.environVarOrFail "R_HOME"
     Trace.logf "R_HOME is set as %s" rHome
-    let result = Fake.DotNet.DotNet.exec (fun args -> 
-        { args with Verbosity = Some Fake.DotNet.DotNet.Verbosity.Normal}) "test" (projectName + ".Tests.sln")
+    let result = DotNet.exec (fun args -> 
+        { args with Verbosity = Some Fake.DotNet.DotNet.Verbosity.Normal
+                    CustomParams = Some "-c Release" }) "test" "tests/Test.RProvider/Test.RProvider.fsproj"
     if result.ExitCode <> 0 then failwith "Tests failed"
 )
 
@@ -194,7 +197,7 @@ Target.create "DocsMeta" (fun _ ->
 
 Target.create "GenerateDocs" (fun _ ->
    Fake.IO.Shell.cleanDir ".fsdocs"
-   DotNet.exec id "fsdocs" ("build --clean --parameters fsdocs-package-version " + release.NugetVersion) |> ignore
+   DotNet.exec id "fsdocs" ("build --clean --properties Configuration=Release --parameters fsdocs-package-version " + release.NugetVersion) |> ignore
 )
 
 // --------------------------------------------------------------------------------------
