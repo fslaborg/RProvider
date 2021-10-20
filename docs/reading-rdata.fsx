@@ -1,11 +1,26 @@
-(*** hide ***)
-#I "../../packages/FSharp.Data.2.0.7/lib/net40/"
-#I "../../bin/"
-#r "RDotNet.dll"
-#r "RDotNet.FSharp.dll"
-#r "RProvider.dll"
-#r "RProvider.Runtime.dll"
-open System
+(**
+---
+category: Documentation
+categoryindex: 1
+index: 5
+---
+*)
+
+(*** condition: prepare ***)
+#nowarn "211"
+#r "../src/RProvider/bin/Debug/net5.0/RDotNet.dll"
+#r "../src/RProvider/bin/Debug/net5.0/RProvider.Runtime.dll"
+#r "../src/RProvider/bin/Debug/net5.0/RProvider.DesignTime.dll"
+#r "../src/RProvider/bin/Debug/net5.0/RProvider.dll"
+(*** condition: fsx ***)
+#if FSX
+#r "nuget: RProvider,{{package-version}}"
+#endif // FSX
+(*** condition: ipynb ***)
+#if IPYNB
+#r "nuget: RProvider,{{package-version}}"
+#endif // IPYNB
+
 (**
 Reading and writing RData files
 ===============================

@@ -8,10 +8,10 @@ index: 3
 
 (*** condition: prepare ***)
 #nowarn "211"
-#r "../src/RProvider/bin/Release/net5.0/RDotNet.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.Runtime.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.DesignTime.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.dll"
+#r "../src/RProvider/bin/Debug/net5.0/RDotNet.dll"
+#r "../src/RProvider/bin/Debug/net5.0/RProvider.Runtime.dll"
+#r "../src/RProvider/bin/Debug/net5.0/RProvider.DesignTime.dll"
+#r "../src/RProvider/bin/Debug/net5.0/RProvider.dll"
 (*** condition: fsx ***)
 #if FSX
 #r "nuget: RProvider,{{package-version}}"
@@ -31,16 +31,14 @@ as well as generate publication quality graphics that can be exported to virtual
 
 ## Charts Basics
 
-Basic charts can be found in the graphics package. 
-Assuming you installed the R Type Provider in your project from NuGet, 
+Basic charts can be found in the graphics package.
+Assuming you are using an F# script, 
 you can reference the required libraries and packages this way:
+
+    [lang=fsharp]
+    #r "nuget: RProvider,2.0.0-beta2"
 *)
 
-// #I "../packages/RProvider.1.0.11"
-// #load "RProvider.fsx"
-
-open System
-open RDotNet
 open RProvider
 open RProvider.graphics
 
@@ -73,7 +71,7 @@ once you have opened the grDevices package, you can save a chart like this:
 open RProvider.grDevices
 
 // Create path to an image testimage.png on the Desktop
-let desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)  
+let desktop = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop)  
 let path = desktop + @"\testimage.png"
 
 // Open the device and create the file as a png.

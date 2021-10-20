@@ -50,6 +50,7 @@ let copyright = "(C) 2014 BlueMountain Capital"
 let packageProjectUrl = "https://fslaborg.org/RProvider/"
 let repositoryType = "git"
 let repositoryUrl = "https://github.com/fslaborg/RProvider"
+let repositoryContentUrl = "https://raw.githubusercontent.com/fslaborg/RProvider"
 
 let serverRuntimes = [ "win-x64"; "osx-x64"; "linux-x64" ]
 
@@ -169,9 +170,31 @@ Target.create "NuGet" (fun _ ->
 //--------------------------------------------------------------------------------------
 //Generate the documentation
 
+Target.create "DocsMeta" (fun _ ->
+    [ "<Project xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">"
+      "<PropertyGroup>"
+      sprintf "<Copyright>%s</Copyright>" copyright
+      sprintf "<Authors>%s</Authors>" authors
+      sprintf "<PackageProjectUrl>%s</PackageProjectUrl>" packageProjectUrl
+      sprintf "<RepositoryUrl>%s</RepositoryUrl>" repositoryUrl
+      sprintf "<PackageLicense>%s</PackageLicense>" license
+      sprintf "<PackageReleaseNotes>%s</PackageReleaseNotes>" (List.head release.Notes)
+      sprintf "<PackageIconUrl>%s/master/docs/content/logo.png</PackageIconUrl>" repositoryContentUrl
+      sprintf "<PackageTags>%s</PackageTags>" tags
+      sprintf "<Version>%s</Version>" release.NugetVersion
+      sprintf "<FsDocsLogoSource>%s/master/docs/img/logo.png</FsDocsLogoSource>" repositoryContentUrl
+      sprintf "<FsDocsLicenseLink>%s/blob/master/LICENSE.md</FsDocsLicenseLink>" repositoryUrl
+      sprintf "<FsDocsReleaseNotesLink>%s/blob/master/RELEASE_NOTES.md</FsDocsReleaseNotesLink>" repositoryUrl
+      "<FsDocsWarnOnMissingDocs>true</FsDocsWarnOnMissingDocs>"
+      "<FsDocsTheme>default</FsDocsTheme>"
+      "</PropertyGroup>"
+      "</Project>"]
+    |> Fake.IO.File.write false "Directory.Build.props"
+)
+
 Target.create "GenerateDocs" (fun _ ->
    Fake.IO.Shell.cleanDir ".fsdocs"
-   DotNet.exec id "fsdocs" "build --clean" |> ignore
+   DotNet.exec id "fsdocs" ("build --clean --parameters fsdocs-package-version " + release.NugetVersion) |> ignore
 )
 
 // --------------------------------------------------------------------------------------
@@ -180,7 +203,7 @@ Target.create "GenerateDocs" (fun _ ->
 Target.create "All" ignore
 
 "Clean" ==> "AssemblyInfo" ==> "MakeServerExes" ==> "Build"
-"Build" ==> "CleanDocs" ==> "GenerateDocs" ==> "All"
+"Build" ==> "CleanDocs" ==> "DocsMeta" ==> "GenerateDocs" ==> "All"
 "Build" ==> "NuGet" ==> "All"
 "Build" ==> "All"
 "Build" ==> "BuildTests" ==> "RunTests" ==> "All"
