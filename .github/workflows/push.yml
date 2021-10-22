@@ -19,6 +19,12 @@ jobs:
       name: Setup R environment
       with:
           r-version: '4.0.2'
+    - uses: r-lib/actions/setup-r-dependencies@v1
+      with:
+        cache-version: 2
+        extra-packages: |
+          tseries
+          zoo
     - name: Set R_HOME environment variable
       run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
