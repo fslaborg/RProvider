@@ -99,20 +99,23 @@ module internal RInteropInternal =
         lazy
             // Look for plugins co-located with RProvider.dll
             let assem = typeof<IConvertToR<_>>.Assembly
-            let assemblyLocation = AppContext.BaseDirectory
+            let assemblyLocation =
+                if String.IsNullOrEmpty assem.Location
+                then AppContext.BaseDirectory
+                else assem.Location
             Logging.logf "[DEBUG] MEF Container 1: RProvider.dll is at %s" assemblyLocation
 
             let dirs = getProbingLocations()
-            Logging.logf "[DEBUG] MEF Container 2: %O" assemblyLocation
+            Logging.logf "[DEBUG] MEF Container 2: Probing locations = %A" dirs
             let catalogs : seq<Primitives.ComposablePartCatalog> = 
               seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName assemblyLocation,"*.Plugin.dll")
                     for d in dirs do
                       yield upcast new DirectoryCatalog(d,"*.Plugin.dll")
                     yield upcast new AssemblyCatalog(assem) }
-            Logging.logf "[DEBUG] MEF Container 3: %O" catalogs
+            Logging.logf "[DEBUG] MEF Container 3: Catalog count = %O" (catalogs.Count())
             new CompositionContainer(new AggregateCatalog(catalogs))
 
-    let internal toRConv = Collections.Generic.Dictionary<Type, REngine -> obj -> SymbolicExpression>()
+    let internal toRConv = Dictionary<Type, REngine -> obj -> SymbolicExpression>()
 
     /// Register a function that will convert from a specific type to a value in R.
     /// Alternatively, you can build a MEF plugin that exports IConvertToR.

@@ -16,7 +16,9 @@ issue](https://github.com/fslaborg/RProvider/issues).
 
 **TL;DR** The logging is enabled by setting an environment variable
 `RPROVIDER_LOG` to a file name where the log should be saved. The file does
-not have to exist, but the folder where it is located has to.
+not have to exist, but the folder where it is located has to. **You should use
+an absolute (full) path, as otherwise the server will create a seperate log in the
+nuget package directory.**
 
 Enabling logging on Windows
 ---------------------------
