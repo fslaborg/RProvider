@@ -47,7 +47,7 @@ let license = "BSD-2-Clause"
 let iconUrl = "https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/files/misc/logo.png"
 let copyright = "(C) 2014 BlueMountain Capital"
 
-let packageProjectUrl = "https://fslaborg.org/RProvider/"
+let packageProjectUrl = "https://fslab.org/RProvider/"
 let repositoryType = "git"
 let repositoryUrl = "https://github.com/fslaborg/RProvider"
 let repositoryContentUrl = "https://raw.githubusercontent.com/fslaborg/RProvider"

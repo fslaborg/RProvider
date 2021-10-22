@@ -6,6 +6,7 @@
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <PublishSingleFile>true</PublishSingleFile>
     <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <RollForward>LatestMajor</RollForward>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../Common/AssemblyInfo.fs" />
