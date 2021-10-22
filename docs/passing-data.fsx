@@ -9,11 +9,10 @@ index: 3
 (*** condition: prepare ***)
 #nowarn "211"
 #r "../src/RProvider/bin/Release/net5.0/RDotNet.dll"
+#r "../src/RProvider/bin/Release/net5.0/RDotNet.FSharp.dll"
 #r "../src/RProvider/bin/Release/net5.0/RProvider.Runtime.dll"
 #r "../src/RProvider/bin/Release/net5.0/RProvider.DesignTime.dll"
 #r "../src/RProvider/bin/Release/net5.0/RProvider.dll"
-#r "RProvider.dll"
-#r "RProvider.DesignTime.dll"
 (*** condition: fsx ***)
 #if FSX
 #r "nuget: RProvider,{{package-version}}"
@@ -24,7 +23,6 @@ index: 3
 #endif // IPYNB
 
 
-open System
 open RDotNet
 open RProvider
 

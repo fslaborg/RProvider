@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\paket-files\fsprojects\FSharp.TypeProviders.SDK\src\ProvidedTypes.fsi">
