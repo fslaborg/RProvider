@@ -21,7 +21,7 @@
     <None Include="bin/Release/net5.0/server/**" Pack="true" PackagePath="/lib/net5.0/server/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Include="RProvider.dll.config" Pack="true" PackagePath="/lib/net5.0/">
+    <None Include="RProvider.Runtime.dll.config" Pack="true" PackagePath="/lib/net5.0/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
   </ItemGroup>

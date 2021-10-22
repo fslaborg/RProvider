@@ -60,7 +60,7 @@ let main argv =
     Logging.logf "Starting 'RProvider.Server' with arguments '%A'" argv
 
     // When RProvider is installed via NuGet, the RDotNet assembly and plugins
-    // will appear typically in "../../*/lib/net40". To support this, we look at
+    // will appear typically in "../../*/lib/netstandard*.*". To support this, we look at
     // RProvider.dll.config which has this pattern in custom key "ProbingLocations".
     // Here, we resolve assemblies by looking into the specified search paths.
     AppDomain.CurrentDomain.add_AssemblyResolve(fun source args ->
