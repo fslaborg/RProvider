@@ -2,7 +2,7 @@ name: Push to master
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, apple-silicon ]
 
 jobs:
   build:
