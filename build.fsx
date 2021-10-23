@@ -52,7 +52,7 @@ let repositoryType = "git"
 let repositoryUrl = "https://github.com/fslaborg/RProvider"
 let repositoryContentUrl = "https://raw.githubusercontent.com/fslaborg/RProvider"
 
-let serverRuntimes = [ "win-x64"; "osx-x64"; "linux-x64" ]
+let serverRuntimes = [ "win-x64"; "osx-x64"; "osx-arm64"; "linux-x64" ]
 
 // --------------------------------------------------------------------------------------
 // The rest of the code is standard F# build script
@@ -106,6 +106,7 @@ Target.create "MakeServerExes" (fun _ ->
         DotNet.publish(fun args ->
             { args with Runtime = Some runtime; SelfContained = Some false
                         Configuration = DotNet.BuildConfiguration.Release
+                        Framework = (if runtime = "osx-arm64" then Some "net6.0" else None)
                         OutputPath = Some (sprintf "src/RProvider/bin/Release/net5.0/server/%s/" runtime) })
             "src/RProvider.Server" )
 )
