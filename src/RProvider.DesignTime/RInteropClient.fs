@@ -48,7 +48,10 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
     // Find RProvider.Server relevant platform-specific self-contained executable
     let exePath = 
       if RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-      then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/osx-x64", Server)
+      then 
+        if RuntimeInformation.OSArchitecture = Architecture.Arm64
+        then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/osx-arm64", Server)
+        else Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/osx-x64", Server)
       else if RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
       then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/linux-x64", Server)
       else if RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
@@ -59,7 +62,7 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
     if Environment.OSVersion.Platform = PlatformID.Unix ||
        Environment.OSVersion.Platform = PlatformID.MacOSX then
         Logging.logf "Setting execute permission on '%s'" exePath
-        try Process.Start("chmod", "+x " + exePath).WaitForExit()
+        try Process.Start("chmod", "+x '" + exePath + "'").WaitForExit()
         with _ -> ()
 
     // Log some information about the process first

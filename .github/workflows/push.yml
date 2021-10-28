@@ -36,10 +36,15 @@ jobs:
       run: |
         Rscript -e 'R.home()'
         echo "${{ env.R_HOME }}"
-    - name: Setup .NET
+    - name: Setup .NET 
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: '5.0.x'
+    - name: Setup .NET 6 (for Apple Silicon build)
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     - name: Restore tool dependencies
       run: dotnet tool restore
     - name: Restore paket dependencies
