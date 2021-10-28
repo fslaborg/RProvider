@@ -49,7 +49,7 @@ let startNewServerAsync() : Async<PipeClient<IRInteropServer>> =
     let exePath = 
       if RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
       then 
-        if RuntimeInformation.OSArchitecture = OSArchitecture.Arm64
+        if RuntimeInformation.OSArchitecture = Architecture.Arm64
         then Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/osx-arm64", Server)
         else Path.Combine(Path.GetDirectoryName(assemblyLocation), "server/osx-x64", Server)
       else if RuntimeInformation.IsOSPlatform(OSPlatform.Linux)

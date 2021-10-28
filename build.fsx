@@ -106,7 +106,6 @@ Target.create "MakeServerExes" (fun _ ->
         DotNet.publish(fun args ->
             { args with Runtime = Some runtime; SelfContained = Some false
                         Configuration = DotNet.BuildConfiguration.Release
-                        Framework = (if runtime = "osx-arm64" then Some "net6.0" else None)
                         OutputPath = Some (sprintf "src/RProvider/bin/Release/net5.0/server/%s/" runtime) })
             "src/RProvider.Server" )
 )
