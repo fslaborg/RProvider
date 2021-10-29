@@ -11,9 +11,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest,windows-latest,ubuntu-18.04,ubuntu-20.04]
+        os: [ubuntu-18.04,ubuntu-20.04]
     env:
-      RPROVIDER_LOG: rlog.txt
+      RPROVIDER_LOG: /var/log/rprovider.log
 
     steps:
     - uses: actions/checkout@master
@@ -52,7 +52,7 @@ jobs:
       timeout-minutes: 2 # Times out after 1 minute
     - name: Check RProvider log
       if: ${{ always() }}
-      run: cat rlog.txt
+      run: cat /var/log/rprovider.log
     - name: Restore tool dependencies
       run: dotnet tool restore
     - name: Restore paket dependencies
