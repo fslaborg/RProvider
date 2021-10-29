@@ -49,6 +49,7 @@ jobs:
         include-prerelease: true
     - name: test of RProvider nuget package
       run: dotnet fsi citest.fsx
+      timeout-minutes: 2 # Times out after 1 minute
     - name: Check RProvider log
       if: ${{ always() }}
       run: cat rlog.txt
