@@ -13,7 +13,7 @@ jobs:
       matrix:
         os: [ubuntu-18.04,ubuntu-20.04]
     env:
-      RPROVIDER_LOG: /var/log/rprovider.log
+      RPROVIDER_LOG: /home/runner/rprovider.log
 
     steps:
     - uses: actions/checkout@master
@@ -52,7 +52,7 @@ jobs:
       timeout-minutes: 2 # Times out after 1 minute
     - name: Check RProvider log
       if: ${{ always() }}
-      run: cat /var/log/rprovider.log
+      run: cat /home/runner/rprovider.log
     - name: Restore tool dependencies
       run: dotnet tool restore
     - name: Restore paket dependencies
