@@ -17,17 +17,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-      run:   |
-         if [ "$RUNNER_OS" == "Linux" ]; then
-              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
-         elif [ "$RUNNER_OS" == "macOS" ]; then
-              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
-         elif [ "$RUNNER_OS" == "Windows" ]; then
-              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
-         else
-              echo "$RUNNER_OS not supported"
-              exit 1
-         fi
     - name: Setup R for Ubuntu
       run:   |
           sudo apt update -qq
