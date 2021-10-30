@@ -12,14 +12,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest,windows-latest]
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
     env:
       RPROVIDER_LOG: rlog.txt
 
     steps:
     - uses: actions/checkout@master
+    - name: Setup R - Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run:   |
+          sudo apt update -qq
+          sudo apt install --no-install-recommends software-properties-common dirmngr
+          wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+          sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+          sudo apt install --no-install-recommends r-base
     - uses: r-lib/actions/setup-r@v1
-      name: Setup R environment
+      name: Setup R - Windows / macOS
+      if: matrix.os != 'ubuntu-latest'
       with:
           r-version: '4.0.2'
     - name: Set R_HOME environment variable
