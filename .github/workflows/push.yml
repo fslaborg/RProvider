@@ -2,7 +2,7 @@ name: Push to master
 
 on:
   push:
-    branches: [ master, test-ci-ubuntu ]
+    branches: [ master ]
 
 jobs:
   build:
