@@ -11,23 +11,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04,ubuntu-20.04]
-    env:
-      RPROVIDER_LOG: /home/runner/rprovider.log
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
     - uses: actions/checkout@master
-    - name: Setup R for Ubuntu
+    - name: Setup R - Ubuntu
+      if: matrix.os == 'ubuntu-latest'
       run:   |
           sudo apt update -qq
           sudo apt install --no-install-recommends software-properties-common dirmngr
           wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
           sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
           sudo apt install --no-install-recommends r-base
-    # - uses: r-lib/actions/setup-r@v1
-    #   name: Setup R environment
-    #   with:
-    #       r-version: '4.0.2'
+    - uses: r-lib/actions/setup-r@v1
+      name: Setup R - Windows / macOS
+      if: matrix.os != 'ubuntu-latest'
+      with:
+          r-version: '4.0.2'
     - name: Set R_HOME environment variable
       run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
@@ -54,19 +54,13 @@ jobs:
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
-    - name: test of RProvider nuget package
-      run: dotnet fsi citest.fsx
-      timeout-minutes: 2 # Times out after 1 minute
-    - name: Check RProvider log
-      if: ${{ always() }}
-      run: cat /home/runner/rprovider.log
     - name: Restore tool dependencies
       run: dotnet tool restore
     - name: Restore paket dependencies
       run: dotnet paket restore
     - name: Restore dependencies
       run: dotnet restore RProvider.sln
-    - name: Restore dependencies
+    - name: Restore dependencies (tests)
       run: dotnet restore RProvider.Tests.sln
     - name: Build
       run: dotnet fake build -t All
@@ -77,8 +71,6 @@ jobs:
         publish_dir: ./output
         publish_branch: gh-pages
         force_orphan: true
-    - name: Examine bin
-      run: ls -r bin
     - name: Publish NuGets (if this version not published before)
       if: matrix.os == 'windows-latest'
       run: dotnet nuget push bin\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGETKEY }} --skip-duplicate
