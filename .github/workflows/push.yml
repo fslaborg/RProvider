@@ -17,10 +17,28 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-    - uses: r-lib/actions/setup-r@v1
-      name: Setup R environment
-      with:
-          r-version: '4.0.2'
+      run:   |
+         if [ "$RUNNER_OS" == "Linux" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         elif [ "$RUNNER_OS" == "macOS" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         elif [ "$RUNNER_OS" == "Windows" ]; then
+              echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
+         else
+              echo "$RUNNER_OS not supported"
+              exit 1
+         fi
+    - name: Setup R for Ubuntu
+      run:   |
+          sudo apt update -qq
+          sudo apt install --no-install-recommends software-properties-common dirmngr
+          wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+          sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+          sudo apt install --no-install-recommends r-base
+    # - uses: r-lib/actions/setup-r@v1
+    #   name: Setup R environment
+    #   with:
+    #       r-version: '4.0.2'
     - name: Set R_HOME environment variable
       run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
