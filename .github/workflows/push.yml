@@ -11,12 +11,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest,windows-latest]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
     - uses: actions/checkout@master
+    - name: Setup R - Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run:   |
+          sudo apt update -qq
+          sudo apt install --no-install-recommends software-properties-common dirmngr
+          wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+          sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+          sudo apt install --no-install-recommends r-base
     - uses: r-lib/actions/setup-r@v1
-      name: Setup R environment
+      name: Setup R - Windows / macOS
+      if: matrix.os != 'ubuntu-latest'
       with:
           r-version: '4.0.2'
     - name: Set R_HOME environment variable
@@ -51,7 +60,7 @@ jobs:
       run: dotnet paket restore
     - name: Restore dependencies
       run: dotnet restore RProvider.sln
-    - name: Restore dependencies
+    - name: Restore dependencies (tests)
       run: dotnet restore RProvider.Tests.sln
     - name: Build
       run: dotnet fake build -t All
@@ -62,8 +71,6 @@ jobs:
         publish_dir: ./output
         publish_branch: gh-pages
         force_orphan: true
-    - name: Examine bin
-      run: ls -r bin
     - name: Publish NuGets (if this version not published before)
       if: matrix.os == 'macos-latest'
       run: dotnet nuget push bin/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGETKEY }} --skip-duplicate
