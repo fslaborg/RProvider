@@ -42,7 +42,7 @@ _Note: for .NET framework support, you should use the legacy RProvider 1.2 or ea
 The R Provider discovers R packages that are available in your R installation and makes them available as .NET namespaces underneath the parent namespace RProvider.  For example, the stats package is available as RProvider.stats.  If you open the namespaces you want to use, functions and values will be available as R.name.  For example, consider this F# interactive script:
 
 ```fsharp
-#r "nuget:RProvider,2.0.0-beta"
+#r "nuget:RProvider,2.0.1"
 
 open RProvider
 open RProvider.``base``

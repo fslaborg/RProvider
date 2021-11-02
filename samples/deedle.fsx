@@ -1,6 +1,6 @@
 #i "nuget:https://www.nuget.org/api/v2"
 #i @"nuget:/Volumes/Server HD/GitHub Projects/RProvider/bin"
-#r "nuget:RProvider,2.0.0-beta"
+#r "nuget:RProvider,2.0.1"
 #r "nuget:Deedle,2.4.3"
 //#r "nuget:Deedle.RProvider.Plugin,2.4.3"
 
