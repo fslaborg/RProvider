@@ -37,7 +37,7 @@ First, make a new F# script (e.g., sample.fsx). In your new script, first load
 the R type provider from the NuGet package repository.
 
   [lang=fsharp]
-  #r "nuget: RProvider,2.0.0-beta2"
+  #r "nuget: RProvider,2.0.1"
 
 For this tutorial, we use `open` to reference a number of packages 
 including `stats`, `tseries` and `zoo`:

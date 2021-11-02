@@ -36,7 +36,7 @@ Assuming you are using an F# script,
 you can reference the required libraries and packages this way:
 
     [lang=fsharp]
-    #r "nuget: RProvider,2.0.0-beta2"
+    #r "nuget: RProvider,2.0.1"
 *)
 
 open RProvider

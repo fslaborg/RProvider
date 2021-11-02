@@ -84,7 +84,7 @@ First, create a new file with the extension .fsx (e.g., test.fsx). Second, refer
 R type provider package from NuGet by adding this line to the start of your file:
 
     [lang=fsharp]
-    #r "nuget: RProvider,2.0.0-beta2"
+    #r "nuget: RProvider,2.0.1"
 
 Third, add your code. In this code, we load RProvider, then load three R packages using
 the `open` declarations (graphics, grDevices, and datasets).

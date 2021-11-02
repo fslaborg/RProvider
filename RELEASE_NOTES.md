@@ -1,3 +1,4 @@
+* 2.0.1 - .NET5, R 4.x, and Apple Silicon support
 * 2.0.1-beta3 - Apple Silicon support
 * 2.0.1-beta2 - Re-enable plugins on .NET5 release (fixes probing locations)
 * 2.0.1-beta - Test package publish
