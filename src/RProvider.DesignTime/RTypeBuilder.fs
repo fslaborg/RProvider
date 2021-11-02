@@ -17,7 +17,7 @@ module internal RTypeBuilder =
         Logging.logf "generateTypes: getting packages"
         let packages = 
           [ yield "base", ns
-            for package in server.InvokeAsync(fun s -> s.GetPackages()) |> Async.AwaitTask |> Async.RunSynchronously do yield package, ns + "." + package ]
+            for package in server.InvokeAsync(fun s -> s.GetPackages()) |> Async.AwaitTask |> Async.RunSynchronously do yield package, ns + "." + makeSafeName package ]
         for package, pns in packages do
             let pty = ProvidedTypeDefinition(asm, pns, "R", Some(typeof<obj>))    
 
