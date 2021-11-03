@@ -1,7 +1,8 @@
 # F# R Provider
 
-<img align="right" src="https://github.com/fslaborg/RProvider/raw/master/docs/img/logo.png" alt="RProvider" />
+[![Discord](https://img.shields.io/discord/836161044501889064?color=purple&label=Join%20our%20Discord%21&logo=discord&logoColor=white)](https://discord.gg/VUpfpzfBmd)
 
+<img align="right" src="https://github.com/fslaborg/RProvider/raw/master/docs/img/logo.png" alt="RProvider" />
 
 An F# type provider for interoperating with [R](http://www.r-project.org/). For more information, see [detailed documentation with tutorials, examples and more](https://fslab.org/RProvider//). The following tutorials are a good place to start:
 
