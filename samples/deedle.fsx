@@ -1,8 +1,8 @@
 #i "nuget:https://www.nuget.org/api/v2"
 #i @"nuget:/Volumes/Server HD/GitHub Projects/RProvider/bin"
-#r "nuget:RProvider,2.0.1"
-#r "nuget:Deedle,2.4.3"
-//#r "nuget:Deedle.RProvider.Plugin,2.4.3"
+#r "nuget:RProvider,2.0.2"
+#r "nuget:Deedle,2.5.0"
+//#r "nuget:Deedle.RProvider.Plugin,2.5.0"
 
 (* This sample shows a plugin for RProvider, which converts
    R values into .NET types. Here, the Deedle RProvider plugin
