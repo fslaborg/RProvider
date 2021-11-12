@@ -102,9 +102,12 @@ device (Quartz) sometimes hangs, but X11 is working without issues, so the follo
 R.mean([1;2;3;4])
 // val it : RDotNet.SymbolicExpression = [1] 2.5
 
+
+(***do-not-eval***)
 // testing graphics
 R.x11()
 
+(***do-not-eval***)
 // Calculate sin using the R 'sin' function
 // (converting results to 'float') and plot it
 [ for x in 0.0 .. 0.1 .. 3.14 -> 

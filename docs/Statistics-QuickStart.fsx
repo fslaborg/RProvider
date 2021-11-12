@@ -135,6 +135,7 @@ Finally, we can directly pass results, which is a R expression,
 to R.plot, to produce some fancy charts describing our model:
 *)
 
+(***do-not-eval***)
 R.plot result
 
 (**

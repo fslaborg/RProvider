@@ -1,7 +1,6 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{4F7B6E34-9782-4B13-BF92-CDE7C7F54B86}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,39 +19,66 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{5FA7
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{B34F96AE-40C8-44AC-8D82-5196202C080E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9C22FF03-BB06-4332-8104-20AB4959BABA}"
 	ProjectSection(SolutionItems) = preProject
-		docs\tools\generate.fsx = docs\tools\generate.fsx
-		docs\tools\templates\template.cshtml = docs\tools\templates\template.cshtml
+		docs\_template.fsx = docs\_template.fsx
+		docs\_template.html = docs\_template.html
+		docs\_template.ipynb = docs\_template.ipynb
+		docs\Charts-QuickStart.fsx = docs\Charts-QuickStart.fsx
+		docs\devnotes.md = docs\devnotes.md
+		docs\diagnostics.md = docs\diagnostics.md
+		docs\fslab.fsx = docs\fslab.fsx
+		docs\howto.md = docs\howto.md
+		docs\index.md = docs\index.md
+		docs\internals.md = docs\internals.md
+		docs\passing-data.fsx = docs\passing-data.fsx
+		docs\plugins.md = docs\plugins.md
+		docs\reading-rdata.fsx = docs\reading-rdata.fsx
+		docs\requirements.fsx = docs\requirements.fsx
+		docs\Statistics-QuickStart.fsx = docs\Statistics-QuickStart.fsx
+		docs\tutorial.fsx = docs\tutorial.fsx
+		docs\whatwhy.md = docs\whatwhy.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{33FDB386-BD2B-417C-B94D-7C2F11A3E2D0}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "RProvider", "src\RProvider\RProvider.fsproj", "{5624F098-BE3F-4C8E-B50F-1CFC9E1E0708}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "RWrapperGenerator", "src\RWrapperGenerator\RWrapperGenerator.fsproj", "{66A390A5-526A-4BD1-B876-E7425B643C70}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "RProvider.DesignTime", "src\RProvider.DesignTime\RProvider.DesignTime.fsproj", "{00496B70-99EA-4ED2-AFD5-6DB4A1DB7317}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "RProvider.Server", "src\RProvider.Server\RProvider.Server.fsproj", "{7FF9CFA3-2516-4970-9DD8-54C7D4CA24AA}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "RProvider.Runtime", "src\RProvider.Runtime\RProvider.Runtime.fsproj", "{80FD4284-C7BD-4170-8CC3-41E8548402E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{14413305-B3A5-43BC-A5FE-D5BE074A5FC1}"
 	ProjectSection(SolutionItems) = preProject
-		docs\content\Charts-QuickStart.fsx = docs\content\Charts-QuickStart.fsx
-		docs\content\devnotes.md = docs\content\devnotes.md
-		docs\content\mac-and-linux.fsx = docs\content\mac-and-linux.fsx
-		docs\content\devnotes.md = docs\content\devnotes.md
-		docs\content\howto.md = docs\content\howto.md
-		docs\content\index.md = docs\content\index.md
-		docs\content\internals.md = docs\content\internals.md
-		docs\content\passing-data.fsx = docs\content\passing-data.fsx
-		docs\content\plugins.md = docs\content\plugins.md
-		docs\content\reading-rdata.fsx = docs\content\reading-rdata.fsx
-		docs\content\Statistics-QuickStart.fsx = docs\content\Statistics-QuickStart.fsx
-		docs\content\tutorial.fsx = docs\content\tutorial.fsx
-		docs\content\whatwhy.md = docs\content\whatwhy.md
+		docs\data\sample.rdata = docs\data\sample.rdata
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider", "src\RProvider\RProvider.fsproj", "{5624F098-BE3F-4C8E-B50F-1CFC9E1E0708}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{4617306A-2F00-4FFA-B834-1E7C2AC5E499}"
+	ProjectSection(SolutionItems) = preProject
+		docs\img\acf.png = docs\img\acf.png
+		docs\img\bmc.png = docs\img\bmc.png
+		docs\img\logo.png = docs\img\logo.png
+		docs\img\pairs.png = docs\img\pairs.png
+	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RWrapperGenerator", "src\RWrapperGenerator\RWrapperGenerator.fsproj", "{66A390A5-526A-4BD1-B876-E7425B643C70}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{A234D3CB-4067-43A9-99D7-990B9135B4CC}"
+	ProjectSection(SolutionItems) = preProject
+		docs\misc\diagram.png = docs\misc\diagram.png
+		docs\misc\diagram.vsdx = docs\misc\diagram.vsdx
+		docs\misc\logo.pdn = docs\misc\logo.pdn
+		docs\misc\logo.png = docs\misc\logo.png
+	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.DesignTime", "src\RProvider.DesignTime\RProvider.DesignTime.fsproj", "{00496B70-99EA-4ED2-AFD5-6DB4A1DB7317}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "reference", "reference", "{02B2E8A3-F17A-478F-835B-69C4A937EFA6}"
+	ProjectSection(SolutionItems) = preProject
+		docs\reference\_template.html = docs\reference\_template.html
+	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.Server", "src\RProvider.Server\RProvider.Server.fsproj", "{7FF9CFA3-2516-4970-9DD8-54C7D4CA24AA}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "RProvider.Runtime", "src\RProvider.Runtime\RProvider.Runtime.fsproj", "{80FD4284-C7BD-4170-8CC3-41E8548402E4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{B9C4C9A1-9583-4926-BDF0-050D01B4DC39}"
+	ProjectSection(SolutionItems) = preProject
+		docs\content\fsdocs-custom.css = docs\content\fsdocs-custom.css
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,7 +111,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9C22FF03-BB06-4332-8104-20AB4959BABA} = {B34F96AE-40C8-44AC-8D82-5196202C080E}
-		{33FDB386-BD2B-417C-B94D-7C2F11A3E2D0} = {B34F96AE-40C8-44AC-8D82-5196202C080E}
+		{14413305-B3A5-43BC-A5FE-D5BE074A5FC1} = {B34F96AE-40C8-44AC-8D82-5196202C080E}
+		{4617306A-2F00-4FFA-B834-1E7C2AC5E499} = {B34F96AE-40C8-44AC-8D82-5196202C080E}
+		{A234D3CB-4067-43A9-99D7-990B9135B4CC} = {B34F96AE-40C8-44AC-8D82-5196202C080E}
+		{02B2E8A3-F17A-478F-835B-69C4A937EFA6} = {B34F96AE-40C8-44AC-8D82-5196202C080E}
+		{B9C4C9A1-9583-4926-BDF0-050D01B4DC39} = {B34F96AE-40C8-44AC-8D82-5196202C080E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {71BE8F77-EB26-403B-A932-7A8FE0AC11B9}
 	EndGlobalSection
 EndGlobal
