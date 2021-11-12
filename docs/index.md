@@ -17,6 +17,10 @@ It allows you to leverage all of .NET libraries,
 as well as F# unique capabilities to access and manipulate data 
 from a wide variety of sources via Type Providers.
 
+![RProvider demo within an FSharp script](img/vscode.gif)
+
+The above example is run through F# interactive (`dotnet fsi`).
+
 ### A Quick Demo
 
 <div style="text-align:center;">
@@ -41,38 +45,26 @@ from its GUI, [RStudio](http://www.rstudio.com/), or command line interactive en
 
 ## Using the R Type Provider
 
-<div class="row">
-  <div class="span1"></div>
-  <div class="span6">
-    <div class="well well-small" id="nuget">
-      Install using the <a href="https://nuget.org/packages/RProvider/">NuGet package</a>.
-      Run the following command in the <a href="http://docs.nuget.org/docs/start-here/using-the-package-manager-console">Package Manager Console</a>:
-      <pre>PM> Install-Package RProvider</pre>
-    </div>
-  </div>
-  <div class="span1"></div>
-</div>
+RProvider is distributed as a nuget package. After [setting up the pre-requisites (installing .NET 5+, R and setting the R_HOME environment variable](requirements.html), you can use as follows:
 
-### Pre-requisites
+In an F# script:
+```fsharp
+#r "nuget:RProvider"
 
-The R Provider requires an installation of R for Windows, downloadable from
-[here](http://cran.cnr.berkeley.edu/bin/windows/base/).  RProvider uses the R registry key
-`SOFTWARE\R-core` to locate the R binary directory, in order to load `R.dll`.  It will also
-locate `R.dll` if it is on the path.  If run from a 32-bit process, RProvider will use
-the 32-bit `R.dll`, and if run from a 64-bit process, it will load the 64-bit version.
-(Note that VS runs in 32-bit process, so you must have installed 32-bit version of R for 
-Windows if you want IntelliSense to work)
+open RProvider
+```
 
-If you are using R 2.15 or later, you should not try to load the RProvider inside a script
-that is passed to FSI via the `--use` flag.  It seems that something about the way R
-initializes causes it to hang in that context.  Works fine if you load later.
-
-For compilation you will need F# 5.0 or later.  For runtime you'll need .NET 5.
+To add to a .NET project, from the terminal:
+```
+dotnet add package RProvider
+```
 
 Contributing and copyright
 --------------------------
 
 The project has been originally developed by [BlueMountain Capital](https://www.bluemountaincapital.com/) and contributors.
+
+For compilation of the source, you will need F# 5.0 or later.  For runtime you'll need .NET 5.
 
 The project is hosted on [GitHub][gh] where you can [report issues][issues], fork the project and submit pull requests.
 
