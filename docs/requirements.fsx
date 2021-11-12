@@ -49,7 +49,7 @@ In a Terminal window, execute the following command to add the R_HOME environmen
 variable permanently:
 
     [lang=bash]
-    echo 'export R_HOME=$(R RHOME)' >> ~/.zshenv
+    echo export R_HOME=$(R RHOME) >> ~/.zshenv
 
 #### Linux
 
@@ -84,7 +84,7 @@ First, create a new file with the extension .fsx (e.g., test.fsx). Second, refer
 R type provider package from NuGet by adding this line to the start of your file:
 
     [lang=fsharp]
-    #r "nuget: RProvider,2.0.1"
+    #r "nuget: RProvider,2.0.2"
 
 Third, add your code. In this code, we load RProvider, then load three R packages using
 the `open` declarations (graphics, grDevices, and datasets).
