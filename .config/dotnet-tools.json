@@ -15,7 +15,7 @@
       ]
     },
     "fsharp.formatting.commandtool": {
-      "version": "11.4.3",
+      "version": "11.4.4",
       "commands": [
         "fsdocs"
       ]
