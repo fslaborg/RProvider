@@ -6,6 +6,14 @@ index: 3
 
 # How to
 
+## Printing R values to the console (F# interactive)
+
+Add this line to your script to tell F# interactive how to print out
+the values of R objects:
+
+    [lang=fsharp]
+    fsi.AddPrinter FSIPrinters.rValue
+
 ## Packages
 
 ### How do I Load a Package?

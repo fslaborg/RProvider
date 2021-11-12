@@ -36,8 +36,8 @@ Make sure you have set up your system as specified [here](requirements.fsx).
 First, make a new F# script (e.g., sample.fsx). In your new script, first load
 the R type provider from the NuGet package repository.
 
-  [lang=fsharp]
-  #r "nuget: RProvider,2.0.1"
+    [lang=fsharp]
+    #r "nuget:RProvider"
 
 For this tutorial, we use `open` to reference a number of packages 
 including `stats`, `tseries` and `zoo`:
@@ -55,6 +55,15 @@ open System.Net
 If either of the namespaces above are unrecognized, you need to install the package in R
 using `install.packages("stats")`.
 
+## Pretty-printing R values
+
+Add this line to your script to tell F# interactive how to print out
+the values of R objects:
+*)
+
+fsi.AddPrinter FSIPrinters.rValue
+
+(**
 ## Obtaining data
 
 In this tutorial, we use [F# Data](http://fsharp.github.io/FSharp.Data/) to access stock
