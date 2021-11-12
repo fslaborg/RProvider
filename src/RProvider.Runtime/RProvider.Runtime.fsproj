@@ -13,6 +13,7 @@
     <Compile Include="RInterop.fs" />
     <Compile Include="Converters.fs" />
     <Compile Include="Serialisation.fs" />
+    <Compile Include="FSIPrinters.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
