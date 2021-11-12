@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -28,9 +28,11 @@ jobs:
       if: matrix.os != 'ubuntu-latest'
       with:
           r-version: '4.0.2'
-    - name: Set R_HOME environment variable
+    - name: Set R environment variables
       run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
+              mkdir -p ~/.local/lib/R
+              echo "R_LIBS_USER=~/.local/lib/R" >> "$GITHUB_ENV"
               echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
          elif [ "$RUNNER_OS" == "macOS" ]; then
               echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
@@ -45,6 +47,11 @@ jobs:
       run: |
         Rscript -e 'R.home()'
         echo "${{ env.R_HOME }}"
+    - name: Install R package dependencies
+      run: Rscript -e "install.packages(c('tseries', 'zoo'), repos = 'http://cran.us.r-project.org')"
+      shell: bash
+    - name: Test F# scripts
+      run: dotnet fsi citest.fsx
     - name: Setup .NET 
       uses: actions/setup-dotnet@v1
       with:

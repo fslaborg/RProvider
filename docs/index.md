@@ -20,7 +20,7 @@ from a wide variety of sources via Type Providers.
 ### A Quick Demo
 
 <div style="text-align:center;">
-<iframe width="420" height="315" src="https://www.youtube.com/watch?v=tOd-qsjKU8Y" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/tOd-qsjKU8Y" frameborder="0" allowfullscreen></iframe>
 </div>
 
 ## What are R and F#?
