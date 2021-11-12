@@ -12,8 +12,6 @@ index: 1
 #r "../src/RProvider/bin/Release/net5.0/RProvider.Runtime.dll"
 #r "../src/RProvider/bin/Release/net5.0/RProvider.DesignTime.dll"
 #r "../src/RProvider/bin/Release/net5.0/RProvider.dll"
-#r "RProvider.dll"
-#r "RProvider.DesignTime.dll"
 (*** condition: fsx ***)
 #if FSX
 #r "nuget: RProvider,{{package-version}}"
@@ -26,14 +24,25 @@ index: 1
 (** 
 # R Provider Tutorial
 
+This tutorial demonstrates how to use the R type provider in an F# script. You
+can also use the R type provider in other scenarios such as apps and libraries.
+
+## System requirements
+
+Make sure you have set up your system as specified [here](requirements.fsx).
+
 ## Referencing the provider
 
-In order to use the R provider, you need to reference the `RDotNet.dll` library
-(which is a .NET connector for R) and the `RProvider.dll` itself. For this tutorial,
-we use `open` to reference a number of packages including `stats`, `tseries` and `zoo`:
+First, make a new F# script (e.g., sample.fsx). In your new script, first load
+the R type provider from the NuGet package repository.
+
+  [lang=fsharp]
+  #r "nuget: RProvider,2.0.1"
+
+For this tutorial, we use `open` to reference a number of packages 
+including `stats`, `tseries` and `zoo`:
 *)
  
-open RDotNet
 open RProvider
 open RProvider.graphics
 open RProvider.stats
@@ -56,7 +65,7 @@ The following snippet uses the CSV type provider to generate a type `Stocks` tha
 used for parsing CSV data from Yahoo. Then it defines a function `getStockPrices` that returns
 array with prices for the specified stock and a specified number of days:
 *)
-#r "FSharp.Data.dll"
+#r "nuget:FSharp.Data"
 open FSharp.Data
 
 type Stocks = CsvProvider<"http://ichart.finance.yahoo.com/table.csv?s=SPX">
@@ -97,7 +106,7 @@ After running the first snippet, a window similar to the following should appear
 it might not appear as a top-most window).
 
 <div style="text-align:center">
-<img src="images/acf.png" />
+<img src="img/acf.png" />
 </div>
 
 Finally, we can obtain data for multiple different indicators and use the `R.pairs` function
@@ -120,7 +129,7 @@ R.pairs(df)
 As a result, you should see a window showing results similar to these:
 
 <div style="text-align:center">
-<img src="images/pairs.png" />
+<img src="img/pairs.png" />
 </div>
 
 *)

@@ -187,3 +187,9 @@ Documentation/Output/*.html
 # fsdocs cache
 .fsdocs
 output
+
+# auto-generated build files
+Directory.Build.props
+
+# Visual Studio temp viles
+/.vs

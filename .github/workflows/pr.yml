@@ -1,4 +1,4 @@
-name: .NET
+name: PR to master
 
 on:
   pull_request:
@@ -8,23 +8,34 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest,windows-latest]
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
     env:
       RPROVIDER_LOG: rlog.txt
 
     steps:
     - uses: actions/checkout@master
+    - name: Setup R - Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run:   |
+          sudo apt update -qq
+          sudo apt install --no-install-recommends software-properties-common dirmngr
+          wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+          sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+          sudo apt install --no-install-recommends r-base
     - uses: r-lib/actions/setup-r@v1
-      name: Setup R environment
+      name: Setup R - Windows / macOS
+      if: matrix.os != 'ubuntu-latest'
       with:
           r-version: '4.0.2'
-    - name: Set R_HOME environment variable
+    - name: Set R environment variables
       run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
+              mkdir -p ~/.local/lib/R
+              echo "R_LIBS_USER=~/.local/lib/R" >> "$GITHUB_ENV"
               echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
          elif [ "$RUNNER_OS" == "macOS" ]; then
               echo "R_HOME=$(R RHOME)" >> "$GITHUB_ENV"
@@ -39,10 +50,24 @@ jobs:
       run: |
         Rscript -e 'R.home()'
         echo "${{ env.R_HOME }}"
-    - name: Setup .NET
+    - name: Verify R Home
+      run: |
+        Rscript -e 'R.home()'
+        echo "${{ env.R_HOME }}"
+    - name: Install R package dependencies
+      run: Rscript -e "install.packages(c('tseries', 'zoo'), repos = 'http://cran.us.r-project.org')"
+      shell: bash
+    - name: Test F# scripts
+      run: dotnet fsi citest.fsx
+    - name: Setup .NET 
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: '5.0.x'
+    - name: Setup .NET 6 (for Apple Silicon build)
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     - name: Restore tool dependencies
       run: dotnet tool restore
     - name: Restore paket dependencies

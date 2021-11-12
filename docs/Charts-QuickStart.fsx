@@ -31,16 +31,14 @@ as well as generate publication quality graphics that can be exported to virtual
 
 ## Charts Basics
 
-Basic charts can be found in the graphics package. 
-Assuming you installed the R Type Provider in your project from NuGet, 
+Basic charts can be found in the graphics package.
+Assuming you are using an F# script, 
 you can reference the required libraries and packages this way:
+
+    [lang=fsharp]
+    #r "nuget: RProvider,2.0.1"
 *)
 
-// #I "../packages/RProvider.1.0.11"
-// #load "RProvider.fsx"
-
-open System
-open RDotNet
 open RProvider
 open RProvider.graphics
 
@@ -52,6 +50,7 @@ producing basic charts is as simple as this:
 let widgets = [ 3; 8; 12; 15; 19; 18; 18; 20; ]
 let sprockets = [ 5; 4; 6; 7; 12; 9; 5; 6; ]
 
+(***do-not-eval***)
 R.plot(widgets)
 
 R.plot(widgets, sprockets)
@@ -69,11 +68,12 @@ Charts can be exported and saved to various formats;
 once you have opened the grDevices package, you can save a chart like this:
 *)
 
+(***do-not-eval***)
 // Required package to save charts
 open RProvider.grDevices
 
 // Create path to an image testimage.png on the Desktop
-let desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)  
+let desktop = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop)  
 let path = desktop + @"\testimage.png"
 
 // Open the device and create the file as a png.
@@ -99,6 +99,7 @@ which contains all the arguments passed to the function.
 Consider for instance the following example:
 *)
 
+(***do-not-eval***)
 R.barplot(widgets)
 R.title(main="Widgets", xlab="Period", ylab="Quantity")
 
@@ -125,6 +126,7 @@ The easiest way to use that feature is to
 leverage the built-in function namedParams, like in this example:
 *)
 
+(***do-not-eval***)
 R.plot(
     namedParams [   
         "x", box widgets; 
@@ -152,6 +154,7 @@ so that the lists have consistent types.
 A possibly more elegant way to use namedParams is to follow the pattern below:
 *)
 
+(***do-not-eval***)
 namedParams [   
     "x", box widgets; 
     "type", box "o"; 

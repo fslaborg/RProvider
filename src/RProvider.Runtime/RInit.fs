@@ -140,7 +140,7 @@ let rHomePath = lazy(findRLocation())
 /// Lazily initialized R engine.
 let internal engine = lazy(
     try
-        Logging.logf $"engine: Creating and initializing instance (sizeof<IntPtr>=%d{IntPtr.Size})" 
+        Logging.logf "engine: Creating and initializing instance (sizeof<IntPtr>=%d)" IntPtr.Size
         let lib = 
             // If the value was `RInitError`, the error has already been reported by
             // `RInteropServer.InitializationErrorMessage` and so we never even get here
@@ -149,7 +149,7 @@ let internal engine = lazy(
                 REngine.SetEnvironmentVariables(rPath = res.RPath, rHome = res.RHome)
                 res.DllFile
             | RInitError err -> 
-                Logging.logf $"engine: Unexpected - error not reported: %s{err}"
+                Logging.logf "engine: Unexpected - error not reported: %s" err
                 null
 
         let engine = REngine.GetInstance(lib, true, null, characterDevice, AutoPrint=false)
@@ -157,5 +157,5 @@ let internal engine = lazy(
         Logging.logf "engine: Created & initialized instance"
         engine
     with e -> 
-        Logging.logf $"engine: Creating instance failed:\r\n  {e}"
+        Logging.logf "engine: Creating instance failed:\r\n  %O" e
         raise(Exception("Initialization of R.NET failed", e)) )

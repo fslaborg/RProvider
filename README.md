@@ -1,7 +1,8 @@
 # F# R Provider
 
-<img align="right" src="https://github.com/fslaborg/RProvider/raw/master/docs/img/logo.png" alt="RProvider" />
+[![Discord](https://img.shields.io/discord/836161044501889064?color=purple&label=Join%20our%20Discord%21&logo=discord&logoColor=white)](https://discord.gg/VUpfpzfBmd)
 
+<img align="right" src="https://github.com/fslaborg/RProvider/raw/master/docs/img/logo.png" alt="RProvider" />
 
 An F# type provider for interoperating with [R](http://www.r-project.org/). For more information, see [detailed documentation with tutorials, examples and more](https://fslab.org/RProvider//). The following tutorials are a good place to start:
 
@@ -27,23 +28,22 @@ RProvider | [![NuGet Badge](https://buildstats.info/nuget/RProvider)](https://ww
 
 ---
 
-### Developing
+### Requirements
 
 Make sure the following **requirements** are installed on your system:
 
 - [dotnet SDK](https://www.microsoft.com/net/download/core) 5.0 or greater; and
-- [R statistical environment](http://cran.r-project.org/).
+- [R statistical language](http://cran.r-project.org/). _Note: on Windows, there is currently a bug in R preventing us from supporting R versions greater than 4.0.2._
+- R_HOME environment variable set to the R home directory. This can usually be identified by running the command 'R RHOME'.
 
-You **must** set the R_HOME environment variable to the R home directory, which can usually be identified by running the command 'R RHOME'. 
-
-NB. If you require .NET framework support, you should use RProvider 1.2 or earlier.
+_Note: for .NET framework support, you should use the legacy RProvider 1.2 or earlier; we are no longer supporting these versions._
 
 ### What does it do?
 
 The R Provider discovers R packages that are available in your R installation and makes them available as .NET namespaces underneath the parent namespace RProvider.  For example, the stats package is available as RProvider.stats.  If you open the namespaces you want to use, functions and values will be available as R.name.  For example, consider this F# interactive script:
 
 ```fsharp
-#r "RProvider.dll"
+#r "nuget:RProvider,2.0.1"
 
 open RProvider
 open RProvider.``base``
@@ -51,22 +51,22 @@ open RProvider.``base``
 let v = R.c(1,2,3)
 ```
 
-This creates an R numeric vector containing 1,2,3, and names it v.  Note that we had to open the base namespace, since the function 'c' is part of that namespace.  You should also open namespace RProvider, because it contains some helper functions.
+This creates an R numeric vector containing 1,2,3, and names it v.  Note that we had to open the base namespace, since the function 'c' is part of that namespace.  You should also open namespace RProvider, because it contains some helper functions. As type providers are used by Visual Studio and other IDEs, you will get intellisense for R functions. You will also get compile-time type-checking that the function exists.
 
-And because type providers are used by Visual Studio, Xamaring Studio and other IDEs, you will get intellisense for R functions.  You will also get compile-time type-checking that the function exists.
+### How to use
 
-### Using the library
-There is a lot of info on how to use the provider on our [documentation page](https://fslab.org/RProvider//). You can install the library using the [NuGet package](https://nuget.org/packages/RProvider/). 
-
-The R Provider requires an installation of R, downloadable from [here](http://cran.r-project.org/). 
-
-On Windows, RProvider uses the R registry key `SOFTWARE\R-core` to locate the R binary directory, in order to load `R.dll`.  It will also locate `R.dll` if it is on the path.  If run from a 32-bit process, RProvider will use the 32-bit R.DLL, and if run from a 64-bit process, it will load the 64-bit version.
-
-On Mac and Linux, you must set the R_HOME environment variable to the R home directory, which can usually be identified by running the command 'R RHOME'. For detailed documentation [see the R provider Mac/Linux page](https://fslab.org/RProvider//mac-and-linux.html).
+RProvider is distributed as a [NuGet package](https://nuget.org/packages/RProvider/), which can be used from an F# script or F# projects. See our [documentation](https://fslab.org/RProvider//) for more detailed information and tutorials.
 
 If you are using R 2.15 or later, you should not try to load the RProvider inside a script that is passed to FSI via the --use flag.  It seems that something about the way R initializes causes it to hang in that context.  Works fine if you load later.
 
-For compilation you will need VS2012 / F# 3.0 or later.  For runtime you'll need .NET 4.5.
+### Developing
+
+Install the requirements listed in the above section. To build and test:
+
+1. Restore dotnet tools: ```dotnet tool restore```
+2. Run FAKE: ```dotnet fake build -t All```
+
+To debug, enable logging by setting the RPROVIDER_LOG environment value to an existing text file. 
 
 ### License
 RProvider is covered by the BSD license.

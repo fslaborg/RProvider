@@ -60,8 +60,8 @@ let internal logWithOutput (characterDevice:CharacterDeviceInterceptor) f =
         let out = 
           if not capturing then characterDevice.EndCapture()
           else "(could not be captured)"
-        logf $"Output: %s{out}"
+        logf "Output: %s" out
     with e -> 
-      logf $"Operation failed:\r\n  {e}"
+      logf "Operation failed:\r\n  {%O}" e
       reraise()
   else f ()  

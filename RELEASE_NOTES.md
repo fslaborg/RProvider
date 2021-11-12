@@ -1,3 +1,8 @@
+* 2.0.2 - Breaking change: Replace "." with "_" in package names (#245) 
+* 2.0.1 - .NET5, R 4.x, and Apple Silicon support
+* 2.0.1-beta3 - Apple Silicon support
+* 2.0.1-beta2 - Re-enable plugins on .NET5 release (fixes probing locations)
+* 2.0.1-beta - Test package publish
 * 2.0.0-beta - .NET 5 support with R 4.x compatability
 * 1.1.22 - Add ProbingLocations for latest Deedle.RPlugin
 * 1.1.21 - Fix ProbingLocations (#199)

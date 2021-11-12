@@ -1,6 +1,7 @@
+FSharp.Core
 Newtonsoft.Json
+PipeMethodCalls
 R.NET
 R.NET.FSharp
 System.ComponentModel.Composition
 System.Reflection.MetadataLoadContext
-PipeMethodCalls

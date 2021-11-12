@@ -97,26 +97,25 @@ module internal RInteropInternal =
 
     let private mefContainer = 
         lazy
-            Logging.logf "[DEBUG] MEF Container"
             // Look for plugins co-located with RProvider.dll
             let assem = typeof<IConvertToR<_>>.Assembly
-            
-            /// The location of the RProvider assembly.
-            /// If the assembly has been shadow-copied, this will be the assembly's
-            /// original location, not the shadow-copied location.
-            let assemblyLocation = assem |> getAssemblyLocation
-            Logging.logf "[DEBUG] MEF Container 2"
+            let assemblyLocation =
+                if String.IsNullOrEmpty assem.Location
+                then AppContext.BaseDirectory
+                else assem.Location
+            Logging.logf "[DEBUG] MEF Container 1: RProvider.dll is at %s" assemblyLocation
 
             let dirs = getProbingLocations()
-            Logging.logf "[DEBUG] MEF Container 3"
+            Logging.logf "[DEBUG] MEF Container 2: Probing locations = %A" dirs
             let catalogs : seq<Primitives.ComposablePartCatalog> = 
               seq { yield upcast new DirectoryCatalog(Path.GetDirectoryName assemblyLocation,"*.Plugin.dll")
                     for d in dirs do
                       yield upcast new DirectoryCatalog(d,"*.Plugin.dll")
                     yield upcast new AssemblyCatalog(assem) }
+            Logging.logf "[DEBUG] MEF Container 3: Catalog count = %O" (catalogs.Count())
             new CompositionContainer(new AggregateCatalog(catalogs))
-                
-    let internal toRConv = Collections.Generic.Dictionary<Type, REngine -> obj -> SymbolicExpression>()
+
+    let internal toRConv = Dictionary<Type, REngine -> obj -> SymbolicExpression>()
 
     /// Register a function that will convert from a specific type to a value in R.
     /// Alternatively, you can build a MEF plugin that exports IConvertToR.
@@ -379,9 +378,9 @@ module RInterop =
 
     let getPackages() : string[] =
         Logging.logf "Communicating with R to get packages"
-        Logging.logf "Test: %A" (eval("1+4"))
-        Logging.logf "Test: %A" (eval("1+4").Value)
-        eval(".packages(all.available=T)").GetValue()
+        let res = eval(".packages(all.available=T)").GetValue()
+        Logging.logf "Result: %O" res
+        res
 
     let getPackageDescription packageName: string = 
         eval("packageDescription(\"" + packageName + "\")$Description").GetValue()
