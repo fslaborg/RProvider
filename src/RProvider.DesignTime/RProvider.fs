@@ -42,7 +42,3 @@ type public RProvider(cfg:TypeProviderConfig) as this =
           Logging.logf $"RProvider constructor failed: {e}"
           reraise()
     do buildTypes ()
-
-    #if INTERACTIVE
-    do fsi.AddPrinter(fun (synexpr:RDotNet.SymbolicExpression) -> synexpr.Print())
-    #endif

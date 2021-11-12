@@ -12,6 +12,7 @@
     <Compile Include="RInterop.fs" />
     <Compile Include="Converters.fs" />
     <Compile Include="Serialisation.fs" />
+    <Compile Include="FSIPrinters.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../paket-files/andrewiom/PipeMethodCalls/PipeMethodCalls/PipeMethodCalls.csproj" />
