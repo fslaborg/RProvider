@@ -10,4 +10,4 @@ module FSIPrinters =
 
     /// Print any `SymbolicExpression` using R's built-in
     /// `print` function.
-    let rValue (synexpr:SymbolicExpression) = synexpr.Print()
+    let rValue (synexpr: SymbolicExpression) = synexpr.Print()
