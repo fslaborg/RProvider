@@ -1,3 +1,4 @@
+* 2.0.3 - Include built-in FSI printer module
 * 2.0.2 - Breaking change: Replace "." with "_" in package names (#245) 
 * 2.0.1 - .NET5, R 4.x, and Apple Silicon support
 * 2.0.1-beta3 - Apple Silicon support
