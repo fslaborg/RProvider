@@ -40,6 +40,7 @@ you can reference the required libraries and packages this way:
 *)
 
 open RProvider
+open RProvider.Operators
 open RProvider.graphics
 
 (**
@@ -127,20 +128,18 @@ leverage the built-in function namedParams, like in this example:
 *)
 
 (***do-not-eval***)
-R.plot(
-    namedParams [   
-        "x", box widgets; 
-        "type", box "o"; 
-        "col", box "blue";
-        "ylim", box [0; 25] ])
+R.plot([
+    "x" => widgets
+    "type" => "o"
+    "col" => "blue"
+    "ylim" => [0; 25] ])
 
-R.lines(
-    namedParams [   
-        "x", box sprockets; 
-        "type", box "o"; 
-        "pch", box 22;
-        "lty", box 2;
-        "col", box "red" ])
+R.lines([
+    "x" => sprockets
+    "type" => "o"
+    "pch" => 22
+    "lty" => 2
+    "col" => "red" ])
 
 (**
 The first call specifies what to plot (widgets), 
@@ -155,17 +154,17 @@ A possibly more elegant way to use namedParams is to follow the pattern below:
 *)
 
 (***do-not-eval***)
-namedParams [   
-    "x", box widgets; 
-    "type", box "o"; 
-    "col", box "blue";
-    "ylim", box [0; 25] ]
+[   
+    "x" => widgets
+    "type" => "o"
+    "col" => "blue"
+    "ylim" => [0; 25] ]
 |> R.plot
 
-namedParams [   
-    "x", box sprockets; 
-    "type", box "o"; 
-    "pch", box 22;
-    "lty", box 2;
-    "col", box "red" ]
+[   
+    "x" => sprockets
+    "type" => "o"
+    "pch" => 22
+    "lty" => 2
+    "col" => "red" ]
 |> R.lines
