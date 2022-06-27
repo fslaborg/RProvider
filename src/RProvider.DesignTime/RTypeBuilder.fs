@@ -150,6 +150,35 @@ module internal RTypeBuilder =
                                             )
 
                                         yield pdm :> MemberInfo
+
+                                        // Yield alternative overload that takes a list of string * obj.
+                                        // This option requires less boilerplate (i.e. no namedParams).
+                                        let pdm =
+                                            ProvidedMethod(
+                                                methodName = memberName,
+                                                parameters =
+                                                    [ ProvidedParameter(
+                                                            "paramsByName",
+                                                            typeof<(string * obj) list>
+                                                        ) ],
+                                                returnType = typeof<RDotNet.SymbolicExpression>,
+                                                isStatic = true,
+                                                invokeCode =
+                                                    fun args ->
+                                                        if args.Length <> 1 then
+                                                            failwithf "Expected 1 argument and received %d" args.Length
+
+                                                        let argsByName = args.[0]
+
+                                                        <@@ let duplicates = %%argsByName |> List.groupBy fst |> List.filter( fun (_,set) -> set.Length > 1)
+                                                            if duplicates |> List.isEmpty |> not then failwithf "Recieved duplicate arguments: %A" duplicates
+                                                            let vals: IDictionary<string, obj> = %%argsByName
+                                                            let valSeq = vals :> seq<KeyValuePair<string, obj>>
+                                                            RInterop.callFunc package name valSeq null @@>
+                                            )
+
+                                        yield pdm :> MemberInfo
+
                                     | RValue.Value ->
                                         yield
                                             ProvidedProperty(
