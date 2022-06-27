@@ -151,10 +151,10 @@ module ``When using custom operators`` =
 
     open RProvider.Operators
 
-    [<Property>]
-    let ``Cannot pass two parameters of same name to R function`` (name:string) =
+    [<Fact>]
+    let ``Cannot pass two parameters of same name to R function`` () =
         Assert.Throws<System.Exception>(fun () -> 
-            R.data_frame [ name => [ 1; 42; 2 ]; name => seq { 1 .. 10 } ] |> ignore)
+            R.data_frame [ "Test" => [ 1; 42; 2 ]; "Test" => seq { 1 .. 10 } ] |> ignore)
 
     [<Fact>]
     let ``Can make a dataframe using list arguments from arrow operator`` () =
