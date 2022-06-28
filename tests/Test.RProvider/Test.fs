@@ -145,3 +145,22 @@ let ``String arrays round-trip via factors`` () = roundTripAsFactor [| "foo"; "b
 
 [<Fact>]
 let ``String arrays round-trip via DataFrame`` () = roundTripAsDataframe [| "foo"; "bar"; "foo"; "bar" |]
+
+module ``When working in different locales`` =
+
+    [<Fact>]
+    let ``Passing numbers works for regions with a dot decimal seperator`` () =
+        System.Thread.CurrentThread.CurrentCulture <- CultureInfo("en-GB", false)
+        let x1 : float = R.sin(1).GetValue()
+        let x2 : float = R.sin(1.0).GetValue()
+        Assert.Equal(0.8414709848, x1)
+        Assert.Equal(0.8414709848, x2)
+
+
+    [<Fact>]
+    let ``Passing numbers works for regions with a comma decimal seperator`` () =
+        System.Thread.CurrentThread.CurrentCulture <- CultureInfo("nn-NO", false)
+        let x1 : float = R.sin(1).GetValue()
+        let x2 : float = R.sin(1.0).GetValue()
+        Assert.Equal(0.8414709848, x1)
+        Assert.Equal(0.8414709848, x2)
