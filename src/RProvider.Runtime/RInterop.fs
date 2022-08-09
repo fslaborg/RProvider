@@ -605,7 +605,7 @@ module RInterop =
             match arg with
             | :? Missing -> failwithf "Cannot pass Missing value"
             | :? int
-            | :? double -> arg.ToString()
+            | :? double -> Convert.ToString(arg, Globalization.CultureInfo.InvariantCulture)
             //  This doesn't handle escaping so we fall through to using toR
             //| :? string as sval     -> "\"" + sval + "\""
             | :? bool as bval -> if bval then "TRUE" else "FALSE"
