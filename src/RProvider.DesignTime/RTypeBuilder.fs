@@ -125,15 +125,13 @@ module internal RTypeBuilder =
 
                                         yield pm :> MemberInfo
 
-                                        // Yield an additional overload that takes a Dictionary<string, object>
-                                        // This variant is more flexible for constructing lists, data frames etc.
-                                        let pdm =
+                                        let byName t q =
                                             ProvidedMethod(
                                                 methodName = memberName,
                                                 parameters =
                                                     [ ProvidedParameter(
                                                           "paramsByName",
-                                                          typeof<IDictionary<string, obj>>
+                                                          t
                                                       ) ],
                                                 returnType = typeof<RDotNet.SymbolicExpression>,
                                                 isStatic = true,
@@ -141,15 +139,32 @@ module internal RTypeBuilder =
                                                     fun args ->
                                                         if args.Length <> 1 then
                                                             failwithf "Expected 1 argument and received %d" args.Length
-
                                                         let argsByName = args.[0]
-
-                                                        <@@ let vals: IDictionary<string, obj> = %%argsByName
-                                                            let valSeq = vals :> seq<KeyValuePair<string, obj>>
-                                                            RInterop.callFunc package name valSeq null @@>
+                                                        q argsByName
                                             )
 
+                                        // Yield an additional overload that takes a Dictionary<string, object>
+                                        // This variant is more flexible for constructing lists, data frames etc.
+                                        let pdm =
+                                            byName (typeof<IDictionary<string, obj>>) (fun argsByName -> 
+                                                <@@ let vals: IDictionary<string, obj> = %%argsByName
+                                                    let valSeq = vals :> seq<KeyValuePair<string, obj>>
+                                                    RInterop.callFunc package name valSeq null @@> )
+
                                         yield pdm :> MemberInfo
+
+                                        // Yield alternative overload that takes a list of string * obj.
+                                        // This option requires less boilerplate (i.e. no namedParams).
+                                        let plm =
+                                            byName (typeof<(string * obj) list>) (fun argsByName -> 
+                                                <@@ let duplicates : list<string * list<string * obj>> = %%argsByName |> List.groupBy fst |> List.filter( fun (_,set) -> set.Length > 1)
+                                                    if duplicates |> List.isEmpty |> not then failwithf "Recieved duplicate arguments: %A" (duplicates |> List.map fst)
+                                                    let vals: (string * obj) list = %%argsByName
+                                                    let valSeq = vals |> Seq.map KeyValuePair
+                                                    RInterop.callFunc package name valSeq null @@> )
+                                                    
+                                        yield plm :> MemberInfo
+
                                     | RValue.Value ->
                                         yield
                                             ProvidedProperty(
