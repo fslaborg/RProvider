@@ -46,9 +46,10 @@ you can reference the required libraries and packages this way:
 #I "../packages/RProvider.1.0.11"
 #load "RProvider.fsx"
 
-open System
 open RDotNet
 open RProvider
+open RProvider.Operators
+
 open RProvider.graphics
 open RProvider.stats
 
@@ -62,7 +63,7 @@ Let's generate a fake dataset that follows this model:
 *)
 
 // Random number generator
-let rng = Random()
+let rng = System.Random()
 let rand () = rng.NextDouble()
 
 // Generate fake X1 and X2 
@@ -81,12 +82,10 @@ Let's first put our dataset into a R dataframe; this allows us
 to name our vectors, and use these names in R formulas afterwards:
 *)
 
-let dataset =
-    namedParams [
-        "Y", box Ys;
-        "X1", box X1s;
-        "X2", box X2s; ]
-    |> R.data_frame
+let dataset = [ 
+    "Y" => Ys
+    "X1" => X1s
+    "X2" => X2s ] |> R.data_frame
 
 (**
 We can now use R to perform a linear regression.

@@ -170,3 +170,17 @@ module ``When working in different locales`` =
         Assert.Equal(0.8414709848, x1, precision = 8)
         Assert.Equal(0.8414709848, x2, precision = 8)
         Threading.Thread.CurrentThread.CurrentCulture <- systemLocale
+
+module ``When using custom operators`` =
+
+    open RProvider.Operators
+
+    [<Fact>]
+    let ``Cannot pass two parameters of same name to R function`` () =
+        Assert.Throws<System.Exception>(fun () -> 
+            R.data_frame [ "Test" => [ 1; 42; 2 ]; "Test" => seq { 1 .. 10 } ] |> ignore)
+
+    [<Fact>]
+    let ``Can make a dataframe using list arguments from arrow operator`` () =
+        let df = R.data_frame [ "Test" => [ 1; 42; 2 ] ]
+        Assert.Contains("42", df.Print())

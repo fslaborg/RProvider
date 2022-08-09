@@ -358,6 +358,90 @@ module RDotNetExtensions =
         member this.GetValue<'a>() : 'a = convertFromR<'a> this
         member this.Value = defaultConvertFromR this
 
+        /// Get the member symbolic expression of given name.
+        member this.Member(name: string) = 
+            match this.Type with
+            | Internals.SymbolicExpressionType.List -> this.AsList().[name]
+            | Internals.SymbolicExpressionType.S4 -> this.GetAttribute(name)
+            | _ -> invalidOp "Unsupported operation on R object"
+
+        /// Get the value from the typed vector by name.
+        member this.ValueOf<'a> (name: string) =
+            match this.Type with
+            | Internals.SymbolicExpressionType.NumericVector -> box(this.AsNumeric().[name]) :?> 'a
+            | Internals.SymbolicExpressionType.CharacterVector -> box(this.AsCharacter().[name]) :?> 'a
+            | Internals.SymbolicExpressionType.LogicalVector -> box(this.AsLogical().[name]) :?> 'a
+            | Internals.SymbolicExpressionType.IntegerVector -> box(this.AsInteger().[name]) :?> 'a
+            | Internals.SymbolicExpressionType.ComplexVector -> box(this.AsComplex().[name]) :?> 'a
+            | Internals.SymbolicExpressionType.RawVector -> box(this.AsRaw().[name]) :?> 'a
+            | _ -> invalidOp "Unsupported operation on R object"
+
+        /// Get the value from an indexed vector by index.
+        member this.ValueAt<'a>(index: int) = this.AsVector().[index] :?> 'a
+
+        /// Get the first value of a vector.
+        member this.First<'a>() = this.ValueAt<'a>(0)
+
+        /// Try and get the first value of a vector, returning
+        /// `None` if the `SymbolicExpression` is not a vector
+        /// or an empty vector.
+        member this.TryFirst<'a>() = if this.IsVector() then this.ValueAt<'a>(0) |> Some else None
+
+
+    /// Contains functions to make working with SymbolicExpression
+    /// more idiomatic.
+    [<RequireQualifiedAccess>]
+    module SymbolicExpression =
+
+        /// <summary> For an S4 object, get a dictionary containing first the
+        /// slot name and second the slot's R type. If the expression
+        /// is not an S4 object, returns `None`.</summary>
+        /// <param name="expr">An R symbolic expression</param>
+        /// <returns>A diictionary with key = slot name, and value = R type</returns>
+        let trySlots (expr:SymbolicExpression) =
+            match expr.Type with
+            | Internals.SymbolicExpressionType.S4 -> expr.AsS4().GetSlotTypes() |> Some
+            | _ -> None
+
+        /// <summary> For an S4 object, get a dictionary containing first the
+        /// slot name and second the slot's R type.</summary>
+        /// <param name="expr">An R symbolic expression</param>
+        /// <returns>A diictionary with key = slot name, and value = R type</returns>
+        let slots (expr:SymbolicExpression) =
+            match expr.Type with
+            | Internals.SymbolicExpressionType.S4 -> expr.AsS4().GetSlotTypes()
+            | _ -> invalidOp "Can only get slots for an S4 object (R type)"
+
+        /// <summary>Gets the value of a slot as a SymbolicExpression</summary>
+        /// <param name="name">Slot name to retrieve</param>
+        /// <param name="expr">An R symbolic expression</param>
+        /// <returns>Some symbolic expression if the expression was an S4
+        /// object and had the slot, or None otherwise.</returns>
+        let trySlot name (expr:SymbolicExpression) = 
+            match expr.Type with
+            | Internals.SymbolicExpressionType.S4 -> expr.AsS4().[name] |> Some
+            | _ -> None
+
+        /// <summary>Gets the value of a slot as a SymbolicExpression</summary>
+        /// <param name="name">Slot name to retrieve</param>
+        /// <param name="expr">An R symbolic expression</param>
+        /// <returns>A symbolic expression containing the slot value</returns>
+        let slot name (expr:SymbolicExpression) = 
+            match expr.Type with
+            | Internals.SymbolicExpressionType.S4 -> expr.AsS4().[name]
+            | _ -> invalidOp "Can only get slot for an S4 object (R type)"
+
+        /// <summary>Get the data from a column in an R dataframe
+        /// by its name.</summary>
+        /// <param name="name">The column name</param>
+        /// <param name="expr">An R symbolic expression</param>
+        /// <returns>A vector containing the data</returns>
+        let column (name:string) (expr:SymbolicExpression) =
+            if expr.IsDataFrame()
+            then expr.AsDataFrame().[name] :> SymbolicExpression
+            else invalidOp "The expression is not an R data frame."
+
+
 /// [omit]
 module RInterop =
     type RValue =
@@ -619,6 +703,26 @@ module RDotNetExtensions2 =
                     let rvalStr = RInterop.RValue.Function([ "x" ], true) |> RInterop.serializeRValue
                     RInterop.call "base" "print" rvalStr [| this |] [||] |> ignore)
 
+/// Custom operators that make composing and working with
+/// R symbolic expressions easier.
+module Operators =
+
+    /// Opens a dynamic property of an R symbolic expression.
+    /// Supports named lists, S4 objects, and dataframes.
+    /// If a dataframe, the column is extracted by name.
+    let inline op_Dynamic (expr:SymbolicExpression) (mem:string) =
+        try
+            match expr.Type with
+            | Internals.SymbolicExpressionType.S4 -> 
+                if expr.AsS4().HasSlot mem then expr.AsS4().[mem]
+                else expr.Engine.NilValue
+            | _ -> 
+                if expr.IsDataFrame() 
+                then SymbolicExpression.column mem expr
+                else expr.Member mem
+        with 
+        | :? System.ArgumentOutOfRangeException -> expr.Engine.NilValue
+
 
 /// The object represents an R environment loaded from RData file.
 /// This type is typically used through an `RData` type provider. To
@@ -640,3 +744,11 @@ type REnv(fileName: string) =
     member x.Keys =
         let ls = RInterop.callFunc "base" "ls" (namedParams [ "envir", box env ]) [||]
         ls.GetValue<string []>()
+
+/// Custom operators to make working with R functions and values
+/// more efficient.
+module Operators =
+
+    /// When calling an R function, use the => operator in a list
+    /// to set a parameter: [ "someparam" => 2 ]
+    let (=>) (key:string) (value:'a) = (key, box value)
