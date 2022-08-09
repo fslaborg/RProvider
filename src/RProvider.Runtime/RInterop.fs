@@ -723,6 +723,10 @@ module Operators =
         with 
         | :? System.ArgumentOutOfRangeException -> expr.Engine.NilValue
 
+    /// When calling an R function, use the => operator in a list
+    /// to set a parameter: [ "someparam" => 2 ]
+    let (=>) (key:string) (value:'a) = (key, box value)
+
 
 /// The object represents an R environment loaded from RData file.
 /// This type is typically used through an `RData` type provider. To
@@ -744,11 +748,3 @@ type REnv(fileName: string) =
     member x.Keys =
         let ls = RInterop.callFunc "base" "ls" (namedParams [ "envir", box env ]) [||]
         ls.GetValue<string []>()
-
-/// Custom operators to make working with R functions and values
-/// more efficient.
-module Operators =
-
-    /// When calling an R function, use the => operator in a list
-    /// to set a parameter: [ "someparam" => 2 ]
-    let (=>) (key:string) (value:'a) = (key, box value)
