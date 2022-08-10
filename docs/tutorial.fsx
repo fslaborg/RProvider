@@ -50,7 +50,7 @@ open RProvider.tseries
 open RProvider.zoo
 
 open System
-open System.Net
+open System.Net.Http
 (**
 If either of the namespaces above are unrecognized, you need to install the package in R
 using `install.packages("stats")`.
@@ -70,24 +70,32 @@ In this tutorial, we use [F# Data](http://fsharp.github.io/FSharp.Data/) to acce
 prices from the Yahoo Finance portal. For more information, see the documentation for the
 [CSV type provider](http://fsharp.github.io/FSharp.Data/library/CsvProvider.html).
 
-The following snippet uses the CSV type provider to generate a type `Stocks` that can be
-used for parsing CSV data from Yahoo. Then it defines a function `getStockPrices` that returns
-array with prices for the specified stock and a specified number of days:
+The following snippet defines a function `getStockPrices` that returns
+array with prices for the specified stock and a specified number of days from a stocks API:
 *)
-#r "nuget:FSharp.Data"
-open FSharp.Data
 
-type Stocks = CsvProvider<"http://ichart.finance.yahoo.com/table.csv?s=SPX">
- 
-/// Returns prices of a given stock for a specified number 
-/// of days (starting from the most recent)
+// NB The 'demo' key has very limited usage.
+let apiKey = "demo"
+
+// URL of a service that generates price data
+let url stock = sprintf "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s&datatype=csv" stock apiKey
+
+/// Returns prices (as tuple) of a given stock
 let getStockPrices stock count =
-  let url = "http://ichart.finance.yahoo.com/table.csv?s="
-  [| for r in Stocks.Load(url + stock).Take(count).Rows -> float r.Open |] 
-  |> Array.rev
+    // Download the data and split it into lines
+    use wc = new HttpClient()
+    let data = wc.GetStringAsync(url stock) |> Async.AwaitTask |> Async.RunSynchronously
+    let dataLines = data.Split([| '\n' |], StringSplitOptions.RemoveEmptyEntries)
+ 
+    // Parse lines of the CSV file and take specified
+    // number of days using in the oldest to newest order
+    seq { for line in dataLines |> Seq.skip 1 do
+              let infos = line.Split(',')
+              yield float infos.[4] }
+    |> Seq.truncate count |> Array.ofSeq |> Array.rev
 
-/// Get opening prices for MSFT for the last 255 days
-let msftOpens = getStockPrices "MSFT" 255
+/// Get opening prices for MSFT for the last 100 days
+let msftOpens: float[] = getStockPrices "MSFT" 100
 
 (**
 ## Calling R functions
