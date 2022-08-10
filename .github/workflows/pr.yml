@@ -50,31 +50,27 @@ jobs:
       run: |
         Rscript -e 'R.home()'
         echo "${{ env.R_HOME }}"
-    - name: Verify R Home
-      run: |
-        Rscript -e 'R.home()'
-        echo "${{ env.R_HOME }}"
     - name: Install R package dependencies
       run: Rscript -e "install.packages(c('tseries', 'zoo'), repos = 'http://cran.us.r-project.org')"
       shell: bash
-    - name: Test F# scripts
-      run: dotnet fsi citest.fsx
-    - name: Setup .NET 
+    - name: Setup .NET  5
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.x'
-    - name: Setup .NET 6 (for Apple Silicon build)
+    - name: Setup .NET 6
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
+    - name: Test F# scripts
+      run: dotnet fsi citest.fsx
     - name: Restore tool dependencies
       run: dotnet tool restore
     - name: Restore paket dependencies
       run: dotnet paket restore
     - name: Restore dependencies
       run: dotnet restore RProvider.sln
-    - name: Restore dependencies
+    - name: Restore dependencies (tests)
       run: dotnet restore RProvider.Tests.sln
     - name: Build
       run: dotnet fake build -t All
