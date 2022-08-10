@@ -60,4 +60,4 @@ x.Engine.Evaluate("setClass('testclass', representation(foo='character', bar='in
 
 let test = x.Engine.Evaluate("new('testclass', foo='s4', bar=1:4)")
 
-s4?foo
+test?foo
