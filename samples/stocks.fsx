@@ -14,6 +14,7 @@ open RProvider.zoo
  
 open System
 open System.Net
+open System.Net.Http
 
 // You can add an API key for AlphaVantage here.
 // NB The 'demo' key has very limited usage.
@@ -25,8 +26,8 @@ let url stock = sprintf "https://www.alphavantage.co/query?function=TIME_SERIES_
 /// Returns prices (as tuple) of a given stock
 let getStockPrices stock count =
     // Download the data and split it into lines
-    let wc = new WebClient()
-    let data = wc.DownloadString(url stock)
+    use wc = new HttpClient()
+    let data = wc.GetStringAsync(url stock) |> Async.AwaitTask |> Async.RunSynchronously
     let dataLines = data.Split([| '\n' |], StringSplitOptions.RemoveEmptyEntries)
  
     // Parse lines of the CSV file and take specified

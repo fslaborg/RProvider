@@ -50,6 +50,10 @@ jobs:
     - name: Install R package dependencies
       run: Rscript -e "install.packages(c('tseries', 'zoo'), repos = 'http://cran.us.r-project.org')"
       shell: bash
+    - name: Setup .NET  5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v1
       with:
