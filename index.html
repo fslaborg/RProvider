@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>F# R Type Provider
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="BlueMountain Capital;FsLab">
+    <link rel="shortcut icon" type="image/x-icon" href="https://fslab.org/RProvider//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://fslab.org/RProvider/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white pb-4">RProvider</h2>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="field">
+                            <div class="control has-icons-left has-icons-right searchbox" id="fsdocs-searchbox">
+                                <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source Repository</a></li>
+                        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/tutorial.html">
+    R Provider Tutorial
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/requirements.html">
+    Requirements: Getting Started
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/howto.html">
+    How to
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data Between F# and R
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-statistics.html">
+    Quickstart: Using Statistical Packages
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-charts.html">
+    Quickstart: Creating Charts
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    Working with R expressions
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing RData files
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/fslab.html">
+    Working with the FsLab ecosystem
+
+  </a>
+</li>             
+<li class="nav-header">
+  Developer
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/plugins.html">
+    Plugins
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    <h1><a name="F-R-Type-Provider" class="anchor" href="#F-R-Type-Provider">F# R Type Provider</a></h1>
+<p>The F# Type Provider is a mechanism that enables smooth interoperability
+between F# and <a href="http://www.r-project.org/">R</a>.
+The Type Provider discovers R packages that are available
+in your R installation and makes them available as .NET namespaces
+underneath the parent namespace <code>RProvider</code>.</p>
+<p>The Type Provider makes it possible to use
+all of R capabilities, from the F# interactive environment.
+It enables on-the-fly charting and data analysis using R packages,
+with the added benefit of IntelliSense over R,
+and compile-time type-checking that the R functions you are using exist.
+It allows you to leverage all of .NET libraries,
+as well as F# unique capabilities to access and manipulate data
+from a wide variety of sources via Type Providers.</p>
+<p><img src="img/vscode.gif" alt="RProvider demo within an FSharp script" /></p>
+<p>The above example is run through F# interactive (<code>dotnet fsi</code>).</p>
+<h3><a name="A-Quick-Demo" class="anchor" href="#A-Quick-Demo">A Quick Demo</a></h3>
+<div style="text-align:center;">
+<iframe width="420" height="315" src="https://www.youtube.com/embed/tOd-qsjKU8Y" frameborder="0" allowfullscreen></iframe>
+</div>
+<h2><a name="What-are-R-and-F" class="anchor" href="#What-are-R-and-F">What are R and F#?</a></h2>
+<p><a href="http://fsharp.org">F#</a> is a multi-paradigm language
+that supports functional, object and imperative programming,
+with the emphasis on functional-first programming. F# runs on the .NET runtime and is a compiled,
+statically typed language with a strong type system and type inference.
+F# is a general purpose programming language, and is particularly well-suited for scientific/numerical computing.</p>
+<p><a href="http://www.r-project.org/">R</a> is an Open Source language for statistical computing.
+R offers a wide range of high-quality, community-developed packages,
+covering virtually every area of statistics, econometrics or machine learning.
+It is also famous for its charting capabilities, making it a great tool
+to produce publication-quality graphics.
+R is an interpreted, dynamically typed language that is typically used
+from its GUI, <a href="http://www.rstudio.com/">RStudio</a>, or command line interactive environment.</p>
+<h2><a name="Using-the-R-Type-Provider" class="anchor" href="#Using-the-R-Type-Provider">Using the R Type Provider</a></h2>
+<p>RProvider is distributed as a nuget package. After <a href="requirements.html">setting up the pre-requisites (installing .NET 5+, R and setting the R_HOME environment variable</a>, you can use as follows:</p>
+<p>In an F# script:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="pp">#r</span> <span class="s">&quot;nuget:RProvider&quot;</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="id">RProvider</span>
+</code></pre>
+<p>To add to a .NET project, from the terminal:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">dotnet</span> <span class="id">add</span> <span class="id">package</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="id">RProvider</span>
+</code></pre>
+<h2><a name="Contributing-and-copyright" class="anchor" href="#Contributing-and-copyright">Contributing and copyright</a></h2>
+<p>The project has been originally developed by <a href="https://www.bluemountaincapital.com/">BlueMountain Capital</a> and contributors.</p>
+<p>For compilation of the source, you will need F# 5.0 or later.  For runtime you'll need .NET 5.</p>
+<p>The project is hosted on <a href="https://github.com/fslaborg/RProvider">GitHub</a> where you can <a href="https://github.com/fslaborg/RProvider/issues">report issues</a>, fork the project and submit pull requests.</p>
+
+                </div>
+            </div>
+        </div>
+        <div class="fsdocs-tip" id="fs1">namespace RProvider</div>
+<div class="fsdocs-tip" id="fs2">Multiple items<br />namespace RProvider<br /><br />--------------------<br />type RProvider =
+  inherit TypeProviderForNamespaces
+  new : cfg:TypeProviderConfig -&gt; RProvider<br /><br />--------------------<br />new : cfg:CompilerServices.TypeProviderConfig -&gt; RProvider</div>
+
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://fslab.org/RProvider/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>

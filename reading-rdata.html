@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Reading and writing RData files
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="BlueMountain Capital;FsLab">
+    <link rel="shortcut icon" type="image/x-icon" href="https://fslab.org/RProvider//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://fslab.org/RProvider/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white pb-4">RProvider</h2>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="field">
+                            <div class="control has-icons-left has-icons-right searchbox" id="fsdocs-searchbox">
+                                <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source Repository</a></li>
+                        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/tutorial.html">
+    R Provider Tutorial
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/requirements.html">
+    Requirements: Getting Started
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/howto.html">
+    How to
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data Between F# and R
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-statistics.html">
+    Quickstart: Using Statistical Packages
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-charts.html">
+    Quickstart: Creating Charts
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    Working with R expressions
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing RData files
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/fslab.html">
+    Working with the FsLab ecosystem
+
+  </a>
+</li>             
+<li class="nav-header">
+  Developer
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/plugins.html">
+    Plugins
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    
+<h1><a name="Reading-and-writing-RData-files" class="anchor" href="#Reading-and-writing-RData-files">Reading and writing RData files</a></h1>
+<p>When using R, you can save and load data sets as <code>*.rdata</code> files. These can be easily
+exported and consumed using the R provider too, so if you want to perform part of your
+data acquisition, analysis and visualization using F# and another part using R, you
+can easily pass the data between F# and R as <code>*.rdata</code> files.</p>
+<h2><a name="Passing-data-from-R-to-F" class="anchor" href="#Passing-data-from-R-to-F">Passing data from R to F#</a></h2>
+<p>Let's say that you have some data in R and want to pass them to F#. To do that, you
+can use the <code>save</code> function in R. The following R snippet creates a simple <code>*.rdata</code>
+file containing a couple of symbols from the sample <code>volcano</code> data set:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="text">require(datasets)
+volcanoList &lt;- unlist(as.list(volcano))
+volcanoMean &lt;- mean(volcanoList)
+symbols &lt;- c("volcano", "volcanoList", "volcanoMean")
+save(list=symols, file="C:/data/sample.rdata")
+</code></pre></td></tr></table>
+<p>To import the data on the F# side, you can use the <code>RData</code> type provider that is
+available in the <code>RProvider</code> namespace. It takes a static parameter specifying the
+path of the file (absolute or relative) and generates a type that exposes all the
+saved values as static members:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="id">RProvider</span>
+
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="rt">Sample</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="rt">RData</span><span class="pn">&lt;</span><span class="s">&quot;data/sample.rdata&quot;</span><span class="pn">&gt;</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="id">sample</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs2', 5)" onmouseover="showTip(event, 'fs2', 5)" class="fn">Sample</span><span class="pn">(</span><span class="pn">)</span>
+
+<span class="c">// Easily access saved values</span>
+<span onmouseout="hideTip(event, 'fs4', 6)" onmouseover="showTip(event, 'fs4', 6)" class="id">sample</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs5', 7)" onmouseover="showTip(event, 'fs5', 7)" class="id">volcano</span>
+<span onmouseout="hideTip(event, 'fs4', 8)" onmouseover="showTip(event, 'fs4', 8)" class="id">sample</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs6', 9)" onmouseover="showTip(event, 'fs6', 9)" class="id">volcanoList</span>
+<span onmouseout="hideTip(event, 'fs4', 10)" onmouseover="showTip(event, 'fs4', 10)" class="id">sample</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs7', 11)" onmouseover="showTip(event, 'fs7', 11)" class="id">volcanoMean</span>
+</code></pre>
+<p>When accessed, the type provider automatically converts the data from the R format
+to F# format. In the above example, <code>volcanoList</code> is imported as <code>float[]</code> and
+the <code>volcanoMean</code> value is a singleton array. (The provider does not detect that
+this is a singleton, so you can get the value using <code>sample.volcanoMean.[0]</code>).
+For the <code>sample.volcano</code> value, the R provider does not have a default conversion
+and so it is exposed as <code>SymbolicExpression</code>.</p>
+<p>When you have a number of <code>*.rdata</code> files containing data in the same format, you can
+pick one of them as a sample (which will be used to determine the fields of the type)
+and then pass the file name to the constructor of the generated type to load it.
+For example, if we had files <code>data/sample_1.rdata</code> to <code>data/sample_10.rdata</code>, we could
+read them as:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs8', 12)" onmouseover="showTip(event, 'fs8', 12)" class="id">means</span> <span class="o">=</span> 
+  <span class="pn">[</span> <span class="k">for</span> <span onmouseout="hideTip(event, 'fs9', 13)" onmouseover="showTip(event, 'fs9', 13)" class="fn">i</span> <span class="k">in</span> <span class="n">1</span> <span class="o">..</span> <span class="n">10</span> <span class="k">-&gt;</span>
+      <span class="k">let</span> <span onmouseout="hideTip(event, 'fs10', 14)" onmouseover="showTip(event, 'fs10', 14)" class="fn">data</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs2', 15)" onmouseover="showTip(event, 'fs2', 15)" class="fn">Sample</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs11', 16)" onmouseover="showTip(event, 'fs11', 16)" class="fn">sprintf</span> <span class="s">&quot;data/sample_</span><span class="pf">%d</span><span class="s">.rdata&quot;</span> <span onmouseout="hideTip(event, 'fs9', 17)" onmouseover="showTip(event, 'fs9', 17)" class="fn">i</span><span class="pn">)</span>
+      <span onmouseout="hideTip(event, 'fs10', 18)" onmouseover="showTip(event, 'fs10', 18)" class="fn">data</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs7', 19)" onmouseover="showTip(event, 'fs7', 19)" class="id">volcanoMean</span><span class="id">.</span><span class="pn">[</span><span class="n">0</span><span class="pn">]</span> <span class="pn">]</span>
+</code></pre>
+<p>Note that the default conversions available depend on the plugins that are currently
+available. For example, when you install the enrie <a href="http://www.fslab.org">FsLab</a> package
+with the <a href="https://fslab.org/Deedle/">Deedle</a> library, the <code>RData</code>
+provider will automatically expose data frames as Deedle <code>Frame&lt;string, string&gt;</code> values.</p>
+<h2><a name="Passing-data-from-F-to-R" class="anchor" href="#Passing-data-from-F-to-R">Passing data from F# to R</a></h2>
+<p>If you perform data acquisition in F# and then want to pass the data to R, you
+can use the standard R functions for saving the <code>*.rdata</code> files. The easiest
+option is to call the <code>R.assign</code> function to define named values in the R environment
+and then use <code>R.save</code> to save the environment to a file:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// Calculate sum of square differences</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs12', 20)" onmouseover="showTip(event, 'fs12', 20)" class="id">avg</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 21)" onmouseover="showTip(event, 'fs4', 21)" class="id">sample</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs6', 22)" onmouseover="showTip(event, 'fs6', 22)" class="id">volcanoList</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 23)" onmouseover="showTip(event, 'fs13', 23)" class="m">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs14', 24)" onmouseover="showTip(event, 'fs14', 24)" class="id">average</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs15', 25)" onmouseover="showTip(event, 'fs15', 25)" class="id">sqrs</span> <span class="o">=</span> 
+  <span onmouseout="hideTip(event, 'fs4', 26)" onmouseover="showTip(event, 'fs4', 26)" class="id">sample</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs6', 27)" onmouseover="showTip(event, 'fs6', 27)" class="id">volcanoList</span> 
+  <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 28)" onmouseover="showTip(event, 'fs13', 28)" class="m">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs16', 29)" onmouseover="showTip(event, 'fs16', 29)" class="id">map</span> <span class="pn">(</span><span class="k">fun</span> <span onmouseout="hideTip(event, 'fs17', 30)" onmouseover="showTip(event, 'fs17', 30)" class="fn">v</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs18', 31)" onmouseover="showTip(event, 'fs18', 31)" class="fn">pown</span> <span class="pn">(</span><span onmouseout="hideTip(event, 'fs17', 32)" onmouseover="showTip(event, 'fs17', 32)" class="fn">v</span> <span class="o">-</span> <span onmouseout="hideTip(event, 'fs12', 33)" onmouseover="showTip(event, 'fs12', 33)" class="id">avg</span><span class="pn">)</span> <span class="n">2</span><span class="pn">)</span>
+
+<span class="c">// Save the squares to an RData file</span>
+<span onmouseout="hideTip(event, 'fs19', 34)" onmouseover="showTip(event, 'fs19', 34)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs20', 35)" onmouseover="showTip(event, 'fs20', 35)" class="id">assign</span><span class="pn">(</span><span class="s">&quot;volcanoDiffs&quot;</span><span class="pn">,</span> <span onmouseout="hideTip(event, 'fs15', 36)" onmouseover="showTip(event, 'fs15', 36)" class="id">sqrs</span><span class="pn">)</span>
+<span onmouseout="hideTip(event, 'fs19', 37)" onmouseover="showTip(event, 'fs19', 37)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs21', 38)" onmouseover="showTip(event, 'fs21', 38)" class="id">save</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs22', 39)" onmouseover="showTip(event, 'fs22', 39)" class="fn">list</span><span class="o">=</span><span class="pn">[</span> <span class="s">&quot;volcanoDiffs&quot;</span> <span class="pn">]</span><span class="pn">,</span> <span class="fn">file</span><span class="o">=</span><span class="s">&quot;C:/temp/volcano.rdata&quot;</span><span class="pn">)</span>
+</code></pre>
+<p>It is recommended to use the <code>list</code> parameter of the <code>save</code> function to specify the
+names of the symbols that should be saved, rather than saving <em>all</em> symbols. The R
+provider uses additional temporary symbols and so the saved file would otherwise contain
+unnecessary fileds.</p>
+<p>Once you save the file using the above command, you can re-load it again using
+the <code>RData</code> type provider, such as: <code>new RData&lt;"C:/temp/volcano.rdata"&gt;()</code>.</p>
+
+                </div>
+            </div>
+        </div>
+        <div class="fsdocs-tip" id="fs1">namespace RProvider</div>
+<div class="fsdocs-tip" id="fs2">type Sample = RData&lt;...&gt;</div>
+<div class="fsdocs-tip" id="fs3">type RData =</div>
+<div class="fsdocs-tip" id="fs4">val sample : RData&lt;...&gt;</div>
+<div class="fsdocs-tip" id="fs5">property RData&lt;...&gt;.volcano: float [,] with get</div>
+<div class="fsdocs-tip" id="fs6">property RData&lt;...&gt;.volcanoList: float [] with get</div>
+<div class="fsdocs-tip" id="fs7">property RData&lt;...&gt;.volcanoMean: float [] with get</div>
+<div class="fsdocs-tip" id="fs8">val means : float list</div>
+<div class="fsdocs-tip" id="fs9">val i : int</div>
+<div class="fsdocs-tip" id="fs10">val data : RData&lt;...&gt;</div>
+<div class="fsdocs-tip" id="fs11">val sprintf : format:Printf.StringFormat&lt;&#39;T&gt; -&gt; &#39;T<br /><em>&lt;summary&gt;Print to a string using the given format.&lt;/summary&gt;<br />&lt;param name=&quot;format&quot;&gt;The formatter.&lt;/param&gt;<br />&lt;returns&gt;The formatted result.&lt;/returns&gt;</em></div>
+<div class="fsdocs-tip" id="fs12">val avg : float</div>
+<div class="fsdocs-tip" id="fs13">module Array
+
+from Microsoft.FSharp.Collections<br /><em>&lt;summary&gt;Contains operations for working with arrays.&lt;/summary&gt;<br />&lt;remarks&gt;
+  See also &lt;a href=&quot;https://docs.microsoft.com/dotnet/fsharp/language-reference/arrays&quot;&gt;F# Language Guide - Arrays&lt;/a&gt;.
+ &lt;/remarks&gt;</em></div>
+<div class="fsdocs-tip" id="fs14">val average : array:&#39;T [] -&gt; &#39;T (requires member ( + ) and member DivideByInt and member get_Zero)<br /><em>&lt;summary&gt;Returns the average of the elements in the array.&lt;/summary&gt;<br />&lt;param name=&quot;array&quot;&gt;The input array.&lt;/param&gt;<br />&lt;exception cref=&quot;T:System.ArgumentException&quot;&gt;Thrown when &lt;c&gt;array&lt;/c&gt; is empty.&lt;/exception&gt;<br />&lt;exception cref=&quot;T:System.ArgumentNullException&quot;&gt;Thrown when the input array is null.&lt;/exception&gt;<br />&lt;returns&gt;The average of the elements in the array.&lt;/returns&gt;</em></div>
+<div class="fsdocs-tip" id="fs15">val sqrs : float []</div>
+<div class="fsdocs-tip" id="fs16">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; array:&#39;T [] -&gt; &#39;U []<br /><em>&lt;summary&gt;Builds a new array whose elements are the results of applying the given function
+ to each of the elements of the array.&lt;/summary&gt;<br />&lt;param name=&quot;mapping&quot;&gt;The function to transform elements of the array.&lt;/param&gt;<br />&lt;param name=&quot;array&quot;&gt;The input array.&lt;/param&gt;<br />&lt;returns&gt;The array of transformed elements.&lt;/returns&gt;<br />&lt;exception cref=&quot;T:System.ArgumentNullException&quot;&gt;Thrown when the input array is null.&lt;/exception&gt;</em></div>
+<div class="fsdocs-tip" id="fs17">val v : float</div>
+<div class="fsdocs-tip" id="fs18">val pown : x:&#39;T -&gt; n:int -&gt; &#39;T (requires member get_One and member ( * ) and member ( / ))<br /><em>&lt;summary&gt;Overloaded power operator. If &lt;c&gt;n &amp;gt; 0&lt;/c&gt; then equivalent to &lt;c&gt;x*...*x&lt;/c&gt; for &lt;c&gt;n&lt;/c&gt; occurrences of &lt;c&gt;x&lt;/c&gt;. &lt;/summary&gt;<br />&lt;param name=&quot;x&quot;&gt;The input base.&lt;/param&gt;<br />&lt;param name=&quot;n&quot;&gt;The input exponent.&lt;/param&gt;<br />&lt;returns&gt;The base raised to the exponent.&lt;/returns&gt;</em></div>
+<div class="fsdocs-tip" id="fs19">type R =
+  static member ! :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member != :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member !_hexmode :?a: obj -&gt; SymbolicExpression + 2 overloads
+  static member !_octmode :?a: obj -&gt; SymbolicExpression + 2 overloads
+  static member $ :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member $&lt;- :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member $&lt;-_data_frame :?x: obj *?name: obj *?value: obj -&gt; SymbolicExpression + 2 overloads
+  static member $_DLLInfo :?x: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member $_package__version :?x: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member %% :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>Base R functions.</em></div>
+<div class="fsdocs-tip" id="fs20">R.assign(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.assign(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.assign(?x: obj,?value: obj,?pos: obj,?envir: obj,?inherits: obj,?immediate: obj) : RDotNet.SymbolicExpression<br /><em>Assign a Value to a Name</em></div>
+<div class="fsdocs-tip" id="fs21">R.save(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.save(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.save(?___: obj,?list: obj,?file: obj,?ascii: obj,?version: obj,?envir: obj,?compress: obj,?compression__level: obj,?eval_promises: obj,?precheck: obj,?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>Save R Objects</em></div>
+<div class="fsdocs-tip" id="fs22">type &#39;T list = List&lt;&#39;T&gt;<br /><em>&lt;summary&gt;The type of immutable singly-linked lists. &lt;/summary&gt;<br />&lt;remarks&gt;See the &lt;see cref=&quot;T:Microsoft.FSharp.Collections.ListModule&quot; /&gt; module for further operations related to lists.
+
+ Use the constructors &lt;c&gt;[]&lt;/c&gt; and &lt;c&gt;::&lt;/c&gt; (infix) to create values of this type, or
+ the notation &lt;c&gt;[1; 2; 3]&lt;/c&gt;. Use the values in the &lt;c&gt;List&lt;/c&gt; module to manipulate 
+ values of this type, or pattern match against the values directly.
+
+  See also &lt;a href=&quot;https://docs.microsoft.com/dotnet/fsharp/language-reference/lists&quot;&gt;F# Language Guide - Lists&lt;/a&gt;.
+ &lt;/remarks&gt;</em></div>
+
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://fslab.org/RProvider/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>

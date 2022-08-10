@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Diagnostics and debugging
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="BlueMountain Capital;FsLab">
+    <link rel="shortcut icon" type="image/x-icon" href="https://fslab.org/RProvider//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://fslab.org/RProvider/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white pb-4">RProvider</h2>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="field">
+                            <div class="control has-icons-left has-icons-right searchbox" id="fsdocs-searchbox">
+                                <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source Repository</a></li>
+                        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/tutorial.html">
+    R Provider Tutorial
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/requirements.html">
+    Requirements: Getting Started
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/howto.html">
+    How to
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data Between F# and R
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-statistics.html">
+    Quickstart: Using Statistical Packages
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-charts.html">
+    Quickstart: Creating Charts
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    Working with R expressions
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing RData files
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/fslab.html">
+    Working with the FsLab ecosystem
+
+  </a>
+</li>             
+<li class="nav-header">
+  Developer
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/plugins.html">
+    Plugins
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    
+<h1><a name="Diagnostics-and-debugging" class="anchor" href="#Diagnostics-and-debugging">Diagnostics and debugging</a></h1>
+<p>The R type provider has an extensive logging to help developers diagnose
+potential issues. If you encounter any issues with the R type provider, this
+page gives you all the information you need to create a log file with detailed
+trace of what is going one. This may give you some hints on what is wrong &amp; a
+detailed report that you can send when <a href="https://github.com/fslaborg/RProvider/issues">submitting an
+issue</a>.</p>
+<p><strong>TL;DR</strong> The logging is enabled by setting an environment variable
+<code>RPROVIDER_LOG</code> to a file name where the log should be saved. The file does
+not have to exist, but the folder where it is located has to. <strong>You should use
+an absolute (full) path, as otherwise the server will create a seperate log in the
+nuget package directory.</strong></p>
+<h2><a name="Enabling-logging-on-Windows" class="anchor" href="#Enabling-logging-on-Windows">Enabling logging on Windows</a></h2>
+<p>On Windows, you can set environment variables by going to system properties
+(this varies depending on the OS version, but generally right click on
+"My Computer" and select a link or button saying something like "Change settings").</p>
+<p>This should open a new dialog, where you can go to "Advanced", and click on the
+"Environment Variables" button. Here, you can add the variable as either per-user
+or per-system and save it. For example, create a folder <code>C:\Temp</code> and set
+<code>RPROVIDER_LOG</code> to <code>C:\Temp\rlog.txt</code>. After you restart Visual Studio, the
+R provider will start logging.</p>
+<h2><a name="Enabling-logging-on-Mac-Linux" class="anchor" href="#Enabling-logging-on-Mac-Linux">Enabling logging on Mac/Linux</a></h2>
+<p>If you're using Xamarin Studio on Mac, then the easiest option is to set the
+variable from Terminal and then start Xamarin Studio from terminal. Note that
+if you set the environment variable from terminal, but launch Xamarin Studio
+from Dock or in some other way, it will not see the variable!</p>
+<p>The following should do the trick (assuming the folder <code>/Users/tomasp/Temp</code> exists):</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="text">export RPROVIDER_LOG=/Users/tomasp/Temp/rlog.txt
+open -n /Applications/Xamarin\ Studio.app/
+</code></pre></td></tr></table>
+<p>This will set the variable and start a new instance of Xamarin Studio in the current
+context. Once it appears, reporduce the operation that causes the error, close
+Xamarin Studio and look at the log file.</p>
+<h2><a name="Enabling-logging-in-a-custom-build" class="anchor" href="#Enabling-logging-in-a-custom-build">Enabling logging in a custom build</a></h2>
+<p>If you're building R provider from source, you can also enable logging by changing
+the <code>loggingEnabled</code> constant in the source code (and change <code>logFile</code> if you want
+to override the default location). See the <a href="https://github.com/fslaborg/RProvider/blob/master/src/RProvider/Logging.fs#L13">right place for this on
+GitHub</a>.</p>
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://fslab.org/RProvider/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>

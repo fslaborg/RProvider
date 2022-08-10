@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Quickstart: Using Statistical Packages
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="BlueMountain Capital;FsLab">
+    <link rel="shortcut icon" type="image/x-icon" href="https://fslab.org/RProvider//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://fslab.org/RProvider/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white pb-4">RProvider</h2>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="field">
+                            <div class="control has-icons-left has-icons-right searchbox" id="fsdocs-searchbox">
+                                <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source Repository</a></li>
+                        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/tutorial.html">
+    R Provider Tutorial
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/requirements.html">
+    Requirements: Getting Started
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/howto.html">
+    How to
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data Between F# and R
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-statistics.html">
+    Quickstart: Using Statistical Packages
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-charts.html">
+    Quickstart: Creating Charts
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    Working with R expressions
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing RData files
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/fslab.html">
+    Working with the FsLab ecosystem
+
+  </a>
+</li>             
+<li class="nav-header">
+  Developer
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/plugins.html">
+    Plugins
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    
+<h1><a name="Quickstart-Using-Statistical-Packages" class="anchor" href="#Quickstart-Using-Statistical-Packages">Quickstart: Using Statistical Packages</a></h1>
+<p>R is a programming language designed for statistics and data mining.
+The R community is strong, and created an incredibly rich open source
+ecosystem of packages.</p>
+<p>The F# R Type Provider enables you to use every single one of them,
+from within the F# environment. You can manipulate data using F#,
+send it to R for computation, and extract back the results.</p>
+<h2><a name="Example-Linear-Regression" class="anchor" href="#Example-Linear-Regression">Example: Linear Regression</a></h2>
+<p>Let's perform a simple linear regression from the F# interactive,
+using the R.lm function.</p>
+<p>Assuming you installed the R Type Provider in your project from NuGet,
+you can reference the required libraries and packages this way:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="pp">#I</span> <span class="s">&quot;../packages/RProvider.1.0.11&quot;</span>
+<span class="pp">#load</span> <span class="s">&quot;RProvider.fsx&quot;</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="id">RDotNet</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="id">RProvider</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="m">Operators</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs3', 5)" onmouseover="showTip(event, 'fs3', 5)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs5', 6)" onmouseover="showTip(event, 'fs5', 6)" class="id">graphics</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs3', 7)" onmouseover="showTip(event, 'fs3', 7)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs6', 8)" onmouseover="showTip(event, 'fs6', 8)" class="id">stats</span>
+</code></pre>
+<p>Once the libraries and packages have been loaded,
+Imagine that our true model is</p>
+<p>Y = 5.0 + 3.0 <em> X1 - 2.0 </em> X2 + noise</p>
+<p>Let's generate a fake dataset that follows this model:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// Random number generator</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs7', 9)" onmouseover="showTip(event, 'fs7', 9)" class="id">rng</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs8', 10)" onmouseover="showTip(event, 'fs8', 10)" class="id">System</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs9', 11)" onmouseover="showTip(event, 'fs9', 11)" class="id">Random</span><span class="pn">(</span><span class="pn">)</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs10', 12)" onmouseover="showTip(event, 'fs10', 12)" class="fn">rand</span> <span class="pn">(</span><span class="pn">)</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs7', 13)" onmouseover="showTip(event, 'fs7', 13)" class="id">rng</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs11', 14)" onmouseover="showTip(event, 'fs11', 14)" class="id">NextDouble</span><span class="pn">(</span><span class="pn">)</span>
+
+<span class="c">// Generate fake X1 and X2 </span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs12', 15)" onmouseover="showTip(event, 'fs12', 15)" class="id">X1s</span> <span class="o">=</span> <span class="pn">[</span> <span class="k">for</span> <span onmouseout="hideTip(event, 'fs13', 16)" onmouseover="showTip(event, 'fs13', 16)" class="fn">i</span> <span class="k">in</span> <span class="n">0</span> <span class="o">..</span> <span class="n">9</span> <span class="k">-&gt;</span> <span class="n">10.</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs10', 17)" onmouseover="showTip(event, 'fs10', 17)" class="fn">rand</span> <span class="pn">(</span><span class="pn">)</span> <span class="pn">]</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs14', 18)" onmouseover="showTip(event, 'fs14', 18)" class="id">X2s</span> <span class="o">=</span> <span class="pn">[</span> <span class="k">for</span> <span onmouseout="hideTip(event, 'fs13', 19)" onmouseover="showTip(event, 'fs13', 19)" class="fn">i</span> <span class="k">in</span> <span class="n">0</span> <span class="o">..</span> <span class="n">9</span> <span class="k">-&gt;</span> <span class="n">5.</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs10', 20)" onmouseover="showTip(event, 'fs10', 20)" class="fn">rand</span> <span class="pn">(</span><span class="pn">)</span> <span class="pn">]</span>
+
+<span class="c">// Build Ys, following the &quot;true&quot; model</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs15', 21)" onmouseover="showTip(event, 'fs15', 21)" class="id">Ys</span> <span class="o">=</span> <span class="pn">[</span> <span class="k">for</span> <span onmouseout="hideTip(event, 'fs13', 22)" onmouseover="showTip(event, 'fs13', 22)" class="fn">i</span> <span class="k">in</span> <span class="n">0</span> <span class="o">..</span> <span class="n">9</span> <span class="k">-&gt;</span> <span class="n">5.</span> <span class="o">+</span> <span class="n">3.</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs12', 23)" onmouseover="showTip(event, 'fs12', 23)" class="id">X1s</span><span class="pn">.</span><span class="pn">[</span><span onmouseout="hideTip(event, 'fs13', 24)" onmouseover="showTip(event, 'fs13', 24)" class="fn">i</span><span class="pn">]</span> <span class="o">-</span> <span class="n">2.</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs14', 25)" onmouseover="showTip(event, 'fs14', 25)" class="id">X2s</span><span class="pn">.</span><span class="pn">[</span><span onmouseout="hideTip(event, 'fs13', 26)" onmouseover="showTip(event, 'fs13', 26)" class="fn">i</span><span class="pn">]</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs10', 27)" onmouseover="showTip(event, 'fs10', 27)" class="fn">rand</span> <span class="pn">(</span><span class="pn">)</span> <span class="pn">]</span>
+</code></pre>
+<p>Using linear regression on this dataset, we should be able to
+estimate the coefficients 5.0, 3.0 and -2.0, with some imprecision
+due to the "noise" part.</p>
+<p>Let's first put our dataset into a R dataframe; this allows us
+to name our vectors, and use these names in R formulas afterwards:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs16', 28)" onmouseover="showTip(event, 'fs16', 28)" class="d">dataset</span> <span class="o">=</span> <span class="pn">[</span> 
+    <span class="s">&quot;Y&quot;</span> <span class="o">=&gt;</span> <span onmouseout="hideTip(event, 'fs15', 29)" onmouseover="showTip(event, 'fs15', 29)" class="id">Ys</span>
+    <span class="s">&quot;X1&quot;</span> <span class="o">=&gt;</span> <span onmouseout="hideTip(event, 'fs12', 30)" onmouseover="showTip(event, 'fs12', 30)" class="id">X1s</span>
+    <span class="s">&quot;X2&quot;</span> <span class="o">=&gt;</span> <span onmouseout="hideTip(event, 'fs14', 31)" onmouseover="showTip(event, 'fs14', 31)" class="id">X2s</span> <span class="pn">]</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs17', 32)" onmouseover="showTip(event, 'fs17', 32)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs18', 33)" onmouseover="showTip(event, 'fs18', 33)" class="id">data_frame</span>
+</code></pre>
+<p>We can now use R to perform a linear regression.
+We call the <a href="http://stat.ethz.ch/R-manual/R-patched/library/stats/html/lm.html">R.lm function</a>,
+passing it the formula we want to estimate.
+(See the <a href="http://stat.ethz.ch/R-manual/R-patched/library/stats/html/formula.html">R manual on formulas</a>
+for more on their somewhat esoteric construction)</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs19', 34)" onmouseover="showTip(event, 'fs19', 34)" class="d">result</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs20', 35)" onmouseover="showTip(event, 'fs20', 35)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs21', 36)" onmouseover="showTip(event, 'fs21', 36)" class="id">lm</span><span class="pn">(</span><span class="fn">formula</span> <span class="o">=</span> <span class="s">&quot;Y~X1+X2&quot;</span><span class="pn">,</span> <span class="fn">data</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs16', 37)" onmouseover="showTip(event, 'fs16', 37)" class="d">dataset</span><span class="pn">)</span>
+</code></pre>
+<h2><a name="Extracting-Results-from-R-to-F" class="anchor" href="#Extracting-Results-from-R-to-F">Extracting Results from R to F#</a></h2>
+<p>The result we get back from R is a R Expression.
+The R Type Provider tries as much as possible to keep data
+as R Expressions, rather than converting back-and-forth
+between F# and R types. It limits translations
+between the 2 languages, which has performance benefits,
+and simplifies composing R operations. On the other hand,
+we need to extract the results from the R expression
+into F# types.</p>
+<p>The <a href="http://stat.ethz.ch/R-manual/R-patched/library/stats/html/lm.html">R docs for lm</a>
+describes what R.lm returns: a R List. We can now retrieve each element,
+accessing it by name (as defined in the documentation).
+For instance, let's retrieve the coefficients and residuals,
+which are both R vectors containg floats:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs22', 38)" onmouseover="showTip(event, 'fs22', 38)" class="d">coefficients</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs19', 39)" onmouseover="showTip(event, 'fs19', 39)" class="d">result</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs23', 40)" onmouseover="showTip(event, 'fs23', 40)" class="id">AsList</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="pn">[</span><span class="s">&quot;coefficients&quot;</span><span class="pn">]</span><span class="pn">.</span><span class="id">AsNumeric</span><span class="pn">(</span><span class="pn">)</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs24', 41)" onmouseover="showTip(event, 'fs24', 41)" class="d">residuals</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs19', 42)" onmouseover="showTip(event, 'fs19', 42)" class="d">result</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs23', 43)" onmouseover="showTip(event, 'fs23', 43)" class="id">AsList</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="pn">[</span><span class="s">&quot;residuals&quot;</span><span class="pn">]</span><span class="pn">.</span><span class="id">AsNumeric</span><span class="pn">(</span><span class="pn">)</span>
+</code></pre>
+<p>We can also produce summary statistics about our model,
+like R^2, which measures goodness-of-fit - close to 0
+indicates a very poor fit, and close to 1 a good fit.
+See <a href="http://stat.ethz.ch/R-manual/R-patched/library/stats/html/summary.lm.html">R docs for the details on Summary</a>.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs25', 44)" onmouseover="showTip(event, 'fs25', 44)" class="d">summary</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs17', 45)" onmouseover="showTip(event, 'fs17', 45)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs26', 46)" onmouseover="showTip(event, 'fs26', 46)" class="id">summary</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs19', 47)" onmouseover="showTip(event, 'fs19', 47)" class="d">result</span><span class="pn">)</span>
+<span onmouseout="hideTip(event, 'fs25', 48)" onmouseover="showTip(event, 'fs25', 48)" class="d">summary</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs23', 49)" onmouseover="showTip(event, 'fs23', 49)" class="id">AsList</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="pn">[</span><span class="s">&quot;r.squared&quot;</span><span class="pn">]</span><span class="pn">.</span><span class="id">AsNumeric</span><span class="pn">(</span><span class="pn">)</span>
+</code></pre>
+<p>Finally, we can directly pass results, which is a R expression,
+to R.plot, to produce some fancy charts describing our model:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span onmouseout="hideTip(event, 'fs27', 50)" onmouseover="showTip(event, 'fs27', 50)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs28', 51)" onmouseover="showTip(event, 'fs28', 51)" class="id">plot</span> <span onmouseout="hideTip(event, 'fs19', 52)" onmouseover="showTip(event, 'fs19', 52)" class="d">result</span>
+</code></pre>
+<p>That's it - while simple, we hope this example illustrate
+how you would go about to use any existing R statistical package.
+While the details would differ, the general approach would
+remain the same. Happy modelling!</p>
+
+                </div>
+            </div>
+        </div>
+        <div class="fsdocs-tip" id="fs1">namespace RDotNet</div>
+<div class="fsdocs-tip" id="fs2">namespace RProvider</div>
+<div class="fsdocs-tip" id="fs3">Multiple items<br />namespace RProvider<br /><br />--------------------<br />type RProvider =
+  inherit TypeProviderForNamespaces
+  new : cfg:TypeProviderConfig -&gt; RProvider<br /><br />--------------------<br />new : cfg:CompilerServices.TypeProviderConfig -&gt; RProvider</div>
+<div class="fsdocs-tip" id="fs4">module Operators
+
+from RProvider<br /><em>&lt;summary&gt;
+ Custom operators that make composing and working with
+ R symbolic expressions easier.
+&lt;/summary&gt;</em></div>
+<div class="fsdocs-tip" id="fs5">namespace RProvider.graphics</div>
+<div class="fsdocs-tip" id="fs6">namespace RProvider.stats</div>
+<div class="fsdocs-tip" id="fs7">val rng : System.Random</div>
+<div class="fsdocs-tip" id="fs8">namespace System</div>
+<div class="fsdocs-tip" id="fs9">Multiple items<br />type Random =
+  new : unit -&gt; unit + 1 overload
+  member Next : unit -&gt; int + 2 overloads
+  member NextBytes : buffer: byte [] -&gt; unit + 1 overload
+  member NextDouble : unit -&gt; float
+  member NextInt64 : unit -&gt; int64 + 2 overloads
+  member NextSingle : unit -&gt; float32
+  member Sample : unit -&gt; float
+  static member Shared : Random<br /><em>&lt;summary&gt;Represents a pseudo-random number generator, which is an algorithm that produces a sequence of numbers that meet certain statistical requirements for randomness.&lt;/summary&gt;</em><br /><br />--------------------<br />System.Random() : System.Random<br />System.Random(Seed: int) : System.Random</div>
+<div class="fsdocs-tip" id="fs10">val rand : unit -&gt; float</div>
+<div class="fsdocs-tip" id="fs11">System.Random.NextDouble() : float</div>
+<div class="fsdocs-tip" id="fs12">val X1s : float list</div>
+<div class="fsdocs-tip" id="fs13">val i : int</div>
+<div class="fsdocs-tip" id="fs14">val X2s : float list</div>
+<div class="fsdocs-tip" id="fs15">val Ys : float list</div>
+<div class="fsdocs-tip" id="fs16">val dataset : SymbolicExpression</div>
+<div class="fsdocs-tip" id="fs17">type R =
+  static member ! :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member != :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member !_hexmode :?a: obj -&gt; SymbolicExpression + 2 overloads
+  static member !_octmode :?a: obj -&gt; SymbolicExpression + 2 overloads
+  static member $ :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member $&lt;- :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member $&lt;-_data_frame :?x: obj *?name: obj *?value: obj -&gt; SymbolicExpression + 2 overloads
+  static member $_DLLInfo :?x: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member $_package__version :?x: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member %% :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>Base R functions.</em></div>
+<div class="fsdocs-tip" id="fs18">R.data_frame(paramsByName: List&lt;string * obj&gt;) : SymbolicExpression<br />R.data_frame(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : SymbolicExpression<br />R.data_frame(?___: obj,?row_names: obj,?check_rows: obj,?check_names: obj,?fix_empty_names: obj,?stringsAsFactors: obj,?paramArray: obj []) : SymbolicExpression<br /><em>Data Frames</em></div>
+<div class="fsdocs-tip" id="fs19">val result : SymbolicExpression</div>
+<div class="fsdocs-tip" id="fs20">type R =
+  static member AIC :?object: obj *?___: obj *?k: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member ARMAacf :?ar: obj *?ma: obj *?lag_max: obj *?pacf: obj -&gt; SymbolicExpression + 2 overloads
+  static member ARMAtoMA :?ar: obj *?ma: obj *?lag_max: obj -&gt; SymbolicExpression + 2 overloads
+  static member BIC :?object: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member Box_test :?x: obj *?lag: obj *?type: obj *?fitdf: obj -&gt; SymbolicExpression + 2 overloads
+  static member C :?object: obj *?contr: obj *?how_many: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member D :?expr: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member DF2formula :?x: obj *?env: obj -&gt; SymbolicExpression + 2 overloads
+  static member Gamma :?link: obj -&gt; SymbolicExpression + 2 overloads
+  static member HoltWinters :?x: obj *?alpha: obj *?beta: obj *?gamma: obj *?seasonal: obj *?start_periods: obj *?l_start: obj *?b_start: obj *?s_start: obj *?optim_start: obj *?optim_control: obj -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>R statistical functions.</em></div>
+<div class="fsdocs-tip" id="fs21">R.lm(paramsByName: List&lt;string * obj&gt;) : SymbolicExpression<br />R.lm(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : SymbolicExpression<br />R.lm(?formula: obj,?data: obj,?subset: obj,?weights: obj,?na_action: obj,?method: obj,?model: obj,?x: obj,?y: obj,?qr: obj,?singular_ok: obj,?contrasts: obj,?offset: obj,?___: obj,?paramArray: obj []) : SymbolicExpression<br /><em>Fitting Linear Models</em></div>
+<div class="fsdocs-tip" id="fs22">val coefficients : NumericVector</div>
+<div class="fsdocs-tip" id="fs23">(extension) SymbolicExpression.AsList() : GenericVector</div>
+<div class="fsdocs-tip" id="fs24">val residuals : NumericVector</div>
+<div class="fsdocs-tip" id="fs25">val summary : SymbolicExpression</div>
+<div class="fsdocs-tip" id="fs26">R.summary(paramsByName: List&lt;string * obj&gt;) : SymbolicExpression<br />R.summary(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : SymbolicExpression<br />R.summary(?object: obj,?___: obj,?paramArray: obj []) : SymbolicExpression<br /><em>Object Summaries</em></div>
+<div class="fsdocs-tip" id="fs27">type R =
+  static member Axis :?x: obj *?at: obj *?___: obj *?side: obj *?labels: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member abline :?a: obj *?b: obj *?h: obj *?v: obj *?reg: obj *?coef: obj *?untf: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member arrows :?x0: obj *?y0: obj *?x1: obj *?y1: obj *?length: obj *?angle: obj *?code: obj *?col: obj *?lty: obj *?lwd: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member assocplot :?x: obj *?col: obj *?space: obj *?main: obj *?xlab: obj *?ylab: obj -&gt; SymbolicExpression + 2 overloads
+  static member axTicks :?side: obj *?axp: obj *?usr: obj *?log: obj *?nintLog: obj -&gt; SymbolicExpression + 2 overloads
+  static member axis :?side: obj *?at: obj *?labels: obj *?tick: obj *?line: obj *?pos: obj *?outer: obj *?font: obj *?lty: obj *?lwd: obj *?lwd_ticks: obj *?col: obj *?col_ticks: obj *?hadj: obj *?padj: obj *?gap_axis: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member axis_Date :?side: obj *?x: obj *?at: obj *?format: obj *?labels: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member axis_POSIXct :?side: obj *?x: obj *?at: obj *?format: obj *?labels: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member barplot :?height: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member barplot_default :?height: obj *?width: obj *?space: obj *?names_arg: obj *?legend_text: obj *?beside: obj *?horiz: obj *?density: obj *?angle: obj *?col: obj *?border: obj *?main: obj *?sub: obj *?xlab: obj *?ylab: obj *?xlim: obj *?ylim: obj *?xpd: obj *?log: obj *?axes: obj *?axisnames: obj *?cex_axis: obj *?cex_names: obj *?inside: obj *?plot: obj *?axis_lty: obj *?offset: obj *?add: obj *?ann: obj *?args_legend: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>R functions for base graphics.</em></div>
+<div class="fsdocs-tip" id="fs28">Multiple items<br />R.plot(paramsByName: List&lt;string * obj&gt;) : SymbolicExpression<br />R.plot(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : SymbolicExpression<br />R.plot(?x: obj,?y: obj,?___: obj,?paramArray: obj []) : SymbolicExpression<br /><em>No documentation available</em><br /><br />--------------------<br />R.plot(paramsByName: List&lt;string * obj&gt;) : SymbolicExpression<br />R.plot(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : SymbolicExpression<br />R.plot(?x: obj,?y: obj,?___: obj,?paramArray: obj []) : SymbolicExpression<br /><em>Generic X-Y Plotting</em></div>
+
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://fslab.org/RProvider/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>

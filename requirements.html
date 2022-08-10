@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Requirements: Getting Started
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="BlueMountain Capital;FsLab">
+    <link rel="shortcut icon" type="image/x-icon" href="https://fslab.org/RProvider//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://fslab.org/RProvider/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white pb-4">RProvider</h2>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="field">
+                            <div class="control has-icons-left has-icons-right searchbox" id="fsdocs-searchbox">
+                                <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source Repository</a></li>
+                        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/tutorial.html">
+    R Provider Tutorial
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/requirements.html">
+    Requirements: Getting Started
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/howto.html">
+    How to
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data Between F# and R
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-statistics.html">
+    Quickstart: Using Statistical Packages
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-charts.html">
+    Quickstart: Creating Charts
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    Working with R expressions
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing RData files
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/fslab.html">
+    Working with the FsLab ecosystem
+
+  </a>
+</li>             
+<li class="nav-header">
+  Developer
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/plugins.html">
+    Plugins
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    
+<h1><a name="Requirements-Getting-Started" class="anchor" href="#Requirements-Getting-Started">Requirements: Getting Started</a></h1>
+<p>The R type provider can be used on macOS, Windows, and Linux (for supported OS versions,
+see the <a href="https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0-supported-os.md">.NET 5 OS support matrix</a>).</p>
+<p>There are three <strong>requirements</strong> to use the R type provider:</p>
+<ul>
+<li><a href="https://www.microsoft.com/net/download/core">dotnet SDK</a> 5.0 or greater; and</li>
+<li><a href="http://cran.r-project.org/">R statistical environment</a>.</li>
+<li>
+A correctly set <code>R_HOME</code> environment variable (see below).
+You <strong>must</strong> set the <code>R_HOME</code> environment variable to the R home directory,
+which can usually be identified by running the command 'R RHOME'.
+</li>
+</ul>
+<p>Note. If you require .NET framework / mono support, you should use RProvider 1.2 or earlier.
+Support for .NET versions below 5.0 was dropped with RProvider 2.0.</p>
+<h2><a name="Setting-the-environment-variable" class="anchor" href="#Setting-the-environment-variable">Setting the <code>R_HOME</code> environment variable</a></h2>
+<p>The R type provider requires that the R_HOME environment variable is set, so that
+it can find the R installation that you wish to use.</p>
+<h4><a name="macOS" class="anchor" href="#macOS">macOS</a></h4>
+<p>In a Terminal window, execute the following command to add the R_HOME environment
+variable permanently:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">echo export R_HOME=$(R RHOME) &gt;&gt; ~/.zshenv
+</code></pre></td></tr></table>
+<h4><a name="Linux" class="anchor" href="#Linux">Linux</a></h4>
+<p>You can set the R_HOME environment variable in your current session
+using the command:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">export R_HOME=$(R RHOME)
+</code></pre></td></tr></table>
+<h4><a name="Windows" class="anchor" href="#Windows">Windows</a></h4>
+<p>On Windows, from a command prompt use the following command to set
+the R_HOME permanently as a user environment variable, replacing C:\rpath\bin
+with your R install location:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="cmd">setx R_HOME "C:\rpath\bin"
+</code></pre></td></tr></table>
+<h2><a name="Testing-the-R-provider" class="anchor" href="#Testing-the-R-provider">Testing the R provider</a></h2>
+<p>You can now start experimenting with the R type provider using your favourite editor,
+or directly from the command line using</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">dotnet fsi
+</code></pre></td></tr></table>
+<p>The easiest way to get started is to install Visual Studio Code, making sure to also install
+the Ionide-fsharp extension within the Extensions tab.</p>
+<p>First, create a new file with the extension .fsx (e.g., test.fsx). Second, reference the
+R type provider package from NuGet by adding this line to the start of your file:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="pp">#r</span> <span class="s">&quot;nuget: RProvider,2.0.2&quot;</span>
+</code></pre>
+<p>Third, add your code. In this code, we load RProvider, then load three R packages using
+the <code>open</code> declarations (graphics, grDevices, and datasets).</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="id">RProvider</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="id">graphics</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 4)" onmouseover="showTip(event, 'fs2', 4)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs4', 5)" onmouseover="showTip(event, 'fs4', 5)" class="id">grDevices</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 6)" onmouseover="showTip(event, 'fs2', 6)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs5', 7)" onmouseover="showTip(event, 'fs5', 7)" class="id">datasets</span>
+</code></pre>
+<p>Now we can run some calculations and create charts. When using R on Mac, the default graphics
+device (Quartz) sometimes hangs, but X11 is working without issues, so the following uses X11:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// basic test if RProvider works correctly</span>
+<span onmouseout="hideTip(event, 'fs6', 8)" onmouseover="showTip(event, 'fs6', 8)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs7', 9)" onmouseover="showTip(event, 'fs7', 9)" class="id">mean</span><span class="pn">(</span><span class="pn">[</span><span class="n">1</span><span class="pn">;</span><span class="n">2</span><span class="pn">;</span><span class="n">3</span><span class="pn">;</span><span class="n">4</span><span class="pn">]</span><span class="pn">)</span>
+<span class="c">// val it : RDotNet.SymbolicExpression = [1] 2.5</span>
+</code></pre>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// testing graphics</span>
+<span onmouseout="hideTip(event, 'fs8', 10)" onmouseover="showTip(event, 'fs8', 10)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs9', 11)" onmouseover="showTip(event, 'fs9', 11)" class="id">x11</span><span class="pn">(</span><span class="pn">)</span>
+</code></pre>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// Calculate sin using the R &#39;sin&#39; function</span>
+<span class="c">// (converting results to &#39;float&#39;) and plot it</span>
+<span class="pn">[</span> <span class="k">for</span> <span onmouseout="hideTip(event, 'fs10', 12)" onmouseover="showTip(event, 'fs10', 12)" class="fn">x</span> <span class="k">in</span> <span class="o">0.0</span> <span class="o">..</span> <span class="n">0.1</span> <span class="o">..</span> <span class="n">3.14</span> <span class="k">-&gt;</span> 
+    <span onmouseout="hideTip(event, 'fs6', 13)" onmouseover="showTip(event, 'fs6', 13)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs11', 14)" onmouseover="showTip(event, 'fs11', 14)" class="id">sin</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs10', 15)" onmouseover="showTip(event, 'fs10', 15)" class="fn">x</span><span class="pn">)</span><span class="pn">.</span><span class="id">GetValue</span><span class="pn">&lt;</span><span onmouseout="hideTip(event, 'fs12', 16)" onmouseover="showTip(event, 'fs12', 16)" class="vt">float</span><span class="pn">&gt;</span><span class="pn">(</span><span class="pn">)</span> <span class="pn">]</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 17)" onmouseover="showTip(event, 'fs13', 17)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs14', 18)" onmouseover="showTip(event, 'fs14', 18)" class="id">plot</span>
+
+<span class="c">// Plot the data from the standard &#39;Nile&#39; data set</span>
+<span onmouseout="hideTip(event, 'fs13', 19)" onmouseover="showTip(event, 'fs13', 19)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs14', 20)" onmouseover="showTip(event, 'fs14', 20)" class="id">plot</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs15', 21)" onmouseover="showTip(event, 'fs15', 21)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs16', 22)" onmouseover="showTip(event, 'fs16', 22)" class="id">Nile</span><span class="pn">)</span>
+</code></pre>
+<h2><a name="Diagnostics-and-debugging" class="anchor" href="#Diagnostics-and-debugging">Diagnostics and debugging</a></h2>
+<p>If you encounter any issues, please do not hesitate to submit an issue! You can do that on the
+<a href="https://github.com/fslaborg/RProvider/issues">GitHub page</a>. Before submitting
+an issue, please see the <a href="diagnostics.html">Diagnostics and debugging page</a>, which tells you how
+to create a log file with more detailed information about the issues.</p>
+
+                </div>
+            </div>
+        </div>
+        <div class="fsdocs-tip" id="fs1">namespace RProvider</div>
+<div class="fsdocs-tip" id="fs2">Multiple items<br />namespace RProvider<br /><br />--------------------<br />type RProvider =
+  inherit TypeProviderForNamespaces
+  new : cfg:TypeProviderConfig -&gt; RProvider<br /><br />--------------------<br />new : cfg:CompilerServices.TypeProviderConfig -&gt; RProvider</div>
+<div class="fsdocs-tip" id="fs3">namespace RProvider.graphics</div>
+<div class="fsdocs-tip" id="fs4">namespace RProvider.grDevices</div>
+<div class="fsdocs-tip" id="fs5">namespace RProvider.datasets</div>
+<div class="fsdocs-tip" id="fs6">type R =
+  static member ! :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member != :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member !_hexmode :?a: obj -&gt; SymbolicExpression + 2 overloads
+  static member !_octmode :?a: obj -&gt; SymbolicExpression + 2 overloads
+  static member $ :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member $&lt;- :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member $&lt;-_data_frame :?x: obj *?name: obj *?value: obj -&gt; SymbolicExpression + 2 overloads
+  static member $_DLLInfo :?x: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member $_package__version :?x: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member %% :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>Base R functions.</em></div>
+<div class="fsdocs-tip" id="fs7">R.mean(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.mean(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.mean(?x: obj,?___: obj,?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>Arithmetic Mean</em></div>
+<div class="fsdocs-tip" id="fs8">type R =
+  static member CIDFont :?family: obj *?cmap: obj *?cmapEncoding: obj *?pdfresource: obj -&gt; SymbolicExpression + 2 overloads
+  static member Type1Font :?family: obj *?metrics: obj *?encoding: obj -&gt; SymbolicExpression + 2 overloads
+  static member X11 :?display: obj *?width: obj *?height: obj *?pointsize: obj *?gamma: obj *?bg: obj *?canvas: obj *?fonts: obj *?family: obj *?xpos: obj *?ypos: obj *?title: obj *?type: obj *?antialias: obj *?symbolfamily: obj -&gt; SymbolicExpression + 2 overloads
+  static member X11Font :?font: obj -&gt; SymbolicExpression + 2 overloads
+  static member X11Fonts :?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member X11_options :?___: obj *?reset: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member adjustcolor :?col: obj *?alpha_f: obj *?red_f: obj *?green_f: obj *?blue_f: obj *?offset: obj *?transform: obj -&gt; SymbolicExpression + 2 overloads
+  static member as_graphicsAnnot :?x: obj -&gt; SymbolicExpression + 2 overloads
+  static member as_raster :?x: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member axisTicks :?usr: obj *?log: obj *?axp: obj *?nint: obj -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>Graphics devices and support for base and grid graphics.</em></div>
+<div class="fsdocs-tip" id="fs9">R.x11(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.x11(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.x11(?display: obj,?width: obj,?height: obj,?pointsize: obj,?gamma: obj,?bg: obj,?canvas: obj,?fonts: obj,?family: obj,?xpos: obj,?ypos: obj,?title: obj,?type: obj,?antialias: obj,?symbolfamily: obj) : RDotNet.SymbolicExpression<br /><em>X Window System Graphics (X11)</em></div>
+<div class="fsdocs-tip" id="fs10">val x : float</div>
+<div class="fsdocs-tip" id="fs11">R.sin(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.sin(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.sin(?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>No documentation available</em></div>
+<div class="fsdocs-tip" id="fs12">Multiple items<br />val float : value:&#39;T -&gt; float (requires member op_Explicit)<br /><em>&lt;summary&gt;Converts the argument to 64-bit float. This is a direct conversion for all 
+ primitive numeric types. For strings, the input is converted using &lt;c&gt;Double.Parse()&lt;/c&gt;  
+ with InvariantCulture settings. Otherwise the operation requires an appropriate
+ static conversion method on the input type.&lt;/summary&gt;<br />&lt;param name=&quot;value&quot;&gt;The input value.&lt;/param&gt;<br />&lt;returns&gt;The converted float&lt;/returns&gt;</em><br /><br />--------------------<br />[&lt;Struct&gt;]
+type float = System.Double<br /><em>&lt;summary&gt;An abbreviation for the CLI type &lt;see cref=&quot;T:System.Double&quot; /&gt;.&lt;/summary&gt;<br />&lt;category&gt;Basic Types&lt;/category&gt;</em><br /><br />--------------------<br />type float&lt;&#39;Measure&gt; =
+  float<br /><em>&lt;summary&gt;The type of double-precision floating point numbers, annotated with a unit of measure. 
+ The unit of measure is erased in compiled code and when values of this type
+ are analyzed using reflection. The type is representationally equivalent to 
+ &lt;see cref=&quot;T:System.Double&quot; /&gt;.&lt;/summary&gt;<br />&lt;category index=&quot;6&quot;&gt;Basic Types with Units of Measure&lt;/category&gt;</em></div>
+<div class="fsdocs-tip" id="fs13">type R =
+  static member Axis :?x: obj *?at: obj *?___: obj *?side: obj *?labels: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member abline :?a: obj *?b: obj *?h: obj *?v: obj *?reg: obj *?coef: obj *?untf: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member arrows :?x0: obj *?y0: obj *?x1: obj *?y1: obj *?length: obj *?angle: obj *?code: obj *?col: obj *?lty: obj *?lwd: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member assocplot :?x: obj *?col: obj *?space: obj *?main: obj *?xlab: obj *?ylab: obj -&gt; SymbolicExpression + 2 overloads
+  static member axTicks :?side: obj *?axp: obj *?usr: obj *?log: obj *?nintLog: obj -&gt; SymbolicExpression + 2 overloads
+  static member axis :?side: obj *?at: obj *?labels: obj *?tick: obj *?line: obj *?pos: obj *?outer: obj *?font: obj *?lty: obj *?lwd: obj *?lwd_ticks: obj *?col: obj *?col_ticks: obj *?hadj: obj *?padj: obj *?gap_axis: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member axis_Date :?side: obj *?x: obj *?at: obj *?format: obj *?labels: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member axis_POSIXct :?side: obj *?x: obj *?at: obj *?format: obj *?labels: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member barplot :?height: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member barplot_default :?height: obj *?width: obj *?space: obj *?names_arg: obj *?legend_text: obj *?beside: obj *?horiz: obj *?density: obj *?angle: obj *?col: obj *?border: obj *?main: obj *?sub: obj *?xlab: obj *?ylab: obj *?xlim: obj *?ylim: obj *?xpd: obj *?log: obj *?axes: obj *?axisnames: obj *?cex_axis: obj *?cex_names: obj *?inside: obj *?plot: obj *?axis_lty: obj *?offset: obj *?add: obj *?ann: obj *?args_legend: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>R functions for base graphics.</em></div>
+<div class="fsdocs-tip" id="fs14">Multiple items<br />R.plot(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.plot(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.plot(?x: obj,?y: obj,?___: obj,?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>No documentation available</em><br /><br />--------------------<br />R.plot(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.plot(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.plot(?x: obj,?y: obj,?___: obj,?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>Generic X-Y Plotting</em></div>
+<div class="fsdocs-tip" id="fs15">type R =
+  static member AirPassengers : SymbolicExpression
+  static member BJsales : SymbolicExpression
+  static member BJsales_lead : SymbolicExpression
+  static member BOD : SymbolicExpression
+  static member CO2 : SymbolicExpression
+  static member ChickWeight : SymbolicExpression
+  static member DNase : SymbolicExpression
+  static member EuStockMarkets : SymbolicExpression
+  static member Formaldehyde : SymbolicExpression
+  static member HairEyeColor : SymbolicExpression
+  ...<br /><em>Base R datasets.</em></div>
+<div class="fsdocs-tip" id="fs16">property R.Nile: RDotNet.SymbolicExpression with get</div>
+
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://fslab.org/RProvider/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>

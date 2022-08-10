@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>R Provider Tutorial
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="BlueMountain Capital;FsLab">
+    <link rel="shortcut icon" type="image/x-icon" href="https://fslab.org/RProvider//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://fslab.org/RProvider/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://fslab.org/RProvider/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://raw.githubusercontent.com/fslaborg/RProvider/master/docs/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white pb-4">RProvider</h2>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="field">
+                            <div class="control has-icons-left has-icons-right searchbox" id="fsdocs-searchbox">
+                                <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source Repository</a></li>
+                        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/tutorial.html">
+    R Provider Tutorial
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/requirements.html">
+    Requirements: Getting Started
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/howto.html">
+    How to
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data Between F# and R
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-statistics.html">
+    Quickstart: Using Statistical Packages
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-charts.html">
+    Quickstart: Creating Charts
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    Working with R expressions
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing RData files
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/fslab.html">
+    Working with the FsLab ecosystem
+
+  </a>
+</li>             
+<li class="nav-header">
+  Developer
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/plugins.html">
+    Plugins
+
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    
+<h1><a name="R-Provider-Tutorial" class="anchor" href="#R-Provider-Tutorial">R Provider Tutorial</a></h1>
+<p>This tutorial demonstrates how to use the R type provider in an F# script. You
+can also use the R type provider in other scenarios such as apps and libraries.</p>
+<h2><a name="System-requirements" class="anchor" href="#System-requirements">System requirements</a></h2>
+<p>Make sure you have set up your system as specified <a href="requirements.fsx">here</a>.</p>
+<h2><a name="Referencing-the-provider" class="anchor" href="#Referencing-the-provider">Referencing the provider</a></h2>
+<p>First, make a new F# script (e.g., sample.fsx). In your new script, first load
+the R type provider from the NuGet package repository.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="pp">#r</span> <span class="s">&quot;nuget:RProvider&quot;</span>
+</code></pre>
+<p>For this tutorial, we use <code>open</code> to reference a number of packages
+including <code>stats</code>, <code>tseries</code> and <code>zoo</code>:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="id">RProvider</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="id">graphics</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 4)" onmouseover="showTip(event, 'fs2', 4)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs4', 5)" onmouseover="showTip(event, 'fs4', 5)" class="id">stats</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 6)" onmouseover="showTip(event, 'fs2', 6)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs5', 7)" onmouseover="showTip(event, 'fs5', 7)" class="id">tseries</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 8)" onmouseover="showTip(event, 'fs2', 8)" class="id">RProvider</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs6', 9)" onmouseover="showTip(event, 'fs6', 9)" class="id">zoo</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs7', 10)" onmouseover="showTip(event, 'fs7', 10)" class="id">System</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs7', 11)" onmouseover="showTip(event, 'fs7', 11)" class="id">System</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs8', 12)" onmouseover="showTip(event, 'fs8', 12)" class="id">Net</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs9', 13)" onmouseover="showTip(event, 'fs9', 13)" class="id">Http</span>
+</code></pre>
+<p>If either of the namespaces above are unrecognized, you need to install the package in R
+using <code>install.packages("stats")</code>.</p>
+<h2><a name="Pretty-printing-R-values" class="anchor" href="#Pretty-printing-R-values">Pretty-printing R values</a></h2>
+<p>Add this line to your script to tell F# interactive how to print out
+the values of R objects:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">fsi</span><span class="pn">.</span><span class="id">AddPrinter</span> <span onmouseout="hideTip(event, 'fs10', 14)" onmouseover="showTip(event, 'fs10', 14)" class="id">FSIPrinters</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs11', 15)" onmouseover="showTip(event, 'fs11', 15)" class="id">rValue</span>
+</code></pre>
+<h2><a name="Obtaining-data" class="anchor" href="#Obtaining-data">Obtaining data</a></h2>
+<p>In this tutorial, we use <a href="http://fsharp.github.io/FSharp.Data/">F# Data</a> to access stock
+prices from the Yahoo Finance portal. For more information, see the documentation for the
+<a href="http://fsharp.github.io/FSharp.Data/library/CsvProvider.html">CSV type provider</a>.</p>
+<p>The following snippet defines a function <code>getStockPrices</code> that returns
+array with prices for the specified stock and a specified number of days from a stocks API:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// NB The &#39;demo&#39; key has very limited usage.</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs12', 16)" onmouseover="showTip(event, 'fs12', 16)" class="id">apiKey</span> <span class="o">=</span> <span class="s">&quot;demo&quot;</span>
+
+<span class="c">// URL of a service that generates price data</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs13', 17)" onmouseover="showTip(event, 'fs13', 17)" class="fn">url</span> <span onmouseout="hideTip(event, 'fs14', 18)" onmouseover="showTip(event, 'fs14', 18)" class="fn">stock</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs15', 19)" onmouseover="showTip(event, 'fs15', 19)" class="fn">sprintf</span> <span class="s">&quot;https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&amp;symbol=</span><span class="pf">%s</span><span class="s">&amp;apikey=</span><span class="pf">%s</span><span class="s">&amp;datatype=csv&quot;</span> <span onmouseout="hideTip(event, 'fs14', 20)" onmouseover="showTip(event, 'fs14', 20)" class="fn">stock</span> <span onmouseout="hideTip(event, 'fs12', 21)" onmouseover="showTip(event, 'fs12', 21)" class="id">apiKey</span>
+
+<span class="c">/// Returns prices (as tuple) of a given stock</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs16', 22)" onmouseover="showTip(event, 'fs16', 22)" class="fn">getStockPrices</span> <span onmouseout="hideTip(event, 'fs14', 23)" onmouseover="showTip(event, 'fs14', 23)" class="fn">stock</span> <span onmouseout="hideTip(event, 'fs17', 24)" onmouseover="showTip(event, 'fs17', 24)" class="fn">count</span> <span class="o">=</span>
+    <span class="c">// Download the data and split it into lines</span>
+    <span class="k">use</span> <span onmouseout="hideTip(event, 'fs18', 25)" onmouseover="showTip(event, 'fs18', 25)" class="d">wc</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs19', 26)" onmouseover="showTip(event, 'fs19', 26)" class="d">HttpClient</span><span class="pn">(</span><span class="pn">)</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs20', 27)" onmouseover="showTip(event, 'fs20', 27)" class="fn">data</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs18', 28)" onmouseover="showTip(event, 'fs18', 28)" class="d">wc</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs21', 29)" onmouseover="showTip(event, 'fs21', 29)" class="id">GetStringAsync</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs13', 30)" onmouseover="showTip(event, 'fs13', 30)" class="fn">url</span> <span onmouseout="hideTip(event, 'fs14', 31)" onmouseover="showTip(event, 'fs14', 31)" class="fn">stock</span><span class="pn">)</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs22', 32)" onmouseover="showTip(event, 'fs22', 32)" class="rt">Async</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs23', 33)" onmouseover="showTip(event, 'fs23', 33)" class="id">AwaitTask</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs22', 34)" onmouseover="showTip(event, 'fs22', 34)" class="rt">Async</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs24', 35)" onmouseover="showTip(event, 'fs24', 35)" class="id">RunSynchronously</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs25', 36)" onmouseover="showTip(event, 'fs25', 36)" class="fn">dataLines</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs20', 37)" onmouseover="showTip(event, 'fs20', 37)" class="fn">data</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs26', 38)" onmouseover="showTip(event, 'fs26', 38)" class="id">Split</span><span class="pn">(</span><span class="pn">[|</span> <span class="s">&#39;\n&#39;</span> <span class="pn">|]</span><span class="pn">,</span> <span onmouseout="hideTip(event, 'fs27', 39)" onmouseover="showTip(event, 'fs27', 39)" class="en">StringSplitOptions</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs28', 40)" onmouseover="showTip(event, 'fs28', 40)" class="id">RemoveEmptyEntries</span><span class="pn">)</span>
+ 
+    <span class="c">// Parse lines of the CSV file and take specified</span>
+    <span class="c">// number of days using in the oldest to newest order</span>
+    <span onmouseout="hideTip(event, 'fs29', 41)" onmouseover="showTip(event, 'fs29', 41)" class="fn">seq</span> <span class="pn">{</span> <span class="k">for</span> <span onmouseout="hideTip(event, 'fs30', 42)" onmouseover="showTip(event, 'fs30', 42)" class="fn">line</span> <span class="k">in</span> <span onmouseout="hideTip(event, 'fs25', 43)" onmouseover="showTip(event, 'fs25', 43)" class="fn">dataLines</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs31', 44)" onmouseover="showTip(event, 'fs31', 44)" class="m">Seq</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs32', 45)" onmouseover="showTip(event, 'fs32', 45)" class="id">skip</span> <span class="n">1</span> <span class="k">do</span>
+              <span class="k">let</span> <span onmouseout="hideTip(event, 'fs33', 46)" onmouseover="showTip(event, 'fs33', 46)" class="fn">infos</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 47)" onmouseover="showTip(event, 'fs30', 47)" class="fn">line</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs26', 48)" onmouseover="showTip(event, 'fs26', 48)" class="id">Split</span><span class="pn">(</span><span class="s">&#39;,&#39;</span><span class="pn">)</span>
+              <span class="k">yield</span> <span onmouseout="hideTip(event, 'fs34', 49)" onmouseover="showTip(event, 'fs34', 49)" class="fn">float</span> <span onmouseout="hideTip(event, 'fs33', 50)" onmouseover="showTip(event, 'fs33', 50)" class="fn">infos</span><span class="id">.</span><span class="pn">[</span><span class="n">4</span><span class="pn">]</span> <span class="pn">}</span>
+    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs31', 51)" onmouseover="showTip(event, 'fs31', 51)" class="m">Seq</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs35', 52)" onmouseover="showTip(event, 'fs35', 52)" class="id">truncate</span> <span onmouseout="hideTip(event, 'fs17', 53)" onmouseover="showTip(event, 'fs17', 53)" class="fn">count</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs36', 54)" onmouseover="showTip(event, 'fs36', 54)" class="m">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs37', 55)" onmouseover="showTip(event, 'fs37', 55)" class="id">ofSeq</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs36', 56)" onmouseover="showTip(event, 'fs36', 56)" class="m">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs38', 57)" onmouseover="showTip(event, 'fs38', 57)" class="id">rev</span>
+
+<span class="c">/// Get opening prices for MSFT for the last 100 days</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs39', 58)" onmouseover="showTip(event, 'fs39', 58)" class="id">msftOpens</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs34', 59)" onmouseover="showTip(event, 'fs34', 59)" class="vt">float</span><span class="pn">[</span><span class="pn">]</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs16', 60)" onmouseover="showTip(event, 'fs16', 60)" class="fn">getStockPrices</span> <span class="s">&quot;MSFT&quot;</span> <span class="n">100</span>
+</code></pre>
+<h2><a name="Calling-R-functions" class="anchor" href="#Calling-R-functions">Calling R functions</a></h2>
+<p>Now, we're ready to call R functions using the type provider. The following snippet takes
+<code>msftOpens</code>, calculates logarithm of the values using <code>R.log</code> and then calculates the
+differences of the resulting vector using <code>R.diff</code>:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// Retrieve stock price time series and compute returns</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs40', 61)" onmouseover="showTip(event, 'fs40', 61)" class="d">msft</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs39', 62)" onmouseover="showTip(event, 'fs39', 62)" class="id">msftOpens</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs41', 63)" onmouseover="showTip(event, 'fs41', 63)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs42', 64)" onmouseover="showTip(event, 'fs42', 64)" class="id">log</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs41', 65)" onmouseover="showTip(event, 'fs41', 65)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs43', 66)" onmouseover="showTip(event, 'fs43', 66)" class="id">diff</span>
+</code></pre>
+<p>If you want to see the resulting values, you can call <code>msft.AsVector()</code> in F# Interactive.
+Next, we use the <code>acf</code> function to display the atuo-correlation and call <code>adf_test</code> to
+see if the <code>msft</code> returns are stationary/non-unit root:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs44', 67)" onmouseover="showTip(event, 'fs44', 67)" class="d">a</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs45', 68)" onmouseover="showTip(event, 'fs45', 68)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs46', 69)" onmouseover="showTip(event, 'fs46', 69)" class="id">acf</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs40', 70)" onmouseover="showTip(event, 'fs40', 70)" class="d">msft</span><span class="pn">)</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs47', 71)" onmouseover="showTip(event, 'fs47', 71)" class="d">adf</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs48', 72)" onmouseover="showTip(event, 'fs48', 72)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs49', 73)" onmouseover="showTip(event, 'fs49', 73)" class="id">adf_test</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs40', 74)" onmouseover="showTip(event, 'fs40', 74)" class="d">msft</span><span class="pn">)</span> 
+</code></pre>
+<p>After running the first snippet, a window similar to the following should appear (note that
+it might not appear as a top-most window).</p>
+<div style="text-align:center">
+<img src="img/acf.png" />
+</div>
+<p>Finally, we can obtain data for multiple different indicators and use the <code>R.pairs</code> function
+to produce a matrix of scatter plots:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// Build a list of tickers and get diff of logs of prices for each one</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs50', 75)" onmouseover="showTip(event, 'fs50', 75)" class="id">tickers</span> <span class="o">=</span> 
+  <span class="pn">[</span> <span class="s">&quot;MSFT&quot;</span><span class="pn">;</span> <span class="s">&quot;AAPL&quot;</span><span class="pn">;</span> <span class="s">&quot;X&quot;</span><span class="pn">;</span> <span class="s">&quot;VXX&quot;</span><span class="pn">;</span> <span class="s">&quot;SPX&quot;</span><span class="pn">;</span> <span class="s">&quot;GLD&quot;</span> <span class="pn">]</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs51', 76)" onmouseover="showTip(event, 'fs51', 76)" class="id">data</span> <span class="o">=</span>
+  <span class="pn">[</span> <span class="k">for</span> <span onmouseout="hideTip(event, 'fs52', 77)" onmouseover="showTip(event, 'fs52', 77)" class="fn">t</span> <span class="k">in</span> <span onmouseout="hideTip(event, 'fs50', 78)" onmouseover="showTip(event, 'fs50', 78)" class="id">tickers</span> <span class="k">-&gt;</span> 
+      <span onmouseout="hideTip(event, 'fs53', 79)" onmouseover="showTip(event, 'fs53', 79)" class="fn">printfn</span> <span class="s">&quot;got one!&quot;</span>
+      <span onmouseout="hideTip(event, 'fs52', 80)" onmouseover="showTip(event, 'fs52', 80)" class="fn">t</span><span class="pn">,</span> <span onmouseout="hideTip(event, 'fs16', 81)" onmouseover="showTip(event, 'fs16', 81)" class="fn">getStockPrices</span> <span onmouseout="hideTip(event, 'fs52', 82)" onmouseover="showTip(event, 'fs52', 82)" class="fn">t</span> <span class="n">255</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs41', 83)" onmouseover="showTip(event, 'fs41', 83)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs42', 84)" onmouseover="showTip(event, 'fs42', 84)" class="id">log</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs41', 85)" onmouseover="showTip(event, 'fs41', 85)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs43', 86)" onmouseover="showTip(event, 'fs43', 86)" class="id">diff</span> <span class="pn">]</span>
+
+<span class="c">// Create an R data frame with the data and call &#39;R.pairs&#39;</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs54', 87)" onmouseover="showTip(event, 'fs54', 87)" class="d">df</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs41', 88)" onmouseover="showTip(event, 'fs41', 88)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs55', 89)" onmouseover="showTip(event, 'fs55', 89)" class="id">data_frame</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs56', 90)" onmouseover="showTip(event, 'fs56', 90)" class="fn">namedParams</span> <span onmouseout="hideTip(event, 'fs51', 91)" onmouseover="showTip(event, 'fs51', 91)" class="id">data</span><span class="pn">)</span>
+<span onmouseout="hideTip(event, 'fs57', 92)" onmouseover="showTip(event, 'fs57', 92)" class="rt">R</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs58', 93)" onmouseover="showTip(event, 'fs58', 93)" class="id">pairs</span><span class="pn">(</span><span onmouseout="hideTip(event, 'fs54', 94)" onmouseover="showTip(event, 'fs54', 94)" class="d">df</span><span class="pn">)</span>
+</code></pre>
+<p>As a result, you should see a window showing results similar to these:</p>
+<div style="text-align:center">
+<img src="img/pairs.png" />
+</div>
+
+                </div>
+            </div>
+        </div>
+        <div class="fsdocs-tip" id="fs1">namespace RProvider</div>
+<div class="fsdocs-tip" id="fs2">Multiple items<br />namespace RProvider<br /><br />--------------------<br />type RProvider =
+  inherit TypeProviderForNamespaces
+  new : cfg:TypeProviderConfig -&gt; RProvider<br /><br />--------------------<br />new : cfg:CompilerServices.TypeProviderConfig -&gt; RProvider</div>
+<div class="fsdocs-tip" id="fs3">namespace RProvider.graphics</div>
+<div class="fsdocs-tip" id="fs4">namespace RProvider.stats</div>
+<div class="fsdocs-tip" id="fs5">namespace RProvider.tseries</div>
+<div class="fsdocs-tip" id="fs6">namespace RProvider.zoo</div>
+<div class="fsdocs-tip" id="fs7">namespace System</div>
+<div class="fsdocs-tip" id="fs8">namespace System.Net</div>
+<div class="fsdocs-tip" id="fs9">namespace System.Net.Http</div>
+<div class="fsdocs-tip" id="fs10">module FSIPrinters
+
+from RProvider<br /><em>&lt;summary&gt;
+ Print functions that may be used in
+ F# interactive to &#39;pretty-print&#39; R types to the
+ console window. Use in your scripts by
+ passing to `fsi.AddPrinter`.
+&lt;/summary&gt;</em></div>
+<div class="fsdocs-tip" id="fs11">val rValue : synexpr:RDotNet.SymbolicExpression -&gt; string<br /><em>&lt;summary&gt;
+ Print any `SymbolicExpression` using R&#39;s built-in
+ `print` function.
+&lt;/summary&gt;</em></div>
+<div class="fsdocs-tip" id="fs12">val apiKey : string</div>
+<div class="fsdocs-tip" id="fs13">val url : stock:string -&gt; string</div>
+<div class="fsdocs-tip" id="fs14">val stock : string</div>
+<div class="fsdocs-tip" id="fs15">val sprintf : format:Printf.StringFormat&lt;&#39;T&gt; -&gt; &#39;T<br /><em>&lt;summary&gt;Print to a string using the given format.&lt;/summary&gt;<br />&lt;param name=&quot;format&quot;&gt;The formatter.&lt;/param&gt;<br />&lt;returns&gt;The formatted result.&lt;/returns&gt;</em></div>
+<div class="fsdocs-tip" id="fs16">val getStockPrices : stock:string -&gt; count:int -&gt; float []<br /><em>&#160;Returns prices (as tuple) of a given stock</em></div>
+<div class="fsdocs-tip" id="fs17">val count : int</div>
+<div class="fsdocs-tip" id="fs18">val wc : HttpClient</div>
+<div class="fsdocs-tip" id="fs19">Multiple items<br />type HttpClient =
+  inherit HttpMessageInvoker
+  new : unit -&gt; unit + 2 overloads
+  member CancelPendingRequests : unit -&gt; unit
+  member DeleteAsync : requestUri: string -&gt; Task&lt;HttpResponseMessage&gt; + 3 overloads
+  member Dispose : disposing: bool -&gt; unit
+  member GetAsync : requestUri: string -&gt; Task&lt;HttpResponseMessage&gt; + 7 overloads
+  member GetByteArrayAsync : requestUri: string -&gt; Task&lt;byte []&gt; + 3 overloads
+  member GetStreamAsync : requestUri: string -&gt; Task&lt;Stream&gt; + 3 overloads
+  member GetStringAsync : requestUri: string -&gt; Task&lt;string&gt; + 3 overloads
+  member PatchAsync : requestUri: string * content: HttpContent -&gt; Task&lt;HttpResponseMessage&gt; + 3 overloads
+  ...<br /><em>&lt;summary&gt;Provides a class for sending HTTP requests and receiving HTTP responses from a resource identified by a URI.&lt;/summary&gt;</em><br /><br />--------------------<br />HttpClient() : HttpClient<br />HttpClient(handler: HttpMessageHandler) : HttpClient<br />HttpClient(handler: HttpMessageHandler, disposeHandler: bool) : HttpClient</div>
+<div class="fsdocs-tip" id="fs20">val data : string</div>
+<div class="fsdocs-tip" id="fs21">HttpClient.GetStringAsync(requestUri: Uri) : Threading.Tasks.Task&lt;string&gt;<br />HttpClient.GetStringAsync(requestUri: string) : Threading.Tasks.Task&lt;string&gt;<br />HttpClient.GetStringAsync(requestUri: Uri, cancellationToken: Threading.CancellationToken) : Threading.Tasks.Task&lt;string&gt;<br />HttpClient.GetStringAsync(requestUri: string, cancellationToken: Threading.CancellationToken) : Threading.Tasks.Task&lt;string&gt;</div>
+<div class="fsdocs-tip" id="fs22">Multiple items<br />type Async =
+  static member AsBeginEnd : computation:(&#39;Arg -&gt; Async&lt;&#39;T&gt;) -&gt; (&#39;Arg * AsyncCallback * obj -&gt; IAsyncResult) * (IAsyncResult -&gt; &#39;T) * (IAsyncResult -&gt; unit)
+  static member AwaitEvent : event:IEvent&lt;&#39;Del,&#39;T&gt; * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt; (requires delegate and &#39;Del :&gt; Delegate)
+  static member AwaitIAsyncResult : iar:IAsyncResult * ?millisecondsTimeout:int -&gt; Async&lt;bool&gt;
+  static member AwaitTask : task:Task&lt;&#39;T&gt; -&gt; Async&lt;&#39;T&gt; + 1 overload
+  static member AwaitWaitHandle : waitHandle:WaitHandle * ?millisecondsTimeout:int -&gt; Async&lt;bool&gt;
+  static member CancelDefaultToken : unit -&gt; unit
+  static member Catch : computation:Async&lt;&#39;T&gt; -&gt; Async&lt;Choice&lt;&#39;T,exn&gt;&gt;
+  static member Choice : computations:seq&lt;Async&lt;&#39;T option&gt;&gt; -&gt; Async&lt;&#39;T option&gt;
+  static member FromBeginEnd : beginAction:(AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt; + 3 overloads
+  static member FromContinuations : callback:((&#39;T -&gt; unit) * (exn -&gt; unit) * (OperationCanceledException -&gt; unit) -&gt; unit) -&gt; Async&lt;&#39;T&gt;
+  ...<br /><em>&lt;summary&gt;Holds static members for creating and manipulating asynchronous computations.&lt;/summary&gt;<br />&lt;remarks&gt;
+  See also &lt;a href=&quot;https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/asynchronous-workflows&quot;&gt;F# Language Guide - Async Workflows&lt;/a&gt;.
+ &lt;/remarks&gt;<br />&lt;category index=&quot;1&quot;&gt;Async Programming&lt;/category&gt;</em><br /><br />--------------------<br />type Async&lt;&#39;T&gt; =<br /><em>&lt;summary&gt;
+ An asynchronous computation, which, when run, will eventually produce a value  of type T, or else raises an exception.
+ &lt;/summary&gt;<br />&lt;remarks&gt;
+  This type has no members. Asynchronous computations are normally specified either by using an async expression
+  or the static methods in the &lt;see cref=&quot;T:Microsoft.FSharp.Control.Async&quot; /&gt; type.
+
+  See also &lt;a href=&quot;https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/asynchronous-workflows&quot;&gt;F# Language Guide - Async Workflows&lt;/a&gt;.
+ &lt;/remarks&gt;<br />&lt;namespacedoc&gt;&lt;summary&gt;
+   Library functionality for asynchronous programming, events and agents. See also
+   &lt;a href=&quot;https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/asynchronous-workflows&quot;&gt;Asynchronous Programming&lt;/a&gt;, 
+   &lt;a href=&quot;https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/members/events&quot;&gt;Events&lt;/a&gt; and
+   &lt;a href=&quot;https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/lazy-expressions&quot;&gt;Lazy Expressions&lt;/a&gt; in the
+   F# Language Guide.
+ &lt;/summary&gt;&lt;/namespacedoc&gt;<br />&lt;category index=&quot;1&quot;&gt;Async Programming&lt;/category&gt;</em></div>
+<div class="fsdocs-tip" id="fs23">static member Async.AwaitTask : task:Threading.Tasks.Task -&gt; Async&lt;unit&gt;<br />static member Async.AwaitTask : task:Threading.Tasks.Task&lt;&#39;T&gt; -&gt; Async&lt;&#39;T&gt;</div>
+<div class="fsdocs-tip" id="fs24">static member Async.RunSynchronously : computation:Async&lt;&#39;T&gt; * ?timeout:int * ?cancellationToken:Threading.CancellationToken -&gt; &#39;T</div>
+<div class="fsdocs-tip" id="fs25">val dataLines : string []</div>
+<div class="fsdocs-tip" id="fs26">String.Split([&lt;ParamArray&gt;] separator: char []) : string []<br />String.Split(separator: string [], options: StringSplitOptions) : string []<br />String.Split(separator: string,?options: StringSplitOptions) : string []<br />String.Split(separator: char [], options: StringSplitOptions) : string []<br />String.Split(separator: char [], count: int) : string []<br />String.Split(separator: char,?options: StringSplitOptions) : string []<br />String.Split(separator: string [], count: int, options: StringSplitOptions) : string []<br />String.Split(separator: string, count: int,?options: StringSplitOptions) : string []<br />String.Split(separator: char [], count: int, options: StringSplitOptions) : string []<br />String.Split(separator: char, count: int,?options: StringSplitOptions) : string []</div>
+<div class="fsdocs-tip" id="fs27">type StringSplitOptions =
+  | None = 0
+  | RemoveEmptyEntries = 1
+  | TrimEntries = 2<br /><em>&lt;summary&gt;Specifies options for applicable &lt;see cref=&quot;Overload:System.String.Split&quot; /&gt; method overloads, such as whether to omit empty substrings from the returned array or trim whitespace from substrings.&lt;/summary&gt;</em></div>
+<div class="fsdocs-tip" id="fs28">field StringSplitOptions.RemoveEmptyEntries: StringSplitOptions = 1<br /><em>&lt;summary&gt;&lt;para&gt;Omit array elements that contain an empty string from the result.&lt;/para&gt;&lt;para&gt;If &lt;see cref=&quot;F:System.StringSplitOptions.RemoveEmptyEntries&quot; /&gt; and &lt;see cref=&quot;F:System.StringSplitOptions.TrimEntries&quot; /&gt; are specified together, then substrings that consist only of white-space characters are also removed from the result.&lt;/para&gt;&lt;/summary&gt;</em></div>
+<div class="fsdocs-tip" id="fs29">Multiple items<br />val seq : sequence:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br /><em>&lt;summary&gt;Builds a sequence using sequence expression syntax&lt;/summary&gt;<br />&lt;param name=&quot;sequence&quot;&gt;The input sequence.&lt;/param&gt;<br />&lt;returns&gt;The result sequence.&lt;/returns&gt;</em><br /><br />--------------------<br />type seq&lt;&#39;T&gt; = Collections.Generic.IEnumerable&lt;&#39;T&gt;<br /><em>&lt;summary&gt;An abbreviation for the CLI type &lt;see cref=&quot;T:System.Collections.Generic.IEnumerable`1&quot; /&gt;&lt;/summary&gt;<br />&lt;remarks&gt;
+  See the &lt;see cref=&quot;T:Microsoft.FSharp.Collections.SeqModule&quot; /&gt; module for further operations related to sequences.
+
+  See also &lt;a href=&quot;https://docs.microsoft.com/dotnet/fsharp/language-reference/sequences&quot;&gt;F# Language Guide - Sequences&lt;/a&gt;.
+&lt;/remarks&gt;</em></div>
+<div class="fsdocs-tip" id="fs30">val line : string</div>
+<div class="fsdocs-tip" id="fs31">module Seq
+
+from Microsoft.FSharp.Collections<br /><em>&lt;summary&gt;Contains operations for working with values of type &lt;see cref=&quot;T:Microsoft.FSharp.Collections.seq`1&quot; /&gt;.&lt;/summary&gt;</em></div>
+<div class="fsdocs-tip" id="fs32">val skip : count:int -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br /><em>&lt;summary&gt;Returns a sequence that skips N elements of the underlying sequence and then yields the
+ remaining elements of the sequence.&lt;/summary&gt;<br />&lt;param name=&quot;count&quot;&gt;The number of items to skip.&lt;/param&gt;<br />&lt;param name=&quot;source&quot;&gt;The input sequence.&lt;/param&gt;<br />&lt;returns&gt;The result sequence.&lt;/returns&gt;<br />&lt;exception cref=&quot;T:System.ArgumentNullException&quot;&gt;Thrown when the input sequence is null.&lt;/exception&gt;<br />&lt;exception cref=&quot;T:System.InvalidOperationException&quot;&gt;Thrown when count exceeds the number of elements
+ in the sequence.&lt;/exception&gt;</em></div>
+<div class="fsdocs-tip" id="fs33">val infos : string []</div>
+<div class="fsdocs-tip" id="fs34">Multiple items<br />val float : value:&#39;T -&gt; float (requires member op_Explicit)<br /><em>&lt;summary&gt;Converts the argument to 64-bit float. This is a direct conversion for all 
+ primitive numeric types. For strings, the input is converted using &lt;c&gt;Double.Parse()&lt;/c&gt;  
+ with InvariantCulture settings. Otherwise the operation requires an appropriate
+ static conversion method on the input type.&lt;/summary&gt;<br />&lt;param name=&quot;value&quot;&gt;The input value.&lt;/param&gt;<br />&lt;returns&gt;The converted float&lt;/returns&gt;</em><br /><br />--------------------<br />[&lt;Struct&gt;]
+type float = Double<br /><em>&lt;summary&gt;An abbreviation for the CLI type &lt;see cref=&quot;T:System.Double&quot; /&gt;.&lt;/summary&gt;<br />&lt;category&gt;Basic Types&lt;/category&gt;</em><br /><br />--------------------<br />type float&lt;&#39;Measure&gt; =
+  float<br /><em>&lt;summary&gt;The type of double-precision floating point numbers, annotated with a unit of measure. 
+ The unit of measure is erased in compiled code and when values of this type
+ are analyzed using reflection. The type is representationally equivalent to 
+ &lt;see cref=&quot;T:System.Double&quot; /&gt;.&lt;/summary&gt;<br />&lt;category index=&quot;6&quot;&gt;Basic Types with Units of Measure&lt;/category&gt;</em></div>
+<div class="fsdocs-tip" id="fs35">val truncate : count:int -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br /><em>&lt;summary&gt;Returns a sequence that when enumerated returns at most N elements.&lt;/summary&gt;<br />&lt;param name=&quot;count&quot;&gt;The maximum number of items to enumerate.&lt;/param&gt;<br />&lt;param name=&quot;source&quot;&gt;The input sequence.&lt;/param&gt;<br />&lt;returns&gt;The result sequence.&lt;/returns&gt;<br />&lt;exception cref=&quot;T:System.ArgumentNullException&quot;&gt;Thrown when the input sequence is null.&lt;/exception&gt;</em></div>
+<div class="fsdocs-tip" id="fs36">type Array =
+  interface ICollection
+  interface IEnumerable
+  interface IList
+  interface IStructuralComparable
+  interface IStructuralEquatable
+  interface ICloneable
+  new : unit -&gt; unit
+  member Clone : unit -&gt; obj
+  member CopyTo : array: Array * index: int -&gt; unit + 1 overload
+  member GetEnumerator : unit -&gt; IEnumerator
+  ...<br /><em>&lt;summary&gt;Provides methods for creating, manipulating, searching, and sorting arrays, thereby serving as the base class for all arrays in the common language runtime.&lt;/summary&gt;</em></div>
+<div class="fsdocs-tip" id="fs37">val ofSeq : source:seq&lt;&#39;T&gt; -&gt; &#39;T []<br /><em>&lt;summary&gt;Builds a new array from the given enumerable object.&lt;/summary&gt;<br />&lt;param name=&quot;source&quot;&gt;The input sequence.&lt;/param&gt;<br />&lt;returns&gt;The array of elements from the sequence.&lt;/returns&gt;<br />&lt;exception cref=&quot;T:System.ArgumentNullException&quot;&gt;Thrown when the input sequence is null.&lt;/exception&gt;</em></div>
+<div class="fsdocs-tip" id="fs38">val rev : array:&#39;T [] -&gt; &#39;T []<br /><em>&lt;summary&gt;Returns a new array with the elements in reverse order.&lt;/summary&gt;<br />&lt;param name=&quot;array&quot;&gt;The input array.&lt;/param&gt;<br />&lt;returns&gt;The reversed array.&lt;/returns&gt;<br />&lt;exception cref=&quot;T:System.ArgumentNullException&quot;&gt;Thrown when the input array is null.&lt;/exception&gt;</em></div>
+<div class="fsdocs-tip" id="fs39">val msftOpens : float []<br /><em>&#160;Get opening prices for MSFT for the last 100 days</em></div>
+<div class="fsdocs-tip" id="fs40">val msft : RDotNet.SymbolicExpression</div>
+<div class="fsdocs-tip" id="fs41">type R =
+  static member ! :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member != :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member !_hexmode :?a: obj -&gt; SymbolicExpression + 2 overloads
+  static member !_octmode :?a: obj -&gt; SymbolicExpression + 2 overloads
+  static member $ :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member $&lt;- :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member $&lt;-_data_frame :?x: obj *?name: obj *?value: obj -&gt; SymbolicExpression + 2 overloads
+  static member $_DLLInfo :?x: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member $_package__version :?x: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member %% :?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>Base R functions.</em></div>
+<div class="fsdocs-tip" id="fs42">R.log(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.log(paramsByName: Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.log(?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>Logarithms and Exponentials</em></div>
+<div class="fsdocs-tip" id="fs43">R.diff(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.diff(paramsByName: Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.diff(?x: obj,?___: obj,?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>Lagged Differences</em></div>
+<div class="fsdocs-tip" id="fs44">val a : RDotNet.SymbolicExpression</div>
+<div class="fsdocs-tip" id="fs45">type R =
+  static member AIC :?object: obj *?___: obj *?k: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member ARMAacf :?ar: obj *?ma: obj *?lag_max: obj *?pacf: obj -&gt; SymbolicExpression + 2 overloads
+  static member ARMAtoMA :?ar: obj *?ma: obj *?lag_max: obj -&gt; SymbolicExpression + 2 overloads
+  static member BIC :?object: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member Box_test :?x: obj *?lag: obj *?type: obj *?fitdf: obj -&gt; SymbolicExpression + 2 overloads
+  static member C :?object: obj *?contr: obj *?how_many: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member D :?expr: obj *?name: obj -&gt; SymbolicExpression + 2 overloads
+  static member DF2formula :?x: obj *?env: obj -&gt; SymbolicExpression + 2 overloads
+  static member Gamma :?link: obj -&gt; SymbolicExpression + 2 overloads
+  static member HoltWinters :?x: obj *?alpha: obj *?beta: obj *?gamma: obj *?seasonal: obj *?start_periods: obj *?l_start: obj *?b_start: obj *?s_start: obj *?optim_start: obj *?optim_control: obj -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>R statistical functions.</em></div>
+<div class="fsdocs-tip" id="fs46">R.acf(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.acf(paramsByName: Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.acf(?x: obj,?lag_max: obj,?type: obj,?plot: obj,?na_action: obj,?demean: obj,?___: obj,?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>Auto- and Cross- Covariance and -Correlation Function Estimation</em></div>
+<div class="fsdocs-tip" id="fs47">val adf : RDotNet.SymbolicExpression</div>
+<div class="fsdocs-tip" id="fs48">type R =
+  static member adf_test :?x: obj *?alternative: obj *?k: obj -&gt; SymbolicExpression + 2 overloads
+  static member approx_irts :?object: obj *?time: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member arma :?x: obj *?order: obj *?lag: obj *?coef: obj *?include_intercept: obj *?series: obj *?qr_tol: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member as_irts :?object: obj -&gt; SymbolicExpression + 2 overloads
+  static member bds_test :?x: obj *?m: obj *?eps: obj *?trace: obj -&gt; SymbolicExpression + 2 overloads
+  static member daysecond :?object: obj *?tz: obj -&gt; SymbolicExpression + 2 overloads
+  static member garch :?x: obj *?order: obj *?series: obj *?control: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member garch_control :?maxiter: obj *?trace: obj *?start: obj *?grad: obj *?abstol: obj *?reltol: obj *?xtol: obj *?falsetol: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member get_hist_quote :?instrument: obj *?start: obj *?end: obj *?quote: obj *?provider: obj *?method: obj *?origin: obj *?compression: obj *?retclass: obj *?quiet: obj *?drop: obj -&gt; SymbolicExpression + 2 overloads
+  static member irts :?time: obj *?value: obj -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>Time series analysis and computational finance.</em></div>
+<div class="fsdocs-tip" id="fs49">R.adf_test(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.adf_test(paramsByName: Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.adf_test(?x: obj,?alternative: obj,?k: obj) : RDotNet.SymbolicExpression<br /><em>Augmented Dickey-Fuller Test</em></div>
+<div class="fsdocs-tip" id="fs50">val tickers : string list</div>
+<div class="fsdocs-tip" id="fs51">val data : (string * RDotNet.SymbolicExpression) list</div>
+<div class="fsdocs-tip" id="fs52">val t : string</div>
+<div class="fsdocs-tip" id="fs53">val printfn : format:Printf.TextWriterFormat&lt;&#39;T&gt; -&gt; &#39;T<br /><em>&lt;summary&gt;Print to &lt;c&gt;stdout&lt;/c&gt; using the given format, and add a newline.&lt;/summary&gt;<br />&lt;param name=&quot;format&quot;&gt;The formatter.&lt;/param&gt;<br />&lt;returns&gt;The formatted result.&lt;/returns&gt;</em></div>
+<div class="fsdocs-tip" id="fs54">val df : RDotNet.SymbolicExpression</div>
+<div class="fsdocs-tip" id="fs55">R.data_frame(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.data_frame(paramsByName: Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.data_frame(?___: obj,?row_names: obj,?check_rows: obj,?check_names: obj,?fix_empty_names: obj,?stringsAsFactors: obj,?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>Data Frames</em></div>
+<div class="fsdocs-tip" id="fs56">val namedParams : s:seq&lt;string * &#39;a&gt; -&gt; Collections.Generic.IDictionary&lt;string,obj&gt;<br /><em>&lt;summary&gt;
+ Construct a dictionary of named params to pass to an R function.
+
+ ## Example
+ For example, if you want to call the `R.plot` function with named parameters
+ specifying `x`, `type`, `col` and `ylim`, you can use the following:
+
+     [ &quot;x&quot;, box widgets;
+       &quot;type&quot;, box &quot;o&quot;;
+       &quot;col&quot;, box &quot;blue&quot;;
+       &quot;ylim&quot;, box [0; 25] ]
+     |&amp;gt; namedParams |&amp;gt; R.plot
+
+&lt;/summary&gt;</em></div>
+<div class="fsdocs-tip" id="fs57">type R =
+  static member Axis :?x: obj *?at: obj *?___: obj *?side: obj *?labels: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member abline :?a: obj *?b: obj *?h: obj *?v: obj *?reg: obj *?coef: obj *?untf: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member arrows :?x0: obj *?y0: obj *?x1: obj *?y1: obj *?length: obj *?angle: obj *?code: obj *?col: obj *?lty: obj *?lwd: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member assocplot :?x: obj *?col: obj *?space: obj *?main: obj *?xlab: obj *?ylab: obj -&gt; SymbolicExpression + 2 overloads
+  static member axTicks :?side: obj *?axp: obj *?usr: obj *?log: obj *?nintLog: obj -&gt; SymbolicExpression + 2 overloads
+  static member axis :?side: obj *?at: obj *?labels: obj *?tick: obj *?line: obj *?pos: obj *?outer: obj *?font: obj *?lty: obj *?lwd: obj *?lwd_ticks: obj *?col: obj *?col_ticks: obj *?hadj: obj *?padj: obj *?gap_axis: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member axis_Date :?side: obj *?x: obj *?at: obj *?format: obj *?labels: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member axis_POSIXct :?side: obj *?x: obj *?at: obj *?format: obj *?labels: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member barplot :?height: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  static member barplot_default :?height: obj *?width: obj *?space: obj *?names_arg: obj *?legend_text: obj *?beside: obj *?horiz: obj *?density: obj *?angle: obj *?col: obj *?border: obj *?main: obj *?sub: obj *?xlab: obj *?ylab: obj *?xlim: obj *?ylim: obj *?xpd: obj *?log: obj *?axes: obj *?axisnames: obj *?cex_axis: obj *?cex_names: obj *?inside: obj *?plot: obj *?axis_lty: obj *?offset: obj *?add: obj *?ann: obj *?args_legend: obj *?___: obj *?paramArray: obj [] -&gt; SymbolicExpression + 2 overloads
+  ...<br /><em>R functions for base graphics.</em></div>
+<div class="fsdocs-tip" id="fs58">R.pairs(paramsByName: List&lt;string * obj&gt;) : RDotNet.SymbolicExpression<br />R.pairs(paramsByName: Collections.Generic.IDictionary&lt;string,obj&gt;) : RDotNet.SymbolicExpression<br />R.pairs(?x: obj,?___: obj,?paramArray: obj []) : RDotNet.SymbolicExpression<br /><em>Scatterplot Matrices</em></div>
+
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://fslab.org/RProvider/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>
