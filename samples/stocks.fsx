@@ -1,4 +1,4 @@
-#I "../src/RProvider/bin/Release/net5.0/"
+#I "../src/RProvider/bin/Release/net7.0/"
 #r "RDotNet.dll"
 #r "RProvider.DesignTime.dll"
 #r "RProvider.Runtime.dll"

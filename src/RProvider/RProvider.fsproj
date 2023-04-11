@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
@@ -18,10 +18,10 @@
     <None Include="../../docs/img/logo.png" Pack="true" PackagePath="/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Include="bin/Release/net5.0/server/**" Pack="true" PackagePath="/lib/net5.0/server/">
+    <None Include="bin/Release/net7.0/server/**" Pack="true" PackagePath="/lib/net7.0/server/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Include="RProvider.Runtime.dll.config" Pack="true" PackagePath="/lib/net5.0/">
+    <None Include="RProvider.Runtime.dll.config" Pack="true" PackagePath="/lib/net7.0/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
   </ItemGroup>

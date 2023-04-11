@@ -182,7 +182,7 @@ Target.create
                               Runtime = Some runtime
                               SelfContained = Some false
                               Configuration = DotNet.BuildConfiguration.Release
-                              OutputPath = Some(sprintf "src/RProvider/bin/Release/net5.0/server/%s/" runtime) })
+                              OutputPath = Some(sprintf "src/RProvider/bin/Release/net7.0/server/%s/" runtime) })
                     "src/RProvider.Server"))
 
 Target.create

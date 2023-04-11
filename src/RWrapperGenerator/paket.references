@@ -1,3 +1,4 @@
 R.NET
 R.NET.FSharp
 System.ComponentModel.Composition
+System.Configuration.ConfigurationManager

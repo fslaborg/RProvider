@@ -8,10 +8,10 @@ index: 5
 
 (*** condition: prepare ***)
 #nowarn "211"
-#r "../src/RProvider/bin/Release/net5.0/RDotNet.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.Runtime.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.DesignTime.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.dll"
+#r "../src/RProvider/bin/Release/net7.0/RDotNet.dll"
+#r "../src/RProvider/bin/Release/net7.0/RProvider.Runtime.dll"
+#r "../src/RProvider/bin/Release/net7.0/RProvider.DesignTime.dll"
+#r "../src/RProvider/bin/Release/net7.0/RProvider.dll"
 (*** condition: fsx ***)
 #if FSX
 #r "nuget: RProvider,{{package-version}}"
@@ -42,7 +42,7 @@ file containing a couple of symbols from the sample `volcano` data set:
     volcanoList <- unlist(as.list(volcano))
     volcanoMean <- mean(volcanoList)
     symbols <- c("volcano", "volcanoList", "volcanoMean")
-    save(list=symols, file="C:/data/sample.rdata")
+    save(list=symbols, file="C:/data/sample.rdata")
 
 To import the data on the F# side, you can use the `RData` type provider that is
 available in the `RProvider` namespace. It takes a static parameter specifying the

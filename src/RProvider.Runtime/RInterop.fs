@@ -569,7 +569,6 @@ module RInterop =
                         [ for arg in v.Split([| "c("; ", "; ")" |], StringSplitOptions.RemoveEmptyEntries) do
                               yield arg.Substring(1, arg.Length - 2) ]
                     | v -> List.ofArray [| v |]
-                    | null -> []
 
                 let hasVarArgs = argList |> List.exists (fun p -> p = "...")
                 RValue.Function(argList, hasVarArgs)

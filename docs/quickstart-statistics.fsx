@@ -8,11 +8,11 @@ index: 3
 
 (*** condition: prepare ***)
 #nowarn "211"
-#r "../src/RProvider/bin/Release/net5.0/DynamicInterop.dll"
-#r "../src/RProvider/bin/Release/net5.0/RDotNet.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.Runtime.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.DesignTime.dll"
-#r "../src/RProvider/bin/Release/net5.0/RProvider.dll"
+#r "../src/RProvider/bin/Release/net7.0/DynamicInterop.dll"
+#r "../src/RProvider/bin/Release/net7.0/RDotNet.dll"
+#r "../src/RProvider/bin/Release/net7.0/RProvider.Runtime.dll"
+#r "../src/RProvider/bin/Release/net7.0/RProvider.DesignTime.dll"
+#r "../src/RProvider/bin/Release/net7.0/RProvider.dll"
 #r "RProvider.dll"
 #r "RProvider.DesignTime.dll"
 (*** condition: fsx ***)
