@@ -1,6 +1,6 @@
 version 5.257.0
 source https://www.nuget.org/api/v2
-frameworks: netstandard2.0, net5.0
+frameworks: netstandard2.1, net7.0
 storage: none
 
 nuget FSharp.Data
@@ -9,7 +9,7 @@ nuget FsCheck 2.16.3
 nuget FsCheck.Xunit 2.16.3
 nuget xunit 2.4.1
 nuget xunit.runner.visualstudio 2.4.3
-nuget FSharp.Core 4.6.2
+nuget FSharp.Core 7.0.0
 nuget Microsoft.NET.Test.Sdk 16.11.0
 nuget ILRepack.MSBuild.Task 2.0.13
 nuget PipeMethodCalls 3.0.4
