@@ -1,15 +1,15 @@
-version 5.257.0
-source https://www.nuget.org/api/v2
-frameworks: netstandard2.0, net5.0
+version 8.1.0
+source https://api.nuget.org/v3/index.json
 storage: none
 
+nuget FSharp.Compiler.Service 43.8.301
 nuget FSharp.Data
 nuget FSharp.Formatting
 nuget FsCheck 2.16.3
 nuget FsCheck.Xunit 2.16.3
 nuget xunit 2.4.1
 nuget xunit.runner.visualstudio 2.4.3
-nuget FSharp.Core 4.6.2
+nuget FSharp.Core 8.0.301
 nuget Microsoft.NET.Test.Sdk 16.11.0
 nuget ILRepack.MSBuild.Task 2.0.13
 nuget PipeMethodCalls 3.0.4
@@ -20,5 +20,5 @@ nuget R.NET.FSharp 1.9.0
 nuget System.ComponentModel.Composition 5.0.0
 nuget System.Reflection.MetadataLoadContext 5.0.0
 
-github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fsi
-github fsprojects/FSharp.TypeProviders.SDK:f4aca36af04aa84b16ec04df6f6bf55ac2f17a73 src/ProvidedTypes.fs
+github fsprojects/FSharp.TypeProviders.SDK:23b588d06acb8e100402523abc1d4f3f06325b8a src/ProvidedTypes.fsi
+github fsprojects/FSharp.TypeProviders.SDK:23b588d06acb8e100402523abc1d4f3f06325b8a src/ProvidedTypes.fs

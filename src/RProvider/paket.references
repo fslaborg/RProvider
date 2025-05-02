@@ -5,3 +5,5 @@ R.NET
 R.NET.FSharp
 System.ComponentModel.Composition
 System.Reflection.MetadataLoadContext
+FSharp.Formatting
+FSharp.Compiler.Service

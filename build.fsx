@@ -163,6 +163,7 @@ Target.create
         Fake.DotNet.DotNet.build
             (fun args ->
                 { args with
+                      MSBuildParams = { args.MSBuildParams with DisableInternalBinLog = true }
                       Configuration = DotNet.BuildConfiguration.Release })
             (projectName + ".sln"))
 
@@ -181,8 +182,9 @@ Target.create
                         { args with
                               Runtime = Some runtime
                               SelfContained = Some false
+                              MSBuildParams = { args.MSBuildParams with DisableInternalBinLog = true }
                               Configuration = DotNet.BuildConfiguration.Release
-                              OutputPath = Some(sprintf "src/RProvider/bin/Release/net5.0/server/%s/" runtime) })
+                              OutputPath = Some(sprintf "src/RProvider/bin/Release/net8.0/server/%s/" runtime) })
                     "src/RProvider.Server"))
 
 Target.create
@@ -193,6 +195,7 @@ Target.create
         DotNet.build
             (fun args ->
                 { args with
+                      MSBuildParams = { args.MSBuildParams with DisableInternalBinLog = true }
                       Configuration = DotNet.BuildConfiguration.Release })
             "tests/Test.RProvider/Test.RProvider.fsproj")
 
@@ -262,7 +265,8 @@ Target.create
                       OutputPath = Some "bin"
                       MSBuildParams =
                           { p.MSBuildParams with
-                                Properties = properties } })
+                                 DisableInternalBinLog = true
+                                 Properties = properties } })
             "src/RProvider/RProvider.fsproj")
 
 //--------------------------------------------------------------------------------------

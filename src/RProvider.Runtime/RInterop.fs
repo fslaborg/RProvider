@@ -565,11 +565,11 @@ module RInterop =
                     let paramsValue = paramsAsCharacter.[0]
 
                     match paramsValue with
+                    | null -> []
                     | v when v.StartsWith("c(") ->
                         [ for arg in v.Split([| "c("; ", "; ")" |], StringSplitOptions.RemoveEmptyEntries) do
                               yield arg.Substring(1, arg.Length - 2) ]
                     | v -> List.ofArray [| v |]
-                    | null -> []
 
                 let hasVarArgs = argList |> List.exists (fun p -> p = "...")
                 RValue.Function(argList, hasVarArgs)

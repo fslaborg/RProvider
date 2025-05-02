@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../Common/AssemblyInfo.fs" />
@@ -18,10 +19,10 @@
     <None Include="../../docs/img/logo.png" Pack="true" PackagePath="/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Include="bin/Release/net5.0/server/**" Pack="true" PackagePath="/lib/net5.0/server/">
+    <None Include="bin/Release/net8.0/server/**" Pack="true" PackagePath="/lib/net8.0/server/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Include="RProvider.Runtime.dll.config" Pack="true" PackagePath="/lib/net5.0/">
+    <None Include="RProvider.Runtime.dll.config" Pack="true" PackagePath="/lib/net8.0/">
         <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
   </ItemGroup>
