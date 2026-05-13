@@ -125,17 +125,18 @@ module RInterop =
     let getBindings (packageName: string) =
 
         // Get the package environment (not namespace environment)
-        let pkgEnv = Environment.ofPackage Singletons.engine.Value packageName
+        let pkgNs = Environment.ofNamespace Singletons.engine.Value packageName
 
-        let names =
-            Evaluate.eval pkgEnv "ls(all.names=TRUE)"
+        let globalEnv = Environment.globalEnv Singletons.engine.Value
+        let names = 
+            Call.callFuncByName Convert.toR globalEnv "base" "getNamespaceExports" [] [| pkgNs |]
             |> Result.map (Extract.extractStringArray Singletons.engine.Value >> Array.choose id)
             |> Result.defaultValue [||]
 
         names
         |> Array.choose
             (fun name ->
-                match Environment.tryGetValue Singletons.engine.Value pkgEnv name with
+                match Environment.tryGetValue Singletons.engine.Value pkgNs name with
                 | None -> None
                 | Some sexp ->
                     let forced = Promise.force Singletons.engine.Value sexp
