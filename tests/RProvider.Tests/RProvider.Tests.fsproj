@@ -10,6 +10,7 @@
     <Compile Include="Runtime/Interop.fs" />
     <Compile Include="TypeProvider/RData.fs" />
     <Compile Include="TypeProvider/Operators.fs" />
+    <Compile Include="TypeProvider/Semantic.fs" />
     <Compile Include="TypeProvider/Provider.fs" />
   </ItemGroup>
   <ItemGroup>

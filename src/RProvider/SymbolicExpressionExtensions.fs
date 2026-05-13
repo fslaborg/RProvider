@@ -1,4 +1,4 @@
-namespace RProvider
+namespace RProvider.Runtime
 
 open RBridge
 open RBridge.Extensions
@@ -67,9 +67,9 @@ module SymbolicExpression =
     let column (name: string) (expr: SymbolicExpression) : SymbolicExpression =
         match expr with
         | DataFrame Singletons.engine.Value df ->
-            Runtime.RTypes.DataFrame.tryFromExpression df
+            RTypes.DataFrame.tryFromExpression df
             |> Option.defaultWith (fun _ -> failwith "The expression was not a valid R data frame")
-            |> Runtime.RTypes.DataFrame.getColumn name
+            |> RTypes.DataFrame.getColumn name
             |> RTypes.DataFrame.Column.getSexp
         | _ -> invalidOp "The expression is not an R data frame."
 
@@ -115,18 +115,18 @@ module SymbolicExpression =
             invalidOp <| sprintf "Unsupported operation on R object (R type: %A)" t
 
     let typedVectorByName (name: string) sexp =
-        match Runtime.RTypes.GenericVector.tryFromExpression sexp with
+        match RTypes.GenericVector.tryFromExpression sexp with
         | Some v ->
             match v with
-            | Runtime.RTypes.RVector.NumericV v -> v.[name] |> Runtime.RTypes.NumericS
+            | RTypes.RVector.NumericV v -> v.[name] |> RTypes.NumericS
             | _ -> failwith "not implemented (typed v by name)"
         | None -> invalidOp "Expression was not a vector"
 
     let typedVectorByIndex (index: int) sexp =
-        match Runtime.RTypes.GenericVector.tryFromExpression sexp with
+        match RTypes.GenericVector.tryFromExpression sexp with
         | Some v ->
             match v with
-            | Runtime.RTypes.RVector.NumericV v -> v.[index] |> Runtime.RTypes.NumericS
+            | RTypes.RVector.NumericV v -> v.[index] |> RTypes.NumericS
             | _ -> failwith "not implemented (typed v by index)"
         | None -> invalidOp "Expression was not a vector"
 
@@ -159,21 +159,21 @@ module SymbolicExpressionExtensions =
         member this.Member(name: string) = SymbolicExpression.getMember name this
 
         /// Get the value from the typed vector by name.
-        member this.ValueOf(name: string) : Runtime.RTypes.RScalar<'u> = SymbolicExpression.typedVectorByName name this
+        member this.ValueOf(name: string) : RTypes.RScalar<'u> = SymbolicExpression.typedVectorByName name this
 
         /// Represents the R value in an appropriate semantic
         /// R type for further data exploration and analysis, without
         /// extraction from R memory.
         member this.TryAsRTyped = SymbolicExpression.tryGetTyped this
         member this.AsTyped = SymbolicExpression.getTyped this
-        member this.AsDataFrame = Runtime.RTypes.DataFrame.tryFromExpression this
-        member this.AsVector = Runtime.RTypes.GenericVector.tryFromExpression this
-        member this.AsScalar = Runtime.RTypes.GenericScalar.tryFromExpression this
-        member this.AsFactor = Runtime.RTypes.Factor.tryFromExpression this
-        member this.AsList = Runtime.RTypes.HeterogeneousList.tryFromExpression this
+        member this.AsDataFrame = RTypes.DataFrame.tryFromExpression this
+        member this.AsVector = RTypes.GenericVector.tryFromExpression this
+        member this.AsScalar = RTypes.GenericScalar.tryFromExpression this
+        member this.AsFactor = RTypes.Factor.tryFromExpression this
+        member this.AsList = RTypes.HeterogeneousList.tryFromExpression this
 
         /// Get the value from an indexed vector by index.
-        member this.ValueAt(index: int) : Runtime.RTypes.RScalar<'u> = SymbolicExpression.typedVectorByIndex index this
+        member this.ValueAt(index: int) : RTypes.RScalar<'u> = SymbolicExpression.typedVectorByIndex index this
 
         /// Get the first value of a vector.
         member this.Head<'a>() = SymbolicExpression.head this

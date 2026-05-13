@@ -20,10 +20,10 @@ index: 1
 #endif // IPYNB
 
 (**
-Operators
+Semantic Types
 ===============
 
-RProvider includes the `RProvider.Operators` module, which contains custom operators that can make working with R easier. Make sure to open it alongside your packages:
+RProvider includes a semantic type layer that provides strongly typed wrappers around R values.
 *)
 
 open RProvider
@@ -34,25 +34,50 @@ open RProvider.datasets
 open RProvider.stats
 
 (**
-# Accessing members / slots
+## Numeric
 
-You can use the dynamic (`?`) operator to access:
+In R, as in F#, there is a distinction between integer and real (floating-point) numeric values.
 
-* Slots in S4 objects
-* Members of list types
+R represents floating point numbers through the 'real' data type. Here, we include semantic types for R's real numbers that include full arithmetic support. Similarly, the integer semantic type includes arithmetic support. However, R automatically casts integers to real numbers during any mathematical operations, even if only integers are involved. Our semantic types therefore follow the same casting rules.
 
-### List: accessing named columns in a dataframe.
+### Scalars
+
+To create an integer from an F# value:
+*)
+
+open FSharp.Data.UnitSystems.SI.UnitSymbols
+
+let x = Runtime.RTypes.Real.Scalar.fromFloat 2.1<m> |> Option.get
+let y = Runtime.RTypes.Real.Scalar.fromFloat 54.9<s> |> Option.get
+
+let z = x / y
+
+
+(**
+### Vectors
+
+*)
+
+(**
+## Heterogeneous Lists (HLists)
+
+In R, lists may contain values of disparate types. In F#, lists must be homogeneous.
+
+RProvider includes a semantic type for R's heterogeneous lists.
 
 *)
 
 R.mtcars?mpg
 
 (**
-### S4 object: access a slot 
+
+...
+
+## Factors
+
+...
+
+## Data Frames
+
+...
 *)
-
-R.eval "setClass('testclass', representation(foo='character', bar='integer'))"
-
-let test = R.eval "new('testclass', foo='s4', bar=1:4)"
-
-test?foo

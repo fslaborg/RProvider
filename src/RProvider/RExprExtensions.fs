@@ -81,6 +81,7 @@ module RExpr =
 
 /// Public API for accessing RExpr, including converting to
 /// R semantic types, .NET types, and extracting key metadata.
+/// [omit]
 [<AutoOpen>]
 module RExprExtensions =
 

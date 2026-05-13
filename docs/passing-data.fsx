@@ -24,27 +24,43 @@ open RProvider
 (**
 # Passing Data Between F# and R
 
-## F# to R: passing data to functions
+## NA and NaN values
 
-### Parameter Passing Conventions
+In R, NA is a distinct value on the base atomic types. For example, a factor, numeric, or character vector may contain NA values. In addition, numeric types may be NaN, which is distinct from NA.
 
-R supports various kinds of parameters, which we try to map onto equivalent F# parameter types:
+F# does not have a natural representation of NA values within its core types. To mirror R's behaviour, we use option values throughout F#-R data processing in RProvider. You may request non-option values, but if NAs are present any extraction functions will fail with an error to this effect.
 
- * All R formal parameters have names, and you can always pass their values either by name or positionally.  If you pass by name, you can skip arguments in your actual argument list.  We simply map these onto F# arguments, which you can also pass by name or positionally.
+## Using R expressions directly
 
- * In R, essentially all arguments are optional (even if no default value is specified in the function argument list).  It's up to the receiving function to determine whether to error if the value is missing.   So we make all arguments optional.
+If you pass `RExpr` values to any R functions (or any semantic R type wrappers, e.g. `Factor`, `DataFrame`, `RComplex`), they will be passed directly to the function without conversion or moving into F# memory space. In effect, F# becomes a typed layer over R. By using semantic R type wrappers, you can orchestrate R computatinos through the typed view provided by RProvider.
+*)
 
- * R functions support ... (varargs/paramarray).  We map this onto a .NET ParamArray, which allows an arbitrary number of arguments to be passed.  However, there are a couple of kinks with this:
+(**
+## Passing F# data to R
 
-    * R allows named arguments to appear _after_ the ... argument, whereas .NET requires the ParamArray argument to be at the end.  Some R functions use this convention because their primary arguments are passed in the ... argument and the named arguments will sometimes be used to modify the behavior of the function.  From the RProvider you will to supply values for the positional arguments before you can pass to the ... argument.  If you don't want to supply a value to one of these arguments, you can explicitly pass System.Reflection.Missing.
+### R function parameters
 
-    * Parameters passed to the R ... argument can also be passed using a name.  Those names are accessible to the calling function.  Example are list and dataframe construction (R.list, and R.data_frame).  To pass arguments this way, you can use the overload of each function that takes an IDictionary<string, obj>, either directly, or using the namedParams function.  For example:
+R has a very different specification than F#:
 
-        R.data_frame(namedParams [ "A", [|1;2;3|]; "B", [|4;5;6|] ])
+* All R formal parameters have names, and you can always pass their values either by name or positionally.  If you pass by name, you can skip arguments in your actual argument list.  We simply map these onto F# arguments, which you can also pass by name or positionally.
+
+* In R, essentially all arguments are optional (even if no default value is specified in the function argument list).  It's up to the receiving function to determine whether to error if the value is missing.   So we make all arguments optional.
+
+* R functions support ... (varargs/paramarray).  We map this onto a .NET ParamArray, which allows an arbitrary number of arguments to be passed.  However, there are a couple of kinks with this:
+
+* R allows named arguments to appear _after_ the ... argument, whereas .NET requires the ParamArray argument to be at the end.  Some R functions use this convention because their primary arguments are passed in the ... argument and the named arguments will sometimes be used to modify the behavior of the function.  From the RProvider you will to supply values for the positional arguments before you can pass to the ... argument.  If you don't want to supply a value to one of these arguments, you can explicitly pass System.Reflection.Missing.
+
+* Parameters passed to the R ... argument can also be passed using a name.  Those names are accessible to the calling function.  Example are list and dataframe construction (R.list, and R.data_frame).  To pass arguments this way, you can use the overload of each function that takes an IDictionary<string, obj>, either directly, or using the namedParams function.  For example:
+
+    R.data_frame(namedParams [ "A", [|1;2;3|]; "B", [|4;5;6|] ])
 
 ### Parameter Types
 
 Since all arguments to functions are of type obj, it is not necessarily obvious what you can pass.  Ultimately, you will need to know what the underlying function is expecting, but here is a table to help you.  When reading this, remember that for most types, R supports only vector types.  There are no scalar string, int, bool etc. types.
+
+| R type | F# type |
+| --- | --- |
+
 
 <table class="table table-bordered table-striped">
 <tr><th>R Type</th><th>F#/.NET Type</th></tr>

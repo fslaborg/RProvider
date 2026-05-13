@@ -4,7 +4,6 @@ open System
 open RProvider.Common
 open RProvider.Runtime
 open RProvider.Runtime.RInterop
-open RProvider.SymbolicExpressionExtensions
 
 /// Event loop (see below) can either perform some work item or stop
 type internal EventLoopMessage =

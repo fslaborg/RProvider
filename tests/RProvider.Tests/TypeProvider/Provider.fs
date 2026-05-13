@@ -3,8 +3,11 @@ module ProviderTests
 open System
 open System.Globalization
 open RProvider
-open RProvider.datasets
 open RProvider.Runtime.Helpers
+open RProvider.Operators
+
+open RProvider.datasets
+open RProvider.stats
 
 open Expecto
 
@@ -68,6 +71,20 @@ let locales =
             Expect.floatClose Accuracy.high x2 0.8414709848 ""
             Threading.Thread.CurrentThread.CurrentCulture <- systemLocale
 
+    ]
+
+[<Tests>]
+let functions =
+
+    testList "Function parameters" [
+
+        testCase "Can mix named and unnamed arguments" <| fun _ ->
+            let x = 10.
+            let summary = R.binom_test(x, 100.0, 0.5, alternative = "two.sided")            
+            let p = summary?``p.value``.FromR<float>()
+            Expect.floatClose Accuracy.high p 3.06329e-17 "p-value was not correct"
+            let n = summary?statistic.FromR<float>()
+            Expect.equal n 10. "number of tries not correct"
     ]
 
 
