@@ -41,7 +41,7 @@ module RTypes =
 
     /// Classify a symbolic expression into one of the semantic
     /// types provided by RProvider.
-    let classify engine sexp =
+    let internal classify engine sexp =
         match sexp with
         | ActivePatterns.S4Object engine _ -> S4ObjectType
         | ActivePatterns.DataFrame engine _ -> DataFrameType
@@ -85,6 +85,8 @@ module RTypes =
             | Ok sexp -> tryMake sexp |> Option.get
             | Error e -> failwith e
 
+    /// A basic representation of a vector that does not
+    /// support numeric operations.
     module VectorBase =
 
         type RVectorBase<'T> =
@@ -106,6 +108,38 @@ module RTypes =
 
             member this.AsRExpr = this.Sexp |> RExprWrapper.toRProvider
 
+        /// A vector of any length may become a generic vector.
+        let tryFromExpression sexp =
+            match classify Singletons.engine.Value sexp with
+            | VectorType
+            | ScalarType -> { Sexp = sexp } |> Some
+            | _ -> None
+
+
+    /// A basic representation of a scalar value in R, which
+    /// does not support numeric operators.
+    module ScalarBase =
+
+        type RScalarBase<'T> =
+            internal { Sexp: SymbolicExpression }
+
+            member this.AsRExpr = this.Sexp |> RExprWrapper.toRProvider
+
+        /// Creates a scalar from a size-1 vector, or returns None.
+        let tryFromExpression sexp =
+            match classify Singletons.engine.Value sexp with
+            | ScalarType -> { Sexp = sexp } |> Some
+            | _ -> None
+
+        /// Enforces that a scalar is a vector of a single element,
+        /// to be used before any operation.
+        let internal enforceShape num =
+            if Singletons.engine.Value.invokeInt(fun e -> SymbolicExpression.length e num) = 1 then
+                num
+            else
+                failwith "A scalar R value was mutated and is no longer scalar."
+
+
     /// Types for expressing real numbers that are within
     /// an R environment. Operations are zero-copy within R.
     module Real =
@@ -116,27 +150,19 @@ module RTypes =
             type RRealScalar<[<Measure>] 'u> = internal { Sexp: SymbolicExpression }
 
             let tryFromExpression (sexp: SymbolicExpression) =
-                match classify Singletons.engine.Value sexp with
-                | ScalarType ->
+                match sexp with
+                | ActivePatterns.RealVector Singletons.engine.Value _ ->
                     if Singletons.engine.Value.invokeInt(fun e -> SymbolicExpression.length e sexp) = 1 then Some { Sexp = sexp } else None
                 | _ -> None
 
-            /// Enforces that a scalar is a vector of a single element,
-            /// to be used before any operation.
-            let internal enforceShape (num: RRealScalar<'u>) =
-                if Singletons.engine.Value.invokeInt(fun e -> SymbolicExpression.length e num.Sexp) = 1 then
-                    num
-                else
-                    failwith "A scalar R value was mutated and is no longer scalar."
-
             let extractScalarFloat (scalar: RRealScalar<'u>) =
-                enforceShape scalar
-                |> fun s -> s.Sexp
+                ScalarBase.enforceShape scalar.Sexp
                 |> Extract.extractFloatArray Singletons.engine.Value
                 |> Array.head
                 |> Option.map ((*) (LanguagePrimitives.FloatWithMeasure<'u> 1.))
 
             let fromFloat (value: float<'u>) : RRealScalar<'u> option =
+                let value = value / LanguagePrimitives.FloatWithMeasure<'u> 1
                 Create.realVector Singletons.engine.Value [| Some value |] |> tryFromExpression
 
             type RRealScalar<'u> with
@@ -167,7 +193,7 @@ module RTypes =
                 static member (/)(a, b) = RRealScalar.Div a b
 
                 member this.AsRExpr = this.Sexp |> RExprWrapper.toRProvider
-
+                member this.FromR = lazy(this |> extractScalarFloat)
 
         module Vector =
 
@@ -193,9 +219,96 @@ module RTypes =
                 member this.Length = R.baseOp "length" this.Inner.Sexp Scalar.tryFromExpression
 
 
+    /// Semantic types for integer vectors and scalars.
+    /// Supports arithmetic using R functions.
+    module Integer =
+
+        /// Scalar operations on integers in R. For int-based
+        /// arithmetic, R will always return real numbers.
+        module Scalar =
+
+            /// A scalar value currently residing in R's memory space.
+            type RIntScalar<[<Measure>] 'u> = internal { Sexp: SymbolicExpression }
+
+            let tryFromExpression (sexp: SymbolicExpression) =
+                match sexp with
+                | ActivePatterns.IntegerVector Singletons.engine.Value _ ->
+                    if Singletons.engine.Value.invokeInt(fun e -> SymbolicExpression.length e sexp) = 1 then Some { Sexp = sexp } else None
+                | _ -> None
+
+            let extractScalar (scalar: RIntScalar<'u>) =
+                ScalarBase.enforceShape scalar.Sexp
+                |> Extract.extractIntArray Singletons.engine.Value
+                |> Array.head
+                |> Option.map ((*) (LanguagePrimitives.Int32WithMeasure<'u> 1))
+
+            let fromInt (value: int<'u>) : RIntScalar<'u> option =
+                let value = value / LanguagePrimitives.Int32WithMeasure<'u> 1
+                Create.intVector Singletons.engine.Value [| Some value |] |> tryFromExpression
+
+            let private enforce a = ScalarBase.enforceShape a
+
+            type RIntScalar<'u> with
+                static member Add (a: RIntScalar<'u>) (b: RIntScalar<'u>) : Real.Scalar.RRealScalar<'u> =
+                    R.baseOp2 "+" (enforce a.Sexp) (enforce b.Sexp) Real.Scalar.tryFromExpression
+
+                static member Sub (a: RIntScalar<'u>) (b: RIntScalar<'u>) : Real.Scalar.RRealScalar<'u> =
+                    R.baseOp2 "-" (enforce a.Sexp) (enforce b.Sexp) Real.Scalar.tryFromExpression
+
+                static member Mul (a: RIntScalar<'u>) (b: RIntScalar<'v>) : Real.Scalar.RRealScalar<'u 'v> =
+                    R.baseOp2 "*" (enforce a.Sexp) (enforce b.Sexp) Real.Scalar.tryFromExpression
+
+                static member Div (a: RIntScalar<'u>) (b: RIntScalar<'v>) : Real.Scalar.RRealScalar<'u / 'v> =
+                    R.baseOp2 "/" (enforce a.Sexp) (enforce b.Sexp) Real.Scalar.tryFromExpression
+
+                static member Log a = R.baseOp "log" (enforce a.Sexp) Real.Scalar.tryFromExpression
+                static member Exp a = R.baseOp "exp" (enforce a.Sexp) Real.Scalar.tryFromExpression
+
+                static member Scale (a: RIntScalar<'u>) (s: RIntScalar<1>) : RIntScalar<'u> =
+                    R.baseOp2 "*" (enforce a.Sexp) (enforce s.Sexp) tryFromExpression
+
+                static member ToFloat a = extractScalar a
+                static member FromInt (f: int<'u>) = fromInt f
+                static member ToReal (a: RIntScalar<'u>) : Real.Scalar.RRealScalar<'u> = R.baseOp "as.double" (enforce a.Sexp) Real.Scalar.tryFromExpression
+
+                static member (+)(a, b) = RIntScalar.Add a b
+                static member (-)(a, b) = RIntScalar.Sub a b
+                static member (*)(a, b) = RIntScalar.Mul a b
+                static member (/)(a, b) = RIntScalar.Div a b
+
+                member this.AsRExpr = this.Sexp |> RExprWrapper.toRProvider
+                member this.FromR = lazy(this |> extractScalar)
+
+        module Vector =
+
+            type RIntVector<[<Measure>] 'u> = { Inner: VectorBase.RVectorBase<Scalar.RIntScalar<'u>> }
+
+            let tryFromExpression sexp =
+                match sexp with
+                | ActivePatterns.IntegerVector Singletons.engine.Value _ -> Some { Inner = { Sexp = sexp } }
+                | _ -> None
+    
+            type RIntVector<'u> with
+
+                static member Lift(scalar: Scalar.RIntScalar<'u>, vector: RIntVector<'u>) : RIntVector<'u> =
+                    tryFromExpression scalar.Sexp
+                    |> Option.defaultWith(fun _ -> failwith "Could not place scalar into a vector")
+
+                static member Lift(vec1: RIntVector<'u>, vec2: RIntVector<'u>) = vec1
+
+                static member Add (a: RIntVector<'u>) (b: RIntVector<'u>) : RIntVector<'u> =
+                    R.baseOp2 "+" a.Inner.Sexp b.Inner.Sexp tryFromExpression
+
+                static member Mean(a: RIntVector<'u>) = R.baseOp "mean" a.Inner.Sexp Scalar.tryFromExpression
+                static member (+)(a, b) = RIntVector.Add a b
+                member this.Item(i: int) = this.Inner.[i, Scalar.tryFromExpression]
+                member this.Item(name: string) = this.Inner.[name, Scalar.tryFromExpression]
+                member this.Length = R.baseOp "length" this.Inner.Sexp Scalar.tryFromExpression
+
+
     type RVector<[<Measure>] 'u> =
         | NumericV of Real.Vector.RRealVector<'u>
-        | IntegerV of VectorBase.RVectorBase<int>
+        | IntegerV of Integer.Vector.RIntVector<'u>
         | LogicalV of VectorBase.RVectorBase<bool>
         | CharacterV of VectorBase.RVectorBase<string>
         | ComplexV of VectorBase.RVectorBase<Extensions.RComplex>
@@ -210,7 +323,7 @@ module RTypes =
         member internal this.Sexp =
             match this with
             | NumericV v -> v.Inner.AsRExpr |> RExprWrapper.toRBridge
-            | IntegerV v -> v.AsRExpr |> RExprWrapper.toRBridge
+            | IntegerV v -> v.Inner.AsRExpr |> RExprWrapper.toRBridge
             | LogicalV v -> v.AsRExpr |> RExprWrapper.toRBridge
             | CharacterV v -> v.AsRExpr |> RExprWrapper.toRBridge
             | ComplexV v -> v.AsRExpr |> RExprWrapper.toRBridge
@@ -222,8 +335,16 @@ module RTypes =
         let tryFromExpression sexp =
             match sexp with
             | ActivePatterns.RealVector Singletons.engine.Value v -> Real.Vector.tryFromExpression v |> Option.map NumericV
-            | _ ->
-                None
+            | ActivePatterns.IntegerVector Singletons.engine.Value v -> Integer.Vector.tryFromExpression v |> Option.map IntegerV
+            | ActivePatterns.LogicalVector Singletons.engine.Value _ ->
+                VectorBase.tryFromExpression sexp |> Option.map LogicalV
+            | ActivePatterns.CharacterVector Singletons.engine.Value _ ->
+                VectorBase.tryFromExpression sexp |> Option.map CharacterV
+            | ActivePatterns.ComplexVector Singletons.engine.Value _ ->
+                VectorBase.tryFromExpression sexp |> Option.map ComplexV
+            | ActivePatterns.RawVector Singletons.engine.Value _ ->
+                VectorBase.tryFromExpression sexp |> Option.map RawV
+            | _ -> None
 
     /// Represents R lists, which may contain elements of any type.
     module HeterogeneousList =
@@ -301,6 +422,7 @@ module RTypes =
             let tryFromExpression sexp =
                 match classify Singletons.engine.Value sexp with
                 | VectorType ->
+                    RProvider.Common.LogFile.logf "Vector"
                     match sexp with
                     | ActivePatterns.RealVector Singletons.engine.Value v -> Real.Vector.tryFromExpression v |> Option.map NumericColumn
                     | ActivePatterns.IntegerVector Singletons.engine.Value v -> IntegerColumn (RExprWrapper.toRProvider sexp) |> Some 
@@ -396,10 +518,10 @@ module RTypes =
 
     type RScalar<[<Measure>] 'u> =
         | NumericS of Real.Scalar.RRealScalar<'u>
-        | IntegerS of RProvider.Abstractions.RExpr
-        | LogicalS of RProvider.Abstractions.RExpr
-        | CharacterS of RProvider.Abstractions.RExpr
-        | ComplexS of RProvider.Abstractions.RExpr
+        | IntegerS of Integer.Scalar.RIntScalar<'u>
+        | LogicalS of ScalarBase.RScalarBase<bool>
+        | CharacterS of ScalarBase.RScalarBase<string>
+        | ComplexS of ScalarBase.RScalarBase<RComplex>
         | RawS of RProvider.Abstractions.RExpr
 
     with
@@ -408,13 +530,33 @@ module RTypes =
             | NumericS s -> s
             | _ -> failwith "Expression was not a real number"
 
+        member this.AsInt() =
+            match this with
+            | IntegerS s -> s
+            | _ -> failwith "Expression was not an integer"
+
+        member this.AsLogical() =
+            match this with
+            | LogicalS s -> s
+            | _ -> failwith "Expression was not logical (boolean)"
+
+        member this.AsCharacter() =
+            match this with
+            | CharacterS s -> s
+            | _ -> failwith "Expression was not character"
+
+        member this.AsComplex() =
+            match this with
+            | ComplexS s -> s
+            | _ -> failwith "Expression was not complex number"
+
         member internal this.Sexp =
             match this with
             | NumericS s -> s.Sexp
-            | IntegerS s
-            | LogicalS s
-            | CharacterS s
-            | ComplexS s
+            | IntegerS s -> s.Sexp
+            | LogicalS s -> s.Sexp
+            | CharacterS s -> s.Sexp
+            | ComplexS s -> s.Sexp
             | RawS s -> s |> RExprWrapper.toRBridge
 
 
@@ -424,6 +566,15 @@ module RTypes =
             match sexp with
             | ActivePatterns.RealVector Singletons.engine.Value v ->
                 Real.Scalar.tryFromExpression v |> Option.map NumericS
+            | ActivePatterns.IntegerVector Singletons.engine.Value v ->
+                Integer.Scalar.tryFromExpression v |> Option.map IntegerS
+            | ActivePatterns.LogicalVector Singletons.engine.Value _ ->
+                ScalarBase.tryFromExpression sexp |> Option.map LogicalS
+            | ActivePatterns.CharacterVector Singletons.engine.Value _ ->
+                ScalarBase.tryFromExpression sexp |> Option.map CharacterS
+            | ActivePatterns.ComplexVector Singletons.engine.Value _ ->
+                ScalarBase.tryFromExpression sexp |> Option.map ComplexS
+            | ActivePatterns.RawVector Singletons.engine.Value _ -> sexp |> RExprWrapper.toRProvider |> RawS |> Some
             | _ -> failwith "not implemented (Scalar)"
 
 
