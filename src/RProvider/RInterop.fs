@@ -133,6 +133,11 @@ module RInterop =
             |> Result.map (Extract.extractStringArray Singletons.engine.Value >> Array.choose id)
             |> Result.defaultValue [||]
 
+        let lazyData =
+            Evaluate.eval globalEnv (sprintf "ls(loadNamespace(\"%s\")$.__NAMESPACE__.$lazydata)" packageName)
+            |> Result.map (Extract.extractStringArray Singletons.engine.Value >> Array.choose id)
+            |> Result.defaultValue [||]
+
         names
         |> Array.choose
             (fun name ->
@@ -142,6 +147,7 @@ module RInterop =
                     let forced = Promise.force Singletons.engine.Value sexp
                     let info = bindingInfo forced
                     Some(name, serializeRValue info))
+        |> Array.append (lazyData |> Array.map(fun l -> l, serializeRValue RValue.Value))
 
     let globalEnvironment () = Environment.globalEnv Singletons.engine.Value
 
