@@ -3,7 +3,7 @@
 title: Plots and graphics
 category: Guides
 categoryindex: 4
-index: 3
+index: 2
 ---
 *)
 

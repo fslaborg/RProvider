@@ -63,6 +63,13 @@ with your R install location:
     [lang=cmd]
     setx R_HOME "C:\rpath\bin"
 
+**Note**. When you install R, you get the option to update the registry key `HKEY_LOCAL_MACHINE\SOFTWARE\R-core`
+to point to the version you are installing.  This is what RProvider uses.
+If you are running in a 32-bit process, RProvider uses `HKEY_LOCAL_MACHINE\SOFTWARE\R-core\R\InstallPath`
+to determine the path.
+For 64-bit, it reads `HKEY_LOCAL_MACHINE\SOFTWARE\R-core\R64\InstallPath`.
+When you install a package in a given version of R, it should be available in both the 32-bit and 64-bit versions.
+
 Testing the R provider
 ----------------------
 
@@ -79,7 +86,7 @@ First, create a new file with the extension .fsx (e.g., test.fsx). Second, refer
 R type provider package from NuGet by adding this line to the start of your file:
 
     [lang=fsharp]
-    #r "nuget: RProvider,2.0.2"
+    #r "nuget: RProvider,3.0.0"
 
 Third, add your code. In this code, we load RProvider, then load some R packages using
 the `open` declarations.
@@ -88,21 +95,45 @@ the `open` declarations.
 open RProvider
 open RProvider.datasets
 
-// basic test if RProvider works correctly
-R.mean([1;2;3;4]).Print()
+// Pretty-print in F# interactive:
+fsi.AddPrinter FSIPrinters.rValue
+
+(**
+Now, a basic test to make sure it's working correctly.
+*)
+
+R.mean([1;2;3;4])
 (*** include-it ***)
 
+(**
+We can also do some basic plots. First, we can calculate sin
+using the R 'sin' function, and then extract the results from
+R to F# for plotting.
+*)
 
-(***do-not-eval***)
-// Calculate sin using the R 'sin' function
-// (converting results to 'float') and plot it
-[ for x in 0.0 .. 0.1 .. 3.14 -> 
-    R.sin(x).FromR<float>() ]
-|> R.plot
+Graphics.svg 7 4 (fun _ ->
+    [ for x in 0.0 .. 0.1 .. 3.14 -> 
+        R.sin(x).FromR<float>() ]
+    |> R.plot )
+(*** include-it-raw ***)
 
-// Plot the data from the standard 'Nile' data set
-(***do-not-eval***)
-R.plot(R.Nile)
+(**
+However, it would be cleaner to keep the values in R like so,
+as R.sin supports vectors:
+*)
+
+Graphics.svg 7 4 (fun _ ->
+    [ 0.0 .. 0.1 .. 3.14 ]
+    |> R.sin
+    |> R.plot )
+(*** include-it-raw ***)
+
+(**
+Next, we can plot the nile flow using a standard R example dataset.
+*)
+
+Graphics.svg 7 4 (fun _ -> R.Nile |> R.plot)
+(*** include-it-raw ***)
 
 (**
 Diagnostics and debugging

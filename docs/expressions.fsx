@@ -66,6 +66,15 @@ df.Class
 (*** include-it ***)
 
 (**
+#### Printing R values to the console (F# interactive)
+
+Add this line to your script to tell F# interactive how to print out
+the values of R objects:
+
+    [lang=fsharp]
+    fsi.AddPrinter FSIPrinters.rValue
+
+
 ### Extracting values (R -> F#)
 
 We can extract a value from R memory space into to F# primitive values in two ways: type-specific

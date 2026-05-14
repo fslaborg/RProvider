@@ -6,8 +6,6 @@ index: 1
 ---
 *)
 
-(*** condition: prepare ***)
-#nowarn "211"
 #r "nuget: RProvider, 0.0.1-local"
 (*** condition: fsx ***)
 #if FSX
