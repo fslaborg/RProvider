@@ -2,10 +2,7 @@ module OperatorTests
 
 open RProvider
 open RProvider.Operators
-open RProvider.Runtime
-
 open RProvider.datasets
-open RProvider.methods
 
 open Expecto
 

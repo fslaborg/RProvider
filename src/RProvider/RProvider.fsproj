@@ -19,6 +19,7 @@
     <Compile Include="REnv.fs" />
     <Compile Include="IRInteropRuntime.fs" />
     <Compile Include="Operators.fs" />
+    <Compile Include="Graphics.fs" />
     <Compile Include="FSIPrinters.fs" />
     <Compile Include="RProviderAttribute.fs" />
   </ItemGroup>

@@ -1,9 +1,9 @@
 module ConverterTests
 
-open RProvider
 open System
 open Expecto
 open FsCheck
+open RProvider.Runtime
 
 let testVector (xs: 'scalar option []) (t: RBridge.SymbolicExpression.SexpType) clsName =
     let sexp = SymbolicExpression.ofObj xs

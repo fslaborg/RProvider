@@ -1,7 +1,6 @@
 module InteropTests
 
 open Expecto
-open RProvider
 open RProvider.Runtime
 
 [<Tests>]
