@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Runtime/Converters.fs" />
     <Compile Include="Runtime/Interop.fs" />
+    <Compile Include="Runtime/Graphics.fs" />
     <Compile Include="TypeProvider/RData.fs" />
     <Compile Include="TypeProvider/Operators.fs" />
     <Compile Include="TypeProvider/Semantic.fs" />

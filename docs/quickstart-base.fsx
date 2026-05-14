@@ -1,6 +1,6 @@
 ﻿(**
 ---
-title: Quickstart: Stats
+title: Quickstart: stats
 category: Getting Started
 categoryindex: 2
 index: 2
@@ -22,21 +22,23 @@ index: 2
 (** 
 # Quickstart: Using Statistical Packages
 
-R is a programming language designed for statistics and data mining.
-The R community is strong, and created an incredibly rich open source
-ecosystem of packages. 
+A strong R community has contributed over 20,000 packages to CRAN,
+R's central package registry. The F# R Type Provider enables you to
+use every single one of them from within the F# environment.
 
-The F# R Type Provider enables you to use every single one of them,
-from within the F# environment. You can manipulate data using F#,
-send it to R for computation, and extract back the results.
+Using RRrovider, you can orchestrate R workflows and manipulate R data,
+pass in F# values, and extract R values back to F#.
+
+For this example, we simply demonstrate some basic RProvider concepts
+using the built-in `stats` package.
 
 ## Example: Linear Regression
 
 Let's perform a simple linear regression from the F# interactive, 
 using the R.lm function.
 
-Assuming you installed the R Type Provider in your project from NuGet, 
-you can reference the required libraries and packages this way:
+Once you have referenced RProvider's nuget package in your script,
+library, or app, you can reference the required libraries and packages this way:
 *)
 
 open RProvider
@@ -51,7 +53,7 @@ Imagine that our true model is
 
 Y = 5.0 + 3.0 * X1 - 2.0 * X2 + noise
 
-Let's generate a fake dataset that follows this model:
+Let's generate a fake dataset using F# that follows this model:
 *)
 
 // Random number generator
@@ -111,6 +113,7 @@ which are both R vectors containg floats:
 let coefficients = result?coefficients.AsVector().AsReal()
 let residuals = result?residuals.AsVector().AsReal()
 
+
 (**
 We can also produce summary statistics about our model,
 like R^2, which measures goodness-of-fit - close to 0
@@ -119,15 +122,17 @@ See [R docs for the details on Summary](http://stat.ethz.ch/R-manual/R-patched/l
 *)
 
 let summary = R.summary result
+
 summary?``r.squared``.AsScalar()
+(*** include-it ***)
 
 (**
 Finally, we can directly pass results, which is a R expression,
 to R.plot, to produce some fancy charts describing our model:
 *)
 
-(***do-not-eval***)
-R.plot result
+Graphics.svg 8 4 (fun _ -> R.plot result)
+(*** include-it-raw ***)
 
 (**
 That's it - while simple, we hope this example illustrate

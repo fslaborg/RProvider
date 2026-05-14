@@ -37,9 +37,8 @@ let pValue = result |> RExpr.listItem "p.value" |> RExpr.getValue<float>
 let statistic = result |> RExpr.listItem "statistic" |> RExpr.getValue<float>
 let estimate = result |> RExpr.listItem "estimate" |> RExpr.getValue<float>
 
-printfn "Correlation estimate: %g" estimate
-printfn "Test statistic: %g" statistic
-printfn "p-value: %g" pValue
+printfn "Correlation estimate: %g\nTest statistic: %g\np-value: %g" estimate statistic pValue
+(*** include-output ***)
 
 (**
 The above example is run through F# interactive (`dotnet fsi`).

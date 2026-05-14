@@ -24,23 +24,20 @@ Installing RProvider
 =================================
 
 The R type provider can be used on macOS, Windows, and Linux (for supported OS versions,
-see the [.NET 5 OS support matrix](https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0-supported-os.md)).
+see the [.NET 10 OS support matrix](https://github.com/dotnet/core/blob/main/release-notes/10.0/10.0-supported-os.md)).
 
 There are three **requirements** to use the R type provider:
 
-- [dotnet SDK](https://www.microsoft.com/net/download/core) 5.0 or greater; and
-- [R statistical environment](http://cran.r-project.org/).
+- [dotnet](https://www.microsoft.com/net/download/core) 10.0 or greater; and
+- [R](http://cran.r-project.org/) version 4.5.0 or greater.
 - A correctly set `R_HOME` environment variable (see below).
-  You **must** set the `R_HOME` environment variable to the R home directory, 
-  which can usually be identified by running the command 'R RHOME'. 
 
-Note. If you require .NET framework / mono support, you should use RProvider 1.2 or earlier.
-Support for .NET versions below 5.0 was dropped with RProvider 2.0.
+*Note. If you require .NET framework / mono support, you should use RProvider 1.2 or earlier.*
 
 Setting the `R_HOME` environment variable
 ----------------------
 The R type provider requires that the R_HOME environment variable is set, so that
-it can find the R installation that you wish to use. 
+it can find the R installation that you wish to use.
 
 #### macOS
 In a Terminal window, execute the following command to add the R_HOME environment
@@ -84,26 +81,17 @@ R type provider package from NuGet by adding this line to the start of your file
     [lang=fsharp]
     #r "nuget: RProvider,2.0.2"
 
-Third, add your code. In this code, we load RProvider, then load three R packages using
-the `open` declarations (graphics, grDevices, and datasets).
+Third, add your code. In this code, we load RProvider, then load some R packages using
+the `open` declarations.
 *)
 
 open RProvider
-open RProvider.graphics
-open RProvider.grDevices
 open RProvider.datasets
-(**
-Now we can run some calculations and create charts. When using R on Mac, the default graphics
-device (Quartz) sometimes hangs, but X11 is working without issues, so the following uses X11:
-*)
+
 // basic test if RProvider works correctly
-R.mean([1;2;3;4])
-// val it : RDotNet.SymbolicExpression = [1] 2.5
+R.mean([1;2;3;4]).Print()
+(*** include-it ***)
 
-
-(***do-not-eval***)
-// testing graphics
-R.x11()
 
 (***do-not-eval***)
 // Calculate sin using the R 'sin' function
@@ -113,7 +101,9 @@ R.x11()
 |> R.plot
 
 // Plot the data from the standard 'Nile' data set
+(***do-not-eval***)
 R.plot(R.Nile)
+
 (**
 Diagnostics and debugging
 -------------------------

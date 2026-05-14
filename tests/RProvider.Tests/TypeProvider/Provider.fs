@@ -3,7 +3,6 @@ module ProviderTests
 open System
 open System.Globalization
 open RProvider
-open RProvider.Runtime.Helpers
 open RProvider.Operators
 
 open RProvider.datasets
@@ -16,7 +15,7 @@ let printing =
     testList "Printing" [
 
         testCase "Printing of data frame returns string with frame data" <| fun _ ->
-            let df = namedParams [ "Test", box [| 1; 42; 2 |] ] |> R.data_frame
+            let df = [ "Test", box [| 1; 42; 2 |] ] |> R.data_frame
             Expect.stringContains (RExpr.printToString df) "42" ""
 
     ]

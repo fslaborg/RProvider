@@ -38,7 +38,7 @@ jobs:
          fi
       shell: bash
     - name: Install R package dependencies
-      run: Rscript -e "install.packages(c('tseries', 'zoo'), repos = 'https://cran.r-project.org')"
+      run: Rscript -e "install.packages(c('tseries', 'zoo', 'ggplot2'), repos = 'https://cran.r-project.org')"
       shell: bash
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -53,6 +53,7 @@ jobs:
     - name: Build
       run: dotnet fsi build.fsx
     - name: Deploy documentation from master
+      if: matrix.os == 'macos-latest'
       uses: peaceiris/actions-gh-pages@v3
       with:
         personal_token: ${{ secrets.GITHUB_TOKEN }}

@@ -20,6 +20,12 @@ R is an interpreted, dynamically typed language that is typically used from its 
 
 While there are a number of math/statistical packages available for the .NET platform, none of the approach the power of the packages that are available for R.  R also includes versatile packages for visualization which are hard to match on .NET.
 
+The below video is a quick demo (although now dated):
+
+<div style="text-align:center;">
+<iframe width="420" height="315" src="https://www.youtube.com/embed/tOd-qsjKU8Y" frameborder="0" allowfullscreen></iframe>
+</div>
+
 ## What is a Type Provider?
 
 F# 3.0 supports a new feature called [Type Providers](http://msdn.microsoft.com/en-us/library/hh156509.aspx) which allow a set of types and members to be determined at compile time (or in the IDE) based on statically known parameters and (optionally) access to some external resource.  The primary purpose of Type Providers is to support strongly-typed access to external data sources, without the additional step of code generation, which adds friction to the development process and is sometimes impractical due to the size of the type space.  Type Providers can also be used to interoperate with another language or runtime environment, by introspecting on constructs available in that environment during compile time and making equivalent constructs available to F#.

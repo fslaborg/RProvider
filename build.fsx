@@ -32,7 +32,7 @@ let projectSummary =
 
 let projectDescription =
     """
-  An F# Type Provider providing strongly typed access to the R statistical package.
+  An F# Type Provider providing strongly typed access to the R statistical language.
   The type provider automatically discovers available R packages and makes them
   easily accessible from F#, so you can easily call powerful packages and
   visualization libraries from code running on the .NET platform."""
@@ -241,7 +241,7 @@ Target.create
           sprintf "<PackageIconUrl>%s/master/docs/content/logo.png</PackageIconUrl>" repositoryContentUrl
           sprintf "<PackageTags>%s</PackageTags>" tags
           sprintf "<Version>%s</Version>" release.NugetVersion
-          sprintf "<FsDocsLogoSource>%s/master/docs/img/logo.png</FsDocsLogoSource>" repositoryContentUrl
+          sprintf "<FsDocsLogoSource>img/logo.png</FsDocsLogoSource>"
           sprintf "<FsDocsLicenseLink>%s/blob/master/LICENSE.md</FsDocsLicenseLink>" repositoryUrl
           sprintf "<FsDocsReleaseNotesLink>%s/blob/master/RELEASE_NOTES.md</FsDocsReleaseNotesLink>" repositoryUrl
           "<FsDocsWarnOnMissingDocs>true</FsDocsWarnOnMissingDocs>"
@@ -258,7 +258,7 @@ Target.create
         DotNet.exec
             id
             "fsdocs"
-            ("build --clean --properties Configuration=Release --parameters fsdocs-package-version "
+            ("build --clean --eval --properties Configuration=Release --parameters fsdocs-package-version "
              + release.NugetVersion)
         |> ignore)
 

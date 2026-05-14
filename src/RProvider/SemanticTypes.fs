@@ -85,6 +85,15 @@ module RTypes =
             | Ok sexp -> tryMake sexp |> Option.get
             | Error e -> failwith e
 
+        let baseOpArray (fn: string) (a: SymbolicExpression array) tryMake =
+            let rEnv = Environment.globalEnv Singletons.engine.Value
+            let sexp = Call.callFuncByName passThrough rEnv "base" fn Seq.empty (a |> Array.map(fun a -> a :> obj))
+
+            match sexp with
+            | Ok sexp -> tryMake sexp |> Option.get
+            | Error e -> failwith e
+
+
     /// A basic representation of a vector that does not
     /// support numeric operations.
     module VectorBase =
@@ -199,25 +208,55 @@ module RTypes =
 
             type RRealVector<[<Measure>] 'u> = { Inner: VectorBase.RVectorBase<Scalar.RRealScalar<'u>> }
 
-            let tryFromExpression sexp = { Inner = { Sexp = sexp } } |> Some
+            let tryFromExpression sexp =
+                match sexp with
+                | ActivePatterns.RealVector Singletons.engine.Value _ -> Some { Inner = { Sexp = sexp } }
+                | _ -> None
+    
+            /// Send an F# sequence of floats to R.
+            let fromFloats (items: float<'u> seq) : RRealVector<'u> =
+                Create.realVector Singletons.engine.Value (items |> Seq.map ((*) (LanguagePrimitives.FloatWithMeasure<1/'u> 1.) >> Some))
+                |> tryFromExpression
+                |> Option.get
+
+            /// Send an F# sequence of floats to R, where in F# the floats
+            /// are option-typed with None representing NA values.
+            let fromFloatsWithNA items =
+                Create.realVector Singletons.engine.Value (items |> Seq.map (Option.map <| (*) (LanguagePrimitives.FloatWithMeasure<1/'u> 1.)))
+                |> tryFromExpression
+                |> Option.get
+
+            /// Concatenate a sequence of R scalar values into a single
+            /// R vector.
+            let fromScalars (items: Scalar.RRealScalar<'u> seq) =
+                R.baseOpArray "c" (items |> Seq.toArray |> Array.map(fun s -> s.Sexp)) tryFromExpression
+
+            let extract (vector:RRealVector<'u>) =
+                Extract.extractFloatArray Singletons.engine.Value vector.Inner.Sexp
+                |> Array.map(Option.map ((*) (LanguagePrimitives.FloatWithMeasure<'u> 1.)))
 
             type RRealVector<'u> with
 
-                static member Lift(scalar: Scalar.RRealScalar<'u>, vector: RRealVector<'u>) : RRealVector<'u> =
-                    tryFromExpression scalar.Sexp
-                    |> Option.defaultWith(fun _ -> failwith "Could not place scalar into a vector")
-
-                static member Lift(vec1: RRealVector<'u>, vec2: RRealVector<'u>) = vec1
-
-                static member Add (a: RRealVector<'u>) (b: RRealVector<'u>) : RRealVector<'u> =
-                    R.baseOp2 "+" a.Inner.Sexp b.Inner.Sexp tryFromExpression
+                static member Lift(_: Scalar.RRealScalar<'u>, vector: RRealVector<'u>) : RRealVector<'u> = vector
+                static member Lift(vec1: RRealVector<'u>, _: RRealVector<'u>) = vec1
 
                 static member Mean(a: RRealVector<'u>) = R.baseOp "mean" a.Inner.Sexp Scalar.tryFromExpression
-                static member (+)(a, b) = RRealVector.Add a b
+
+                static member (+)(a: RRealVector<'u>, b: RRealVector<'u>) : RRealVector<'u> =
+                    R.baseOp2 "+" a.Inner.Sexp b.Inner.Sexp tryFromExpression
+                static member (-)(a: RRealVector<'u>, b: RRealVector<'u>) : RRealVector<'u> =
+                    R.baseOp2 "-" a.Inner.Sexp b.Inner.Sexp tryFromExpression
+                static member (*)(a: RRealVector<'u>, b: RRealVector<'v>) : RRealVector<'u 'v> =
+                    R.baseOp2 "*" a.Inner.Sexp b.Inner.Sexp tryFromExpression
+                static member (/)(a: RRealVector<'u>, b: RRealVector<'v>) : RRealVector<'u/'v> =
+                    R.baseOp2 "/" a.Inner.Sexp b.Inner.Sexp tryFromExpression
+
                 member this.Item(i: int) = this.Inner.[i, Scalar.tryFromExpression]
                 member this.Item(name: string) = this.Inner.[name, Scalar.tryFromExpression]
                 member this.Length = R.baseOp "length" this.Inner.Sexp Scalar.tryFromExpression
-
+                /// Extract a vector from R to F#, where None is used
+                /// to represent R's NA values.
+                member this.FromR = lazy(extract this)
 
     /// Semantic types for integer vectors and scalars.
     /// Supports arithmetic using R functions.

@@ -56,12 +56,14 @@ The possible shapes are listed in the `Runtime.RTypes.RSemanticType` discriminat
 *)
 
 df.Type
+(*** include-it ***)
 
 (**
 Similarly, you may retrieve the classes of an R object using the classes property.
 *)
 
 df.Class
+(*** include-it ***)
 
 (**
 ### Extracting values (R -> F#)
@@ -73,7 +75,7 @@ For example, let's extract the bill length column from the penguin dataset using
 *)
 
 let billLength = df?bill_len
-let bodyMass = df?bill_len |> RExpr.getValue<float[]>
+let billVal = df?bill_len |> RExpr.getValue<float[]>
 
 (**
 #### Extracting using the semantic R types layer
@@ -96,6 +98,7 @@ We can also do the same thing without try methods if we are certain of the type:
 
 let speciesFactor = df?species.AsFactor().AsStringVector.Value
 speciesFactor
+(*** include-it ***)
 
 (**
 *Note: Older RProvider versions contained a plugin system to register custom converters between .NET types and R types. This has been removed. The new preferred approach is to convert explicitly from semantic type wrappers. For example, an F# data frame library like Deedle could implement a custom conversion function from RProvider's `DataFrame` type.*
@@ -149,19 +152,14 @@ For this example, let's set up an S4 class and object from scratch:
 
 R.parse(text = "setClass('testclass', representation(foo='character', bar='integer'))") |> R.eval
 let s4 = R.parse(text = "new('testclass', foo='s4', bar=1:4)") |> R.eval
+s4.Print()
+(*** include-it ***)
 
 (**
-
 You can find out if there are slots using the `slots` and `trySlots` functions:
 *)
 
-s4.Print()
-
-open RProvider.methods
-R.slotNames s4 |> RExpr.printToString
-
 s4 |> RExpr.slots
-s4 |> RExpr.trySlots
 R.mtcars |> RExpr.trySlots
 
 (**
@@ -180,10 +178,16 @@ R itself is not thread-safe. Most R parallel processing libraries focus on runni
 When using RProvider, you may use R from one or many threads. However, the underlying R engine being used is a single R instance. Internally, *RBridge* uses a concurrent queue to process incoming work. You will only gain the perception of multi-threading but none of the speed advantage when consuming R functions.
 *)
 
-let result1 = 
-    [| 1 .. 10 |]
-    |> Array.Parallel.map(fun i -> (R.sqrt i).AsScalar().AsReal().FromR.Value)
+[| 1 .. 10 |]
+|> Array.Parallel.map(fun i -> (R.sqrt i).AsScalar().AsReal().FromR.Value)
+(*** include-it ***)
 
-let result2 = 
-    [| 1 .. 10 |]
-    |> Array.map(fun i -> R.sqrt i)
+[| 1 .. 10 |]
+|> Array.map(fun i -> (R.sqrt i).AsScalar().AsReal().FromR.Value)
+(*** include-it ***)
+
+(**
+As can be seen, the results are identical.
+
+**Important**. Although *pure* functions return identical results, impure functions will not. The internal R instance is sharing it's environment, so you may cross contaminate.
+*)

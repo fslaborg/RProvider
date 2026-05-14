@@ -2,7 +2,7 @@
 ---
 category: Core Concepts
 categoryindex: 3
-index: 2
+index: 3
 ---
 *)
 
