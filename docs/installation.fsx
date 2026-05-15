@@ -56,19 +56,19 @@ using the command:
 
 #### Windows
 
-On Windows, from a command prompt use the following command to set
-the R_HOME permanently as a user environment variable, replacing C:\rpath\bin
-with your R install location:
+On Windows, R_HOME must point to the *root of the R installation*, not the bin directory.
+For example, if R is installed in:
 
     [lang=cmd]
-    setx R_HOME "C:\rpath\bin"
+    C:\Program Files\R\R-4.5.0
 
-**Note**. When you install R, you get the option to update the registry key `HKEY_LOCAL_MACHINE\SOFTWARE\R-core`
-to point to the version you are installing.  This is what RProvider uses.
-If you are running in a 32-bit process, RProvider uses `HKEY_LOCAL_MACHINE\SOFTWARE\R-core\R\InstallPath`
-to determine the path.
-For 64-bit, it reads `HKEY_LOCAL_MACHINE\SOFTWARE\R-core\R64\InstallPath`.
-When you install a package in a given version of R, it should be available in both the 32-bit and 64-bit versions.
+from a command prompt use the following command to set the R_HOME permanently as a user environment variable:
+
+    [lang=cmd]
+    setx R_HOME "C:\Program Files\R\R-4.5.0"
+
+If R_HOME is not set, RProvider will search the standard installation directory (`"C:\Program Files\R\"`)
+and automatically select the newest version matching: `R-<major>.<minor>.<patch>`.
 
 Testing the R provider
 ----------------------
