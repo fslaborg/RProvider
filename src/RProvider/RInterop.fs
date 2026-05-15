@@ -189,6 +189,18 @@ module RInterop =
         Call.call Convert.toR packageName funcName serializedRVal namedArgs varArgs
         |> Result.defaultWith (fun e -> failwithf "Error in function: %s" e)
 
+    /// Checks if an R package is installed.
+    let isPackageInstalled globEnv (pkgName: string) =
+        try
+            let res =
+                callFuncByName globEnv "base" "requireNamespace"
+                    (dict [
+                        "package", box pkgName
+                        "quietly", box true
+                    ]) [||]
+            res.FromR<bool>() = true
+        with _ -> false
+
 
 /// Printing using R's internal print() function.
 module Printing =
