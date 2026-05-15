@@ -1,8 +1,8 @@
 RProvider License
 =================
 
-Copyright (c) 2012–2026, RProvider Contributors
 Copyright (c) 2012, BlueMountain Capital Management LLC
+Copyright (c) 2021 - 2026, Andrew C. Martin
 
 All rights reserved.
 
