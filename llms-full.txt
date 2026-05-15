@@ -1,0 +1,1091 @@
+# RProvider
+
+## Docs
+
+### [Developer notes](https://fslab.org/RProvider/devnotes.md)
+
+Developer notes
+Binding to R's native C API is not entirely stable and so we do not want to crash the
+F# compiler (or Visual Studio / Ionide / FSAC) when something goes wrong with R. For this
+reason, we run the type discovery in a separate process and communicate
+with it via .NET pipes.
+Project structure
+To account for the single-threaded nature of R, we use the following structure.
+
+The individual assemblies are as follows:
+
+RProvider.Abstractions. Contains user-facing root erasable types that
+are referenced by both the design-time and runtime parts of the type provider.
+
+RProvider.dll - this is runtime assembly. Contains runtime
+functionality (such as initialization of R, interop
+with R and converters that convert values between F# and R). It also contains
+helpers (logging, etc.). This is the assembly that the user of R provider will
+reference. It contains the TypeProviderAssembly attribute pointing to
+the assembly with the actual type provider code.
+
+RProvider.DesignTime.dll - this is where the type provider code lives.
+This generates types by calling the RProvider.Server executable to do the type discovery.
+
+RProvider.Server - this is started as a stand-alone process that 
+performs type and package discovery in R. It is called by the DesignTime
+component and restarted automatically. This also needs to setup the
+AssemblyResolve event handler. It is compiled as platform-
+and architecture-specific executables, so an exe on windows for example.
+
+### [Reading and writing R data files](https://fslab.org/RProvider/reading-rdata.md)
+
+#r "nuget: RProvider, 0.0.1-local"
+
+Reading and writing R data files
+When using R, you can save and load data sets as *.rdata and *.rds files.
+RProvider has an RData provider that enables you to work with statically typed
+rdata files (.rds are not supported yet; PRs welcome).
+Working with .rdata files
+Let's say that you have some data in R and want to pass them to F#. To do that, you
+can use the save function in R. The following R snippet creates a simple *.rdata
+file containing a couple of symbols from the sample volcano data set:
+require(datasets)
+volcanoList <- unlist(as.list(volcano))
+volcanoMean <- mean(volcanoList)
+symbols <- c("volcano", "volcanoList", "volcanoMean")
+save(list=symols, file="C:/data/sample.rdata")
+
+Loading in F#
+To import the data on the F# side, you can use the RData type provider that is
+available in the RProvider namespace. It takes a static parameter specifying the
+path of the file and generates a type that exposes all the
+saved values as static members.
+Note. You may use absolute or relative paths. If using a relative path, it is
+best practice to include ResolutionFolder = __SOURCE_DIRECTORY__ as below, because
+this makes the file resolution happen deterministically relative to the source file,
+whether that is an F# script, library, or app.
+open RProvider
+
+type Sample = RData<"data/sample.rdata", ResolutionFolder = __SOURCE_DIRECTORY__>
+let sample = Sample()
+
+// Access saved values directly as F# values
+sample.volcano
+sample.volcanoList
+sample.volcanoMean
+
+When accessed, the type provider automatically converts the data from the R format
+to F# format. In the above example, volcanoList is imported as float[] and
+the volcanoMean value is a float, as it is a single-item list in R.
+For the sample.volcano value, the R provider does not have a default conversion
+and so it is exposed as SymbolicExpression.
+When you have multiple *.rdata files containing data in the same format, you can
+pick one of them as a sample (which will be used to determine the fields of the type)
+and then pass the file name to the constructor of the generated type to load it.
+For example, if we had files data/sample_1.rdata to data/sample_10.rdata, we could
+read them as:
+let means = 
+  [ for i in 1 .. 10 ->
+      let data = Sample(sprintf "data/sample_%d.rdata" i)
+      data.volcanoMean.[0] ]
+
+Saving from F#
+If you perform data acquisition in F# and then want to pass the data to R, you
+can use the standard R functions for saving the *.rdata files. The easiest
+option is to call the R.assign function to define named values in the R environment
+and then use R.save to save the environment to a file:
+// Calculate sum of square differences
+let avg = sample.volcanoList |> Array.choose id |> Array.average
+let sqrs = 
+  sample.volcanoList 
+  |> Array.map (fun v -> pown (v.Value - avg) 2)
+
+// Save the squares to an RData file
+R.assign("volcanoDiffs", sqrs)
+R.save(list=[ "volcanoDiffs" ], file="volcano.rdata")
+
+It is recommended to use the list parameter of the save function to specify the
+names of the symbols that should be saved, rather than saving all symbols. The R
+provider uses additional temporary symbols and so the saved file would otherwise contain
+unnecessary fileds.
+Once you save the file using the above command, you can re-load it again using
+the RData type provider, such as: new RData<"C:/temp/volcano.rdata">().
+
+### [F# R Type Provider](https://fslab.org/RProvider/index.md)
+
+F# R Type Provider
+A typed interop layer that embeds R within F#.
+The F# Type Provider enables interoperability between F# and R through strongly-typed representations of F# types. The Type Provider discovers R packages that are available  in an R installation and makes them available as namespaces in F#.
+From F#, you can call any R function, run statistical analyses, generate plots, and work with R objects interactively. This lets you combine R’s extensive statistical and visualisation ecosystem with F#'s succinct and expressive type system — including type providers, units of measure, and functional data pipelines.
+The below example shows a simple base R example within F#:
+open RProvider
+open RProvider.stats
+
+let x = [ 1. .. 5. ] |> R.c
+let y = [ 1.2; 2.1; 2.9; 4.5; 4.8 ] |> R.c
+
+// Run a correlation test in R
+let result = R.cor_test(x, y)
+
+// Extract results into F#
+let pValue = result |> RExpr.listItem "p.value" |> RExpr.getValue<float>
+let statistic = result |> RExpr.listItem "statistic" |> RExpr.getValue<float>
+let estimate = result |> RExpr.listItem "estimate" |> RExpr.getValue<float>
+
+printfn "Correlation estimate: %g\nTest statistic: %g\np-value: %g" estimate statistic pValue
+
+Correlation estimate: 0.984939
+Test statistic: 9.86672
+p-value: 0.00221371
+The above example is run through F# interactive (dotnet fsi).
+Using the R Type Provider
+Prerequisites. R 4.5.0 or higher, .NET 10 or higher, and the R_HOME environment variable set. More info.
+In an F# script:
+#r "nuget:RProvider"
+
+open RProvider
+
+To add to a .NET project, from the terminal:
+dotnet add package RProvider
+
+What are R and F#?
+F# is a multi-paradigm language
+that supports functional, object and imperative programming,
+with the emphasis on functional-first programming. F# runs on the .NET runtime and is a compiled,
+statically typed language with a strong type system and type inference.
+F# is a general purpose programming language, and is particularly well-suited for scientific/numerical computing.
+R is a domain-specific language for statistical computing.
+R has a rich ecosystem of community-developed packages across scientific disciplines.
+R has many packages for publication-quality graphics, such as ggplot.
+R is an interpreted, dynamically typed language for data exploration that is typically used
+R-specific IDEs like RStudio.
+Contributing and copyright
+The project was originally developed by BlueMountain Capital, and has since been developed and open-source contributors.
+The project is hosted on GitHub where you can report issues, fork the project and submit pull requests.
+
+### [Plots and graphics](https://fslab.org/RProvider/plots.md)
+
+Creating Plots and Graphics
+One of the compelling features of R is its ability to create beautiful plots.
+With the R Type Provider, you can use all of R capabilities from F#,
+and create simple plots quickly to explore and visualize your data on-the-fly,
+as well as generate publication quality graphics that can be exported to virtually any format.
+Basic R plots
+Basic plots can be found in the graphics package.
+Assuming you are using an F# script,
+you can reference the required libraries and packages this way:
+#r "nuget: RProvider,2.0.2"
+
+open RProvider
+open RProvider.graphics
+
+RProvider includes a Graphics module for capturing R plots.
+You may also use many (but not all) R graphics devices directly.
+See graphics for more details.
+The primary helper function is for outputting vector-based non-interactive
+plots as svg graphics. Wrap your plot-producing code in a function within Graphics.svg as below:
+let widgets = [ 3; 8; 12; 15; 19; 18; 18; 20; ]
+
+Graphics.svg 7 4 (fun _ -> R.plot widgets)
+
+  <![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]>
+
+  
+    
+  
+
+  
+    
+  
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+5
+10
+15
+20
+
+Index
+c(3L, 8L, 12L, 15L, 19L, 18L, 18L, 20L)
+
+Graphics.svg 7 4 (fun _ -> R.barplot widgets)
+
+  <![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]>
+
+  
+    
+  
+
+0
+5
+10
+15
+20
+
+Using ggplot2
+ggplot2 is an R package that expresses the grammar of graphics.
+Using RProvider, we can plot F# data in publication-quality plots
+using ggplot2.
+open RProvider.ggplot2
+open RProvider.datasets
+
+let (++) a b = R.ggplot__add (a,b)
+
+Graphics.svg 7 4 (fun _ ->
+    R.ggplot(R.mtcars, R.aes(x = "mpg", y = "disp")) ++
+    R.geom__point()
+)
+
+No value returned by any evaluator
+Exporting and Saving Charts
+The RProvider Graphics.svg callback (above) may be used to generate
+svg graphics.
+Alternatively, you may use R graphics devices directly and manipulate
+them through R functions.
+Note. Some graphics devices are not happy running when R is embedded in another process like RProvider.
+For example, on macOS calling Quartz will crash the process, as it will not run outside of the main thread of a process.
+X11 is more stable on macOS.
+An example is shown below of using the PNG device.
+open RProvider.grDevices
+
+// Open the device and create the file as a png.
+// R.bmp, R.jpeg, R.pdf, ... will generate other formats.
+R.png(filename = "test.png", height = 200, width = 300, bg = "white")
+// Create the chart into the file
+R.barplot widgets
+// Close the device once the chart is complete
+R.dev_off ()
+
+R plot arguments
+Named parameters allow you to specify every argument supported by R,
+as an list of label and value tuples.
+An example of using named arguments is below.
+open RProvider.Operators
+
+let sprokets = [ 5.3; 6.5; 1.2; 5.3; 4.; 18.; 15.2; 12.1 ]
+
+Graphics.svg 7 4 (fun _ ->
+    R.plot [
+        "x" => widgets
+        "type" => "o"
+        "col" => "blue"
+        "ylim" => [0; 25] ] |> ignore
+    R.lines [
+        "x" => sprokets
+        "type" => "o"
+        "pch" => 22
+        "lty" => 2
+        "col" => "red" ]
+)
+
+  <![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]>
+
+  
+    
+  
+
+  
+    
+  
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+0
+5
+10
+15
+20
+25
+
+Index
+c(3L, 8L, 12L, 15L, 19L, 18L, 18L, 20L)
+
+### [Quickstart: stats](https://fslab.org/RProvider/quickstart-base.md)
+
+Quickstart: Using Statistical Packages
+A strong R community has contributed over 20,000 packages to CRAN,
+R's central package registry. The F# R Type Provider enables you to
+use every single one of them from within the F# environment.
+Using RRrovider, you can orchestrate R workflows and manipulate R data,
+pass in F# values, and extract R values back to F#.
+For this example, we simply demonstrate some basic RProvider concepts
+using the built-in stats package.
+Example: Linear Regression
+Let's perform a simple linear regression from the F# interactive,
+using the R.lm function.
+Once you have referenced RProvider's nuget package in your script,
+library, or app, you can reference the required libraries and packages this way:
+open RProvider
+open RProvider.Operators
+
+open RProvider.graphics
+open RProvider.stats
+
+Once the libraries and packages have been loaded,
+Imagine that our true model is
+Y = 5.0 + 3.0 * X1 - 2.0 * X2 + noise
+Let's generate a fake dataset using F# that follows this model:
+// Random number generator
+let rng = System.Random()
+let rand () = rng.NextDouble()
+
+// Generate fake X1 and X2 
+let X1s = [ for i in 0 .. 9 -> 10. * rand () ]
+let X2s = [ for i in 0 .. 9 -> 5. * rand () ]
+
+// Build Ys, following the "true" model
+let Ys = [ for i in 0 .. 9 -> 5. + 3. * X1s.[i] - 2. * X2s.[i] + rand () ]
+
+Using linear regression on this dataset, we should be able to
+estimate the coefficients 5.0, 3.0 and -2.0, with some imprecision
+due to the "noise" part.
+Let's first put our dataset into a R dataframe; this allows us
+to name our vectors, and use these names in R formulas afterwards:
+let dataset = [ 
+    "Y" => Ys
+    "X1" => X1s
+    "X2" => X2s ] |> R.data_frame
+
+We can now use R to perform a linear regression.
+We call the R.lm function,
+passing it the formula we want to estimate.
+(See the R manual on formulas
+for more on their somewhat esoteric construction)
+let result = R.lm(formula = "Y~X1+X2", data = dataset)
+
+Extracting Results from R to F#
+The result we get back from R is a R Expression.
+The R Type Provider tries as much as possible to keep data
+as R Expressions, rather than converting back-and-forth
+between F# and R types. It limits translations
+between the 2 languages, which has performance benefits,
+and simplifies composing R operations. On the other hand,
+we need to extract the results from the R expression
+into F# types.
+The R docs for lm
+describes what R.lm returns: a R List. We can now retrieve each element,
+accessing it by name (as defined in the documentation).
+For instance, let's retrieve the coefficients and residuals,
+which are both R vectors containg floats:
+let coefficients = result?coefficients.AsVector().AsReal()
+let residuals = result?residuals.AsVector().AsReal()
+
+We can also produce summary statistics about our model,
+like R^2, which measures goodness-of-fit - close to 0
+indicates a very poor fit, and close to 1 a good fit.
+See R docs for the details on Summary.
+let summary = R.summary result
+
+summary?``r.squared``.AsScalar()
+
+NumericS { Sexp = { ptr = 4857322896n } }
+Finally, we can directly pass results, which is a R expression,
+to R.plot, to produce some fancy charts describing our model:
+Graphics.svg 8 4 (fun _ -> R.plot result)
+
+  <![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]>
+
+  
+    
+  
+
+  
+    
+  
+
+0.0
+0.1
+0.2
+0.3
+0.4
+
+-2
+-1
+0
+1
+
+Leverage
+Standardized residuals
+
+(function (formula, data, subset, weights, na.action, method = "qr", model  ...
+
+Cook's distance
+
+1
+0.5
+0.5
+Residuals vs Leverage
+7
+5
+2
+
+That's it - while simple, we hope this example illustrate
+how you would go about to use any existing R statistical package.
+While the details would differ, the general approach would
+remain the same. Happy modelling!
+
+### [Passing Data into R functions from F#](https://fslab.org/RProvider/passing-data.md)
+
+Passing Data into R functions from F#
+R functions - as defined in RProvider - do not have strong types for their parameters. How to pass data and functions into R from F# therefore becomes a key consideration.
+A note on NA and NaN values
+In R, NA is a distinct value on the base atomic types. For example, a factor, numeric, or character vector may contain NA values. In addition, numeric types may be NaN, which is distinct from NA.
+F# does not have a natural representation of NA values within its core types. To mirror R's behaviour, we use option values throughout F#-R data processing in RProvider. You may request non-option values, but if NAs are present any extraction functions will fail with an error to this effect.
+Passing different types of values
+Existing R values
+If you pass RExpr values (or any semantic R type wrappers, e.g. Factor, DataFrame, RComplex) to any R functions, they will be passed directly to the function without conversion or moving into F# memory space. In effect, F# becomes a typed layer over R. By using semantic R type wrappers, you can orchestrate R computations through the typed view provided by RProvider.
+open RProvider.stats
+
+R.rnorm(n = 20, mean = 0.2, sd = 0.02)
+|> R.mean
+
+R function parameters
+R has some high-level functions (e.g. sapply) that require a function parameter. Although F# has first-class support of functional programming and provides better functionality and syntax for apply-like operations, which often makes it sub-optimal to call apply-like high-level functions in R, the need for parallel computing in R, which is not yet directly supported by F# parallelism to R functions, requires users to pass a function as parameter. Here is an example way to create and pass an R function:
+let fun1 = R.eval(R.parse(text="function(i) {mean(rnorm(i))}"))
+let nums = R.sapply(R.c(1,2,3), fun1)
+
+F# values
+RProvider contains layers that allow passing F# values to R in either an explicit and implicit way:
+
+Explicit: You create an R semantic type from an F# value, which copies it into R memory space.
+Implicit: You specify the F# value as a function parameter to a R.* function, causing an implicit conversion.
+
+Explicit conversion
+Using the semantic R types layer, you may pass F# values into appropriate supported R core types.
+// The namespace containing core types:
+open RProvider.Runtime.RTypes
+
+let vector = Real.Vector.fromFloats [ 1. .. 10. ]
+
+See R semantic types for more information.
+Implicit conversion (as R function arguments)
+RProvider defines all of the parameters of R functions are obj, meaning that any F# type may be passed. Internally, RProvider checks deterministically for a plausable conversion of any F# type specified as a function parameter.
+Parameter Types
+Since all arguments to functions are of type obj, it is not necessarily obvious what you can pass. Ultimately, you will need to know what the underlying function is expecting; intellisense and the package's documentation should indicate this.
+Once you have determined what R is expecting, you may pass an appropriate F# value. The below table indicates which F# types map to which R types.
+
+R type
+F# type
+Notes
+
+character
+string [ + array / list ] [ + option ]
+
+complex
+RComplex [ + array / list ] [ + option ]
+
+integer
+int [ + array / list ] [ + option ]
+
+logical
+bool [ + array / list ] [ + option ]
+
+numeric
+float [ + array / list ] [ + option ]
+
+list
+-
+Call R.list, passing the list elements as the arguments
+
+dataframe
+-
+Call R.data_frame, using a list of named args to indicate the column names
+
+Importantly, RProvider accepts single values (e.g. 1), lists ([ 1 ]), arrays ([| 1 |]), and also option values (Some 1), option lists ([ Some 1 ]), and option arrays ([| Some 1 |]). Option values here represent NA in R.
+Consuming R function results
+Functions exposed by the RProvider return the erased type RExpr. This keeps all return data inside R data structures, so does not impose any data marshalling overhead.  If you want to pass the value in as an argument to another R function, you can simply do so.
+RProvider supports two ways of accessing results:
+
+Explicit: typed access into semantic wrappers and type-specific extraction members / functions.
+Implicit: conversion into F# values using .FromR.
+
+See working with R expressions for more information.
+Explicit typed access
+RProvider includes typed access into R values using the semantic type layer.
+If there are no implicit conversions available, you must either pass the value to another R function for further processing, or use typed access into a relevant semantic type.
+If there are no supported conversions, you can access the data through the RDotNet object model.  RDotNet exposes properties, members and extension members (available only if you open the RDotNet namespace) that allow you to access the underlying data directly.  So, for example:
+let res = R.sum([|1;2;3;4|])
+res.AsTyped
+
+No value returned by any evaluator
+Implicit conversion
+Conversion is available to RExpr values by using either the RExpr module's functions, or using members on the value.
+Without specifying a type, the functions default to obj, so further type checking will be required.
+let pi = R.pi
+
+RExpr.getValue pi
+RExpr.tryGetValue pi
+
+pi.FromR()
+pi.TryFromR()
+
+It is better to specify the type, so that a strongly typed value may be retrieved:
+RExpr.getValue<float> pi
+RExpr.tryGetValue<float> pi
+
+pi.FromR<float>()
+pi.TryFromR<float>()
+
+Type conversions supported are:
+
+R Type
+Requested F#/.NET Type
+
+character (when vector is length 1)
+string or string[] (+ option)
+
+character
+string[] (+ option)
+
+complex (when vector is length 1)
+RComplex or RComplex[] (+ option)
+
+complex
+RComplex[] (+ option)
+
+integer (when vector is length 1)
+int or int[] (+ option)
+
+integer
+int[] (+ option)
+
+logical (when vector is length 1)
+bool or bool[] (+ option)
+
+logical
+bool[] (+ option)
+
+numeric (when vector is length 1)
+float or float[] (+ option)
+
+numeric
+float[] (+ option)
+
+Design notes
+R has a very different specification than F#:
+
+All R formal parameters have names, and you can always pass their values either by name or positionally.  If you pass by name, you can skip arguments in your actual argument list.  We simply map these onto F# arguments, which you can also pass by name or positionally.
+In R, essentially all arguments are optional (even if no default value is specified in the function argument list).  It's up to the receiving function to determine whether to error if the value is missing.   So we make all arguments optional.
+R functions support ... (varargs/paramarray).  We map this onto a .NET ParamArray, which allows an arbitrary number of arguments to be passed.  However, there are a couple of kinks with this:
+R allows named arguments to appear after the ... argument, whereas .NET requires the ParamArray argument to be at the end.  Some R functions use this convention because their primary arguments are passed in the ... argument and the named arguments will sometimes be used to modify the behavior of the function.  From the RProvider you will to supply values for the positional arguments before you can pass to the ... argument.  If you don't want to supply a value to one of these arguments, you can explicitly pass System.Reflection.Missing.
+
+Parameters passed to the R ... argument can also be passed using a name.  Those names are accessible to the calling function.  Example are list and dataframe construction (R.list, and R.data_frame).  To pass arguments this way, you can use the overload of each function that takes an IDictionary, either directly, or using the namedParams function.  For example:
+R.data_frame [ "A", [|1;2;3|]; "B", [|4;5;6|] ]
+
+### [Installing](https://fslab.org/RProvider/installation.md)
+
+Installing RProvider
+The R type provider can be used on macOS, Windows, and Linux (for supported OS versions,
+see the .NET 10 OS support matrix).
+There are three requirements to use the R type provider:
+
+dotnet 10.0 or greater; and
+R version 4.5.0 or greater.
+A correctly set R_HOME environment variable (see below).
+
+Note. If you require .NET framework / mono support, you should use RProvider 1.2 or earlier.
+Setting the R_HOME environment variable
+The R type provider requires that the R_HOME environment variable is set, so that
+it can find the R installation that you wish to use.
+macOS
+In a Terminal window, execute the following command to add the R_HOME environment
+variable permanently:
+echo export R_HOME=$(R RHOME) >> ~/.zshenv
+
+Linux
+You can set the R_HOME environment variable in your current session
+using the command:
+export R_HOME=$(R RHOME)
+
+Windows
+On Windows, R_HOME must point to the root of the R installation, not the bin directory.
+For example, if R is installed in:
+C:\Program Files\R\R-4.5.0
+
+from a command prompt use the following command to set the R_HOME permanently as a user environment variable:
+setx R_HOME "C:\Program Files\R\R-4.5.0"
+
+If R_HOME is not set, RProvider will search the standard installation directory ("C:\Program Files\R\")
+and automatically select the newest version matching: R-<major>.<minor>.<patch>.
+Testing the R provider
+You can now start experimenting with the R type provider using your favourite editor,
+or directly from the command line using
+dotnet fsi
+
+The easiest way to get started is to install Visual Studio Code, making sure to also install
+the Ionide-fsharp extension within the Extensions tab.
+First, create a new file with the extension .fsx (e.g., test.fsx). Second, reference the
+R type provider package from NuGet by adding this line to the start of your file:
+#r "nuget: RProvider,3.0.0"
+
+Third, add your code. In this code, we load RProvider, then load some R packages using
+the open declarations.
+// Pretty-print in F# interactive:
+fsi.AddPrinter FSIPrinters.rValue
+
+Now, a basic test to make sure it's working correctly.
+Could not find reference ''
+We can also do some basic plots. First, we can calculate sin
+using the R 'sin' function, and then extract the results from
+R to F# for plotting.
+Could not find reference ''
+However, it would be cleaner to keep the values in R like so,
+as R.sin supports vectors:
+Could not find reference ''
+Next, we can plot the nile flow using a standard R example dataset.
+Could not find reference ''
+Diagnostics and debugging
+If you encounter any issues, please do not hesitate to submit an issue! You can do that on the
+GitHub page. Before submitting
+an issue, please see the Diagnostics and debugging page, which tells you how
+to create a log file with more detailed information about the issues.
+
+### [How does it work?](https://fslab.org/RProvider/internals.md)
+
+How does it work?
+How do we call into R?
+The RProvider binds to the native R C API within the calling process (using RBridge).  This happens in several places:
+
+In the IDE, to provide IntelliSense for packages/functions/parameters.
+In the F# compiler, to generate code that calls the R functionality you are calling.
+In your resulting binary, to execute the generated code.
+In F# Interactive, to do all of the above interactively.
+
+How does RProvider rely on RBridge?
+RBridge allows R functionality to be called from .NET, and exposes a type that represents R values (RBridge.SymbolicExpression). R code may be executed by passing the code as a string into an eval method. From the RProvider, we introspect on available R packages and functions and expose them as members of provided types.  You can then call them just like regular .NET functions, with IntelliSense and compile-time checking. RBridge handles raw R interop and basic structural elements of R types. RProvider adds a semantic layer on top of this that provides a richer representation of R expression types and operations.
+How do we expose R packages?
+RProvider determines the set of installed packages in your R installation and exposes them as namespaces under the root RProvider namespace.  This allows you to 'open' the namespaces you want to use as if they were regular .NET namespaces.
+Under the namespace for a given package, RProvider exposes a single static type called "R", which contains static methods mirroring each of the functions and values that exist in the package.  This means that the members under "R." will be the union of available functions in all of the package namespaces you have opened.
+Is it Statically Typed?
+Kind of.  It is statically type checked to the extent that it can be given the type information available from R.  In practice, this means that the F# compiler and IDE statically checks that the function you are calling exists in the package you are calling.  In some cases, we can also determine that you are not passing too many arguments to the function, though common use of ... (aka varargs/params) in R functions defeats that in many cases.
+R is dynamically typed, so we cannot determine what the types of function arguments are supposed to be.  So all arguments are of type obj.  R functions can also be written such that they will work even if arguments that do not have default values are omitted, so we expose each argument as optional.  And for R functions that accept a ... argument, we expose a paramarray argument that allows any number of additional arguments to be passed.  In that case, you can basically pass any number of arguments to the function.
+
+### [R Expressions](https://fslab.org/RProvider/expressions.md)
+
+Working with R expressions
+RProvider represents R objects and values through an RExpr type. RProvider includes an RExpr module that allows you to work with R expressions in a more idiomatic way using forward pipes (|>). First, open RProvider, its custom operators and any packages you need:
+open RProvider
+open RProvider.Operators
+
+open RProvider.datasets
+open RProvider.stats
+
+Next, let's use a sample R dataframe to demonstrate core R expression functions.
+let df = R.penguins
+
+Note: in most cases, there are equivalent functions available using either the module (RExpr.*) or using dot notation as we preference below.
+Inpecting a value
+You may print the expression identically to using R print() using the .Print function or RExpr.printToString.
+df.Print()
+
+When using F# interactive (fsi), you may register a pretty-printer to print R values automatically into the terminal using fsi.AddPrinter FSIPrinters.rValue.
+We can also inspect the 'semantic type' - the standard R shape - of the R expression.
+The possible shapes are listed in the Runtime.RTypes.RSemanticType discriminated union.
+df.Type
+
+DataFrameType
+Similarly, you may retrieve the classes of an R object using the classes property.
+df.Class
+
+[|"data.frame"|]
+Printing R values to the console (F# interactive)
+Add this line to your script to tell F# interactive how to print out
+the values of R objects:
+fsi.AddPrinter FSIPrinters.rValue
+
+Extracting values (R -> F#)
+We can extract a value from R memory space into to F# primitive values in two ways: type-specific
+or default type. For more information, see passing data.
+For example, let's extract the bill length column from the penguin dataset using the RExpr directly (without using the semantic types layer). To access the column, we can use the ? operator; see operators for details.
+let billLength = df?bill_len
+let billVal = df?bill_len |> RExpr.getValue<float[]>
+
+Extracting using the semantic R types layer
+It is also possible to extract values through semantic types. Each semantic type has its own extraction functions specific to the type. For more information, see semantic R types.
+Here, we can show how to extract a factor column using a type-safe pattern matching approach.
+let speciesFactorSafe =
+    match df?species.TryAsTyped with
+    | Some t ->
+        match t with
+        | Runtime.RTypes.FactorInR f -> f.AsStringVector.Value
+        | _ -> [||]
+    | _ -> [||]
+
+We can also do the same thing without try methods if we are certain of the type:
+let speciesFactor = df?species.AsFactor().AsStringVector.Value
+speciesFactor
+
+[|"Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; ...|]
+Note: Older RProvider versions contained a plugin system to register custom converters between .NET types and R types. This has been removed. The new preferred approach is to convert explicitly from semantic type wrappers. For example, an F# data frame library like Deedle could implement a custom conversion function from RProvider's DataFrame type.
+Viewing as an R semantic type
+A set of functions enable viewing an RExpr as RProvider's R semantic type wrappers.
+Quick access to common properties
+The RExpr type has members for quick access into common required fields or properties of R objects. These are mirrored in the RExpr, which are easier to call with forward pipes for example.
+Vectors
+You can quickly access a single value within a vector using .ValueAt and the index.
+let v =  [ 0.1 .. 3.5 ] |> R.c
+
+let y : Runtime.RTypes.RScalar<1> = v.ValueAt 0
+y.AsReal().FromR.Value
+
+let z : Runtime.RTypes.RScalar<1> = v |> RExpr.typedVectorByIndex 0
+z.AsReal().FromR.Value
+
+Lists and list-based objects
+S3 objects in R are basic R objects, but with a class attribute attached.
+More often than not, they are lists.
+There are multiple quick-access methods to list items:
+
+Using the ? operator from RProvider.Operators.
+Using the RExpr.listItem function.
+
+let x = 10.
+let summary = R.binom_test(x, 100., 0.5) // alternative = true
+
+summary?``p.value``.FromR<float>()
+summary?statistic.FromR<float>()
+
+RExpr.listItem "p.value" summary
+
+S4 objects (slots)
+For this example, let's set up an S4 class and object from scratch:
+R.parse(text = "setClass('testclass', representation(foo='character', bar='integer'))") |> R.eval
+let s4 = R.parse(text = "new('testclass', foo='s4', bar=1:4)") |> R.eval
+s4.Print()
+
+"An object of class "testclass"
+Slot "foo":
+[1] "s4"
+
+Slot "bar":
+[1] 1 2 3 4
+
+"
+You can find out if there are slots using the slots and trySlots functions:
+s4 |> RExpr.slots
+R.mtcars |> RExpr.trySlots
+
+You can access slot values similarly with the slot and trySlot functions:
+s4 |> RExpr.slot "foo"
+s4 |> RExpr.trySlot "foo"
+s4 |> RExpr.trySlot "doesntexist"
+
+Parallel processing
+R itself is not thread-safe. Most R parallel processing libraries focus on running multiple R processes and coordinating work and values between them.
+When using RProvider, you may use R from one or many threads. However, the underlying R engine being used is a single R instance. Internally, RBridge uses a concurrent queue to process incoming work. You will only gain the perception of multi-threading but none of the speed advantage when consuming R functions.
+[| 1 .. 10 |]
+|> Array.Parallel.map(fun i -> (R.sqrt i).AsScalar().AsReal().FromR.Value)
+
+[|Some 1.0; Some 1.414213562; Some 1.732050808; Some 2.0; Some 2.236067977;
+  Some 2.449489743; Some 2.645751311; Some 2.828427125; Some 3.0;
+  Some 3.16227766|]
+[| 1 .. 10 |]
+|> Array.map(fun i -> (R.sqrt i).AsScalar().AsReal().FromR.Value)
+
+[|Some 1.0; Some 1.414213562; Some 1.732050808; Some 2.0; Some 2.236067977;
+  Some 2.449489743; Some 2.645751311; Some 2.828427125; Some 3.0;
+  Some 3.16227766|]
+As can be seen, the results are identical.
+Important. Although pure functions return identical results, impure functions will not. The internal R instance is sharing it's environment, so you may cross contaminate.
+
+### [Operators](https://fslab.org/RProvider/operators.md)
+
+Operators
+RProvider includes the RProvider.Operators module, which contains custom operators that can make working with R easier. Make sure to open it alongside your packages:
+open RProvider
+open RProvider.Operators
+
+open RProvider.``base``
+open RProvider.datasets
+open RProvider.stats
+
+Accessing members / slots
+You can use the dynamic (?) operator to access:
+
+Slots in S4 objects
+Members of list types
+
+List: accessing named columns in a dataframe.
+R.mtcars?mpg
+
+### S4 object: access a slot
+R.eval "setClass('testclass', representation(foo='character', bar='integer'))"
+
+let test = R.eval "new('testclass', foo='s4', bar=1:4)"
+
+test?foo
+
+### [R Semantic Types](https://fslab.org/RProvider/semantic-types.md)
+
+Semantic Types
+RProvider includes a semantic type layer that provides strongly typed wrappers around R values.
+Numeric
+In R, as in F#, there is a distinction between integer and real (floating-point) numeric values.
+R represents floating point numbers through the 'real' data type. Here, we include semantic types for R's real numbers that include full arithmetic support. Similarly, the integer semantic type includes arithmetic support.
+Important. R automatically casts integers to real numbers during any mathematical operations, even if only integers are involved. Our semantic types therefore follow the same casting rules.
+Scalars
+R does not make a distinction between scalars and vectors; scalars are simply vectors of length one. Here, we have made a distinction.
+To create an integer from an F# value:
+open FSharp.Data.UnitSystems.SI.UnitSymbols
+
+let i = Runtime.RTypes.Integer.Scalar.fromInt 1<kg> |> Option.get
+
+Similarly, to create R-based real (floating point) numbers from F# values:
+let x = Runtime.RTypes.Real.Scalar.fromFloat 2.1<m> |> Option.get
+let y = Runtime.RTypes.Real.Scalar.fromFloat 54.9<s> |> Option.get
+
+let z = x / y
+
+Vectors
+Vectors may be created within R memory in a similar way to scalars:
+let dist = Runtime.RTypes.Real.Vector.fromFloats [ 1.<m> .. 1.<m> .. 10.<m> ]
+let speed = Runtime.RTypes.Real.Vector.fromFloats [ 1.<m/s> .. 1.<m/s> .. 10.<m/s> ]
+
+// Pass vectors into R functions
+let m = R.median dist
+
+// Unit-aware arithmetic
+let time = dist / speed
+
+Arithmetic
+The int- and float-based R semantic types support F# operators; underneath, these call
+R's operators. In effect, you can orchestrate R calculations using the F# typed view
+of the values.
+let ex1 = x + x
+let ex2 = x * y
+let ex3 = ex1 / ex2
+
+Of course, RProvider's basic type inference means that we do not know the unit-typing of R's functions, so at present any returned values from R functions are dimensionless, regardless of inputs.
+Note that any operations on integers in R results in real numbers as the return type.
+Named vectors
+In R, vectors may be named such that each value has a label. RProvider is configured to allow
+dotting into the elements of a vector to retrieve a scalar based on either an integer index
+or a string name.
+RExpr.typedVectorByName
+RExpr.typedVectorByIndex
+
+Factors
+Factors are a core R data type and are used to represent categorical variables. In essence, they are a list of classes plus an integer-based vector of indices. You may inspect and extract R factors semantically, as in the below example which again is using the built-in penguin data frame:
+let species = R.penguins?species.AsFactor()
+
+species.Levels.Value
+
+Some ["Adelie"; "Chinstrap"; "Gentoo"]
+species.Indices
+
+// Extract the factor to an F# list of strings
+species.AsStringVector.Value
+
+Heterogeneous Lists (HLists)
+In R, lists may contain values of disparate types. In F#, lists must be homogeneous.
+For example, the let's make a new list:
+let hetL = R.list("apple", [Some "pear"; None], 123.0)
+
+hetL
+
+R semantic type <ListType>
+
+[[1]]
+[1] "apple"
+
+[[2]]
+[1] "pear" NA    
+
+[[3]]
+[1] 123
+
+hetL.Type
+
+ListType
+RProvider includes a semantic type for R's heterogeneous lists.
+We can type an R value into the semantic type as follows:
+let hetLSem = hetL.AsList()
+
+hetLSem.Length
+
+3
+hetLSem.[2]
+
+R semantic type <ScalarType>
+
+[1] 123
+
+If the list has named items, you may also dot in using a string name.
+Data Frames
+Data frames are a core base type in R. Internally, they are simply lists.
+let iris = R.iris.AsDataFrame()
+
+iris.Names
+
+[|Some "Sepal.Length"; Some "Sepal.Width"; Some "Petal.Length";
+  Some "Petal.Width"; Some "Species"|]
+Columns may be accessed using .Column. The return type is a Column, which
+is a discriminated union of possible R data types.
+iris.Column "Sepal.Width"
+
+NumericColumn { Inner = { Sexp = { ptr = 4865644544n } } }
+We use a DU because the column may be one of many data types, as internally the
+data frame is just a heterogeneous list with a class attached.
+
+### [R Packages and Environments](https://fslab.org/RProvider/packages.md)
+
+R Packages and Environments
+RProvider currently accesses the globally installed R, as specified by the R_HOME environment variable. A near-term aim is for the provider to access a local renv-based package environment, but this requires further development.
+Accessing packages
+RProvider discovers the packages installed in your R installation and their functions and lazy data available as packages under the RProvider root namespace.
+Packages are not loaded when their namesapce is opened. If your package requires loading for side-effects, load it using R.library("somelib").
+Installing packages
+Currently you need to load up a real R session, then install the package via install.packages. You will then need to restart your IDE because the set of installed packages is discovered when RProvider first loads.
+Q. I have a package installed and it is not showing up
+The most likely cause is that RProvider is using a different R installation from the one you updated. See installation for more information.
+Function and Package names
+There are a couple of mismatches between allowed identifiers between R and F#:
+Dots in names
+It is pretty common in R to use a dot character in a name, because the character has no special meaning.  We remap dots to underscore, and underscore to a double-underscore.  So for example, data.frame() becomes R.data_frame().
+Names that are reserved F# keywords
+Some package and function names are reserved words in F#.  For these, you will need to quote them using double-backquotes.  Typically, the IDE will do this for you.  A good example is the base package, which will require an open statement where "base" is double-back-quoted.
+
+### [Whats and Whys](https://fslab.org/RProvider/whatwhy.md)
+
+Whats and Whys
+What is R?
+R is an Open Source package for statistical computing.  There are a wide range of community-developed packages available that are very useful in the statistical computing/econometrics space.
+R is an interpreted, dynamically typed language that is typically used from its GUI or command line interactive environment.  But R is also embeddable using the R.DLL.
+What is F#?
+F# is a mixed-paradigm language that supports functional, object-oriented and imperative programming, with the emphasis on functional.  F# runs on the .NET runtime and is a compiled, statically typed language with a strong type system and type inference.  F# is typically used in the scientific/numerical computing space, though is quite widely applicable.
+Why use R with F#?
+While there are a number of math/statistical packages available for the .NET platform, none of the approach the power of the packages that are available for R.  R also includes versatile packages for visualization which are hard to match on .NET.
+The below video is a quick demo (although now dated):
+
+What is a Type Provider?
+F# since v3 has included a novel feature called Type Providers, which allow a set of types and members to be determined at compile time (or in the IDE) based on statically known parameters and (optionally) access to some external resource.  The primary purpose of Type Providers is to support strongly-typed access to external data sources, without the additional step of code generation, which adds friction to the development process and is sometimes impractical due to the size of the type space.  Type Providers can also be used to interoperate with another language or runtime environment, by introspecting on constructs available in that environment during compile time and making equivalent constructs available to F#.
+Why not just use R directly?
+In some cases, this will make a lot of sense, but there are a number of reasons why it might not:
+
+F# is particularly well-suited for the retrieval and manipulation/cleansing of data, which we will subsequently want to use in statistical models.
+We can combine functionality in .NET libraries (or otherwise callable from F#) with R functionality in a low-friction way.
+F# is well-suited to building scalable production applications, and using the R type provider allows us to use R functionality from those applications?
+
+### [Diagnostics and debugging](https://fslab.org/RProvider/diagnostics.md)
+
+Diagnostics and debugging
+The R type provider uses a common logging system across all of its components.
+The design-time, runtime, and server instances all log to a common log file.
+The logfile is disabled by default. It is enabled by setting the environment
+variable RPROVIDER_LOG to true (/ on / 1).
+If RProvider is not working correctly, the log file may give you some hints on what is wrong and provide details
+that you can send when submitting an issue.
+Log location
+The rprovider.log file will be created and appended
+to depending on the OS it is run on. On macOS, the log will also display in the Console app that is an included macOS utility.
+
+macOS: ~/Library/Logs/\RProvider/rprovider.log
+Windows: %LOCALAPPDATA%\RProvider\rprovider.log
+Linux: ~/.local/state/RProvider/rprovider.log
+
+To enable logging
+Logging is controlled by a single environment variable:
+RPROVIDER_LOG=true
+
+Windows
+To set on Windows:
+1. Open System Properties → Advanced → Environment Variables
+2. Under User variables, click New…
+3. Add:
+Name:  RPROVIDER_LOG
+Value: true
+
+Restart Visual Studio / Code / your IDE so that it picks up the new environment variable.
+
+macOS
+On macOS, apps do not inherit Terminal environment variables. You must therefore set the environment variable and launch your IDE from the same terminal session. For example:
+export RPROVIDER_LOG=true
+open -n /Applications/Visual\ Studio\ Code.app
+
+Linux
+Similar to macOS, to set temporarily and launch VS Code:
+export RPROVIDER_LOG=true
+code .
+

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" data-root="https://fslab.org/RProvider/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="BlueMountain Capital;FsLab" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="RProvider">
+    <meta property="og:title" content="R Expressions" />
+    <meta property="og:url" content="https://fslab.org/RProvider/expressions.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="https://fslab.org/RProvider/">
+    <meta name="twitter:title" content="R Expressions">
+    
+    <title>R Expressions | RProvider</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fslab.org/RProvider/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-details-set-expanded.js"></script>
+    <link href="https://fslab.org/RProvider/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fslab.org/RProvider/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+                    Repository</a></li>
+                <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header active">
+  Core Concepts
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header ">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://fslab.org/RProvider/">
+            <img alt="Logo" src="https://fslab.org/RProvider/img/logo.png">
+            <strong>RProvider</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/fslaborg/RProvider/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+            Repository</a></li>
+        <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header active">
+  Core Concepts
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header ">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        
+<h1><a name="Working-with-R-expressions" class="anchor" href="#Working-with-R-expressions">Working with R expressions</a></h1>
+<p>RProvider represents R objects and values through an <code>RExpr</code> type. RProvider includes an <code>RExpr</code> module that allows you to work with R expressions in a more idiomatic way using forward pipes (<code>|&gt;</code>). First, open RProvider, its custom operators and any packages you need:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="1" class="id">RProvider</span>
+<span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="2" class="id">RProvider</span><span class="pn">.</span><span data-fsdocs-tip="fs2" data-fsdocs-tip-unique="3" class="m">Operators</span>
+
+<span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="4" class="id">RProvider</span><span class="pn">.</span><span data-fsdocs-tip="fs3" data-fsdocs-tip-unique="5" class="id">datasets</span>
+<span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="6" class="id">RProvider</span><span class="pn">.</span><span data-fsdocs-tip="fs4" data-fsdocs-tip-unique="7" class="id">stats</span>
+</code></pre>
+<p>Next, let's use a sample R dataframe to demonstrate core R expression functions.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="8" class="id">df</span> <span class="o">=</span> <span data-fsdocs-tip="fs6" data-fsdocs-tip-unique="9" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs7" data-fsdocs-tip-unique="10" class="id">penguins</span>
+</code></pre>
+<p>Note: in most cases, there are equivalent functions available using either the module (<code>RExpr.*</code>) or using dot notation as we preference below.</p>
+<h3><a name="Inpecting-a-value" class="anchor" href="#Inpecting-a-value">Inpecting a value</a></h3>
+<p>You may print the expression identically to using R print() using the .Print function or <code>RExpr.printToString</code>.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="11" class="id">df</span><span class="pn">.</span><span data-fsdocs-tip="fs8" data-fsdocs-tip-unique="12" class="id">Print</span><span class="pn">(</span><span class="pn">)</span>
+</code></pre>
+<p>When using F# interactive (fsi), you may register a pretty-printer to print R values automatically into the terminal using <code>fsi.AddPrinter FSIPrinters.rValue</code>.</p>
+<p>We can also inspect the 'semantic type' - the standard R shape - of the R expression.
+The possible shapes are listed in the <code>Runtime.RTypes.RSemanticType</code> discriminated union.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="13" class="id">df</span><span class="pn">.</span><span data-fsdocs-tip="fs9" data-fsdocs-tip-unique="14" class="id">Type</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>DataFrameType</code></pre></td></tr></table>
+<p>Similarly, you may retrieve the classes of an R object using the classes property.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="15" class="id">df</span><span class="pn">.</span><span data-fsdocs-tip="fs10" data-fsdocs-tip-unique="16" class="id">Class</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>[|"data.frame"|]</code></pre></td></tr></table>
+<h4><a name="Printing-R-values-to-the-console-F-interactive" class="anchor" href="#Printing-R-values-to-the-console-F-interactive">Printing R values to the console (F# interactive)</a></h4>
+<p>Add this line to your script to tell F# interactive how to print out
+the values of R objects:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs11" data-fsdocs-tip-unique="17" class="id">fsi</span><span class="pn">.</span><span data-fsdocs-tip="fs12" data-fsdocs-tip-unique="18" class="id">AddPrinter</span> <span class="id">FSIPrinters</span><span class="pn">.</span><span class="id">rValue</span>
+</code></pre>
+<h3><a name="Extracting-values-R-gt-F" class="anchor" href="#Extracting-values-R-gt-F">Extracting values (R -&gt; F#)</a></h3>
+<p>We can extract a value from R memory space into to F# primitive values in two ways: type-specific
+or default type. For more information, see <a href="passing-data.html">passing data</a>.</p>
+<p>For example, let's extract the bill length column from the penguin dataset using the <code>RExpr</code> directly (without using the semantic types layer). To access the column, we can use the <code>?</code> operator; see <a href="operators.html">operators</a> for details.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs13" data-fsdocs-tip-unique="19" class="id">billLength</span> <span class="o">=</span> <span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="20" class="id">df</span><span class="o">?</span><span class="id">bill_len</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs14" data-fsdocs-tip-unique="21" class="id">billVal</span> <span class="o">=</span> <span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="22" class="id">df</span><span class="o">?</span><span class="id">bill_len</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="23" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs16" data-fsdocs-tip-unique="24" class="id">getValue</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs17" data-fsdocs-tip-unique="25" class="vt">float</span><span class="pn">[</span><span class="pn">]</span><span class="pn">&gt;</span>
+</code></pre>
+<h4><a name="Extracting-using-the-semantic-R-types-layer" class="anchor" href="#Extracting-using-the-semantic-R-types-layer">Extracting using the semantic R types layer</a></h4>
+<p>It is also possible to extract values through semantic types. Each semantic type has its own extraction functions specific to the type. For more information, see <a href="semantic-types.html">semantic R types</a>.</p>
+<p>Here, we can show how to extract a factor column using a type-safe pattern matching approach.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs18" data-fsdocs-tip-unique="26" class="id">speciesFactorSafe</span> <span class="o">=</span>
+    <span class="k">match</span> <span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="27" class="id">df</span><span class="o">?</span><span class="id">species</span><span class="pn">.</span><span class="id">TryAsTyped</span> <span class="k">with</span>
+    <span class="pn">|</span> <span data-fsdocs-tip="fs19" data-fsdocs-tip-unique="28" class="uc">Some</span> <span data-fsdocs-tip="fs20" data-fsdocs-tip-unique="29" class="fn">t</span> <span class="k">-&gt;</span>
+        <span class="k">match</span> <span data-fsdocs-tip="fs20" data-fsdocs-tip-unique="30" class="fn">t</span> <span class="k">with</span>
+        <span class="pn">|</span> <span data-fsdocs-tip="fs21" data-fsdocs-tip-unique="31" class="id">Runtime</span><span class="pn">.</span><span data-fsdocs-tip="fs22" data-fsdocs-tip-unique="32" class="m">RTypes</span><span class="pn">.</span><span data-fsdocs-tip="fs23" data-fsdocs-tip-unique="33" class="id">FactorInR</span> <span data-fsdocs-tip="fs24" data-fsdocs-tip-unique="34" class="fn">f</span> <span class="k">-&gt;</span> <span data-fsdocs-tip="fs24" data-fsdocs-tip-unique="35" class="fn">f</span><span class="pn">.</span><span data-fsdocs-tip="fs25" data-fsdocs-tip-unique="36" class="prop">AsStringVector</span><span class="pn">.</span><span data-fsdocs-tip="fs26" data-fsdocs-tip-unique="37" class="id">Value</span>
+        <span class="pn">|</span> <span class="id">_</span> <span class="k">-&gt;</span> <span class="pn">[|</span><span class="pn">|]</span>
+    <span class="pn">|</span> <span class="id">_</span> <span class="k">-&gt;</span> <span class="pn">[|</span><span class="pn">|]</span>
+</code></pre>
+<p>We can also do the same thing without try methods if we are certain of the type:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="38" class="id">speciesFactor</span> <span class="o">=</span> <span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="39" class="id">df</span><span class="o">?</span><span class="id">species</span><span class="pn">.</span><span class="id">AsFactor</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="prop">AsStringVector</span><span class="pn">.</span><span class="id">Value</span>
+<span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="40" class="id">speciesFactor</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>[|"Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie"; "Adelie";
+  "Adelie"; "Adelie"; "Adelie"; "Adelie"; ...|]</code></pre></td></tr></table>
+<p><em>Note: Older RProvider versions contained a plugin system to register custom converters between .NET types and R types. This has been removed. The new preferred approach is to convert explicitly from semantic type wrappers. For example, an F# data frame library like Deedle could implement a custom conversion function from RProvider's <code>DataFrame</code> type.</em></p>
+<h3><a name="Viewing-as-an-R-semantic-type" class="anchor" href="#Viewing-as-an-R-semantic-type">Viewing as an R semantic type</a></h3>
+<p>A set of functions enable viewing an <code>RExpr</code> as RProvider's R semantic type wrappers.</p>
+<h3><a name="Quick-access-to-common-properties" class="anchor" href="#Quick-access-to-common-properties">Quick access to common properties</a></h3>
+<p>The <code>RExpr</code> type has members for quick access into common required fields or properties of R objects. These are mirrored in the <code>RExpr</code>, which are easier to call with forward pipes for example.</p>
+<h4><a name="Vectors" class="anchor" href="#Vectors">Vectors</a></h4>
+<p>You can quickly access a single value within a vector using <code>.ValueAt</code> and the index.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs28" data-fsdocs-tip-unique="41" class="id">v</span> <span class="o">=</span>  <span class="pn">[</span> <span class="n">0.1</span> <span class="o">..</span> <span class="n">3.5</span> <span class="pn">]</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="42" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs30" data-fsdocs-tip-unique="43" class="id">c</span>
+
+<span class="k">let</span> <span data-fsdocs-tip="fs31" data-fsdocs-tip-unique="44" class="id">y</span> <span class="pn">:</span> <span data-fsdocs-tip="fs21" data-fsdocs-tip-unique="45" class="id">Runtime</span><span class="pn">.</span><span data-fsdocs-tip="fs22" data-fsdocs-tip-unique="46" class="m">RTypes</span><span class="pn">.</span><span data-fsdocs-tip="fs32" data-fsdocs-tip-unique="47" class="id">RScalar</span><span class="pn">&lt;</span><span class="n">1</span><span class="pn">&gt;</span> <span class="o">=</span> <span data-fsdocs-tip="fs28" data-fsdocs-tip-unique="48" class="id">v</span><span class="pn">.</span><span data-fsdocs-tip="fs33" data-fsdocs-tip-unique="49" class="id">ValueAt</span> <span class="n">0</span>
+<span data-fsdocs-tip="fs31" data-fsdocs-tip-unique="50" class="id">y</span><span class="pn">.</span><span data-fsdocs-tip="fs34" data-fsdocs-tip-unique="51" class="id">AsReal</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="prop">FromR</span><span class="pn">.</span><span class="id">Value</span>
+
+<span class="k">let</span> <span data-fsdocs-tip="fs35" data-fsdocs-tip-unique="52" class="id">z</span> <span class="pn">:</span> <span data-fsdocs-tip="fs21" data-fsdocs-tip-unique="53" class="id">Runtime</span><span class="pn">.</span><span data-fsdocs-tip="fs22" data-fsdocs-tip-unique="54" class="m">RTypes</span><span class="pn">.</span><span data-fsdocs-tip="fs32" data-fsdocs-tip-unique="55" class="id">RScalar</span><span class="pn">&lt;</span><span class="n">1</span><span class="pn">&gt;</span> <span class="o">=</span> <span data-fsdocs-tip="fs28" data-fsdocs-tip-unique="56" class="id">v</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="57" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs36" data-fsdocs-tip-unique="58" class="id">typedVectorByIndex</span> <span class="n">0</span>
+<span data-fsdocs-tip="fs35" data-fsdocs-tip-unique="59" class="id">z</span><span class="pn">.</span><span data-fsdocs-tip="fs34" data-fsdocs-tip-unique="60" class="id">AsReal</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="prop">FromR</span><span class="pn">.</span><span class="id">Value</span>
+</code></pre>
+<h4><a name="Lists-and-list-based-objects" class="anchor" href="#Lists-and-list-based-objects">Lists and list-based objects</a></h4>
+<p>S3 objects in R are basic R objects, but with a class attribute attached.
+More often than not, they are lists.</p>
+<p>There are multiple quick-access methods to list items:</p>
+<ul>
+<li>Using the ? operator from <code>RProvider.Operators</code>.</li>
+<li>Using the <code>RExpr.listItem</code> function.</li>
+</ul>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs37" data-fsdocs-tip-unique="61" class="id">x</span> <span class="o">=</span> <span class="n">10.</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs38" data-fsdocs-tip-unique="62" class="id">summary</span> <span class="o">=</span> <span data-fsdocs-tip="fs39" data-fsdocs-tip-unique="63" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs40" data-fsdocs-tip-unique="64" class="id">binom_test</span><span class="pn">(</span><span data-fsdocs-tip="fs37" data-fsdocs-tip-unique="65" class="id">x</span><span class="pn">,</span> <span class="n">100.</span><span class="pn">,</span> <span class="n">0.5</span><span class="pn">)</span> <span class="c">// alternative = true</span>
+
+<span data-fsdocs-tip="fs38" data-fsdocs-tip-unique="66" class="id">summary</span><span class="o">?</span><span class="id">``p.value``</span><span class="pn">.</span><span class="id">FromR</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs17" data-fsdocs-tip-unique="67" class="vt">float</span><span class="pn">&gt;</span><span class="pn">(</span><span class="pn">)</span>
+<span data-fsdocs-tip="fs38" data-fsdocs-tip-unique="68" class="id">summary</span><span class="o">?</span><span class="id">statistic</span><span class="pn">.</span><span class="id">FromR</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs17" data-fsdocs-tip-unique="69" class="vt">float</span><span class="pn">&gt;</span><span class="pn">(</span><span class="pn">)</span>
+
+<span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="70" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs41" data-fsdocs-tip-unique="71" class="id">listItem</span> <span class="s">&quot;p.value&quot;</span> <span data-fsdocs-tip="fs38" data-fsdocs-tip-unique="72" class="id">summary</span>
+</code></pre>
+<h4><a name="S4-objects-slots" class="anchor" href="#S4-objects-slots">S4 objects (slots)</a></h4>
+<p>For this example, let's set up an S4 class and object from scratch:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="73" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs42" data-fsdocs-tip-unique="74" class="id">parse</span><span class="pn">(</span><span class="fn">text</span> <span class="o">=</span> <span class="s">&quot;setClass(&#39;testclass&#39;, representation(foo=&#39;character&#39;, bar=&#39;integer&#39;))&quot;</span><span class="pn">)</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="75" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs43" data-fsdocs-tip-unique="76" class="id">eval</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs44" data-fsdocs-tip-unique="77" class="id">s4</span> <span class="o">=</span> <span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="78" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs42" data-fsdocs-tip-unique="79" class="id">parse</span><span class="pn">(</span><span class="fn">text</span> <span class="o">=</span> <span class="s">&quot;new(&#39;testclass&#39;, foo=&#39;s4&#39;, bar=1:4)&quot;</span><span class="pn">)</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="80" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs43" data-fsdocs-tip-unique="81" class="id">eval</span>
+<span data-fsdocs-tip="fs44" data-fsdocs-tip-unique="82" class="id">s4</span><span class="pn">.</span><span data-fsdocs-tip="fs8" data-fsdocs-tip-unique="83" class="id">Print</span><span class="pn">(</span><span class="pn">)</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>"An object of class "testclass"
+Slot "foo":
+[1] "s4"
+
+Slot "bar":
+[1] 1 2 3 4
+
+"</code></pre></td></tr></table>
+<p>You can find out if there are slots using the <code>slots</code> and <code>trySlots</code> functions:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs44" data-fsdocs-tip-unique="84" class="id">s4</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="85" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs45" data-fsdocs-tip-unique="86" class="id">slots</span>
+<span data-fsdocs-tip="fs6" data-fsdocs-tip-unique="87" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs46" data-fsdocs-tip-unique="88" class="id">mtcars</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="89" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs47" data-fsdocs-tip-unique="90" class="id">trySlots</span>
+</code></pre>
+<p>You can access slot values similarly with the <code>slot</code> and <code>trySlot</code> functions:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs44" data-fsdocs-tip-unique="91" class="id">s4</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="92" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs48" data-fsdocs-tip-unique="93" class="id">slot</span> <span class="s">&quot;foo&quot;</span>
+<span data-fsdocs-tip="fs44" data-fsdocs-tip-unique="94" class="id">s4</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="95" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs49" data-fsdocs-tip-unique="96" class="id">trySlot</span> <span class="s">&quot;foo&quot;</span>
+<span data-fsdocs-tip="fs44" data-fsdocs-tip-unique="97" class="id">s4</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="98" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs49" data-fsdocs-tip-unique="99" class="id">trySlot</span> <span class="s">&quot;doesntexist&quot;</span>
+</code></pre>
+<h2><a name="Parallel-processing" class="anchor" href="#Parallel-processing">Parallel processing</a></h2>
+<p>R itself is not thread-safe. Most R parallel processing libraries focus on running multiple R processes and coordinating work and values between them.</p>
+<p>When using RProvider, you may use R from one or many threads. However, the underlying R engine being used is a single R instance. Internally, <em>RBridge</em> uses a concurrent queue to process incoming work. You will only gain the perception of multi-threading but none of the speed advantage when consuming R functions.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="pn">[|</span> <span class="n">1</span> <span class="o">..</span> <span class="n">10</span> <span class="pn">|]</span>
+<span class="o">|&gt;</span> <span data-fsdocs-tip="fs50" data-fsdocs-tip-unique="100" class="m">Array</span><span class="pn">.</span><span data-fsdocs-tip="fs51" data-fsdocs-tip-unique="101" class="m">Parallel</span><span class="pn">.</span><span data-fsdocs-tip="fs52" data-fsdocs-tip-unique="102" class="id">map</span><span class="pn">(</span><span class="k">fun</span> <span data-fsdocs-tip="fs53" data-fsdocs-tip-unique="103" class="fn">i</span> <span class="k">-&gt;</span> <span class="fn">(</span><span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="104" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs54" data-fsdocs-tip-unique="105" class="id">sqrt</span> <span data-fsdocs-tip="fs53" data-fsdocs-tip-unique="106" class="fn">i</span><span class="pn">)</span><span class="pn">.</span><span class="id">AsScalar</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="id">AsReal</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="prop">FromR</span><span class="pn">.</span><span class="id">Value</span><span class="pn">)</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>[|Some 1.0; Some 1.414213562; Some 1.732050808; Some 2.0; Some 2.236067977;
+  Some 2.449489743; Some 2.645751311; Some 2.828427125; Some 3.0;
+  Some 3.16227766|]</code></pre></td></tr></table>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="pn">[|</span> <span class="n">1</span> <span class="o">..</span> <span class="n">10</span> <span class="pn">|]</span>
+<span class="o">|&gt;</span> <span data-fsdocs-tip="fs50" data-fsdocs-tip-unique="107" class="m">Array</span><span class="pn">.</span><span data-fsdocs-tip="fs52" data-fsdocs-tip-unique="108" class="id">map</span><span class="pn">(</span><span class="k">fun</span> <span data-fsdocs-tip="fs53" data-fsdocs-tip-unique="109" class="fn">i</span> <span class="k">-&gt;</span> <span class="fn">(</span><span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="110" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs54" data-fsdocs-tip-unique="111" class="id">sqrt</span> <span data-fsdocs-tip="fs53" data-fsdocs-tip-unique="112" class="fn">i</span><span class="pn">)</span><span class="pn">.</span><span class="id">AsScalar</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="id">AsReal</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="prop">FromR</span><span class="pn">.</span><span class="id">Value</span><span class="pn">)</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>[|Some 1.0; Some 1.414213562; Some 1.732050808; Some 2.0; Some 2.236067977;
+  Some 2.449489743; Some 2.645751311; Some 2.828427125; Some 3.0;
+  Some 3.16227766|]</code></pre></td></tr></table>
+<p>As can be seen, the results are identical.</p>
+<p><strong>Important</strong>. Although <em>pure</em> functions return identical results, impure functions will not. The internal R instance is sharing it's environment, so you may cross contaminate.</p>
+
+        <div popover class="fsdocs-tip" id="fs1">namespace RProvider</div>
+<div popover class="fsdocs-tip" id="fs2">module Operators
+
+from RProvider<br /><em>&lt;summary&gt;
+ Custom operators that make composing and working with
+ R symbolic expressions easier.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs3">namespace RProvider.datasets</div>
+<div popover class="fsdocs-tip" id="fs4">namespace RProvider.stats</div>
+<div popover class="fsdocs-tip" id="fs5">val df: Abstractions.RExpr</div>
+<div popover class="fsdocs-tip" id="fs6">type R =
+  static member AirPassengers: RExpr
+  static member BJsales: RExpr
+  static member BJsales_lead: RExpr
+  static member BOD: RExpr
+  static member CO2: RExpr
+  static member ChickWeight: RExpr
+  static member DNase: RExpr
+  static member EuStockMarkets: RExpr
+  static member Formaldehyde: RExpr
+  static member HairEyeColor: RExpr
+  ...<br /><em>Base R datasets.</em></div>
+<div popover class="fsdocs-tip" id="fs7">property R.penguins: Abstractions.RExpr with get</div>
+<div popover class="fsdocs-tip" id="fs8">member Abstractions.RExpr.Print: unit -&gt; string</div>
+<div popover class="fsdocs-tip" id="fs9">property Abstractions.RExpr.Type: Runtime.RTypes.RSemanticType with get</div>
+<div popover class="fsdocs-tip" id="fs10">property Abstractions.RExpr.Class: string array with get</div>
+<div popover class="fsdocs-tip" id="fs11">val fsi: FSharp.Compiler.Interactive.InteractiveSession</div>
+<div popover class="fsdocs-tip" id="fs12">member FSharp.Compiler.Interactive.InteractiveSession.AddPrinter: (&#39;T -&gt; string) -&gt; unit</div>
+<div popover class="fsdocs-tip" id="fs13">val billLength: Abstractions.RExpr</div>
+<div popover class="fsdocs-tip" id="fs14">val billVal: float array</div>
+<div popover class="fsdocs-tip" id="fs15">module RExpr
+
+from RProvider<br /><em>&lt;summary&gt;
+ Functions for working with R expressions.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs16">val getValue&lt;&#39;a&gt; : (Abstractions.RExpr -&gt; &#39;a)</div>
+<div popover class="fsdocs-tip" id="fs17">Multiple items<br />val float: value: &#39;T -&gt; float (requires member op_Explicit)<br /><br />--------------------<br />type float = System.Double<br /><br />--------------------<br />type float&lt;&#39;Measure&gt; =
+  float</div>
+<div popover class="fsdocs-tip" id="fs18">val speciesFactorSafe: string array</div>
+<div popover class="fsdocs-tip" id="fs19">union case Option.Some: Value: &#39;T -&gt; Option&lt;&#39;T&gt;</div>
+<div popover class="fsdocs-tip" id="fs20">val t: Runtime.RTypes.RSemantic&lt;1&gt;</div>
+<div popover class="fsdocs-tip" id="fs21">namespace RProvider.Runtime</div>
+<div popover class="fsdocs-tip" id="fs22">module RTypes
+
+from RProvider.Runtime<br /><em>&lt;summary&gt;
+ Types representing common R types, and
+ functions for working with them.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs23">union case Runtime.RTypes.RSemantic.FactorInR: Runtime.RTypes.Factor.RFactor -&gt; Runtime.RTypes.RSemantic&lt;&#39;u&gt;</div>
+<div popover class="fsdocs-tip" id="fs24">val f: Runtime.RTypes.Factor.RFactor</div>
+<div popover class="fsdocs-tip" id="fs25">property Runtime.RTypes.Factor.RFactor.AsStringVector: Lazy&lt;string array&gt; with get</div>
+<div popover class="fsdocs-tip" id="fs26">property System.Lazy.Value: string array with get</div>
+<div popover class="fsdocs-tip" id="fs27">val speciesFactor: string array</div>
+<div popover class="fsdocs-tip" id="fs28">val v: Abstractions.RExpr</div>
+<div popover class="fsdocs-tip" id="fs29">type R =
+  static member ``!`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``!=`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``!_hexmode`` : ?a: obj -&gt; RExpr + 2 overloads
+  static member ``!_octmode`` : ?a: obj -&gt; RExpr + 2 overloads
+  static member ``$`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``$&lt;-`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``$&lt;-_POSIXlt`` : ?x: obj * ?name: obj * ?value: obj -&gt; RExpr + 2 overloads
+  static member ``$&lt;-_data_frame`` : ?x: obj * ?name: obj * ?value: obj -&gt; RExpr + 2 overloads
+  static member ``$_DLLInfo`` : ?x: obj * ?name: obj -&gt; RExpr + 2 overloads
+  static member ``$_package__version`` : ?x: obj * ?name: obj -&gt; RExpr + 2 overloads
+  ...<br /><em>Base R functions.</em></div>
+<div popover class="fsdocs-tip" id="fs30">R.c(?paramArray: obj array) : Abstractions.RExpr<br /><em>Combine Values into a Vector or List</em></div>
+<div popover class="fsdocs-tip" id="fs31">val y: Runtime.RTypes.RScalar&lt;1&gt;</div>
+<div popover class="fsdocs-tip" id="fs32">type RScalar&lt;&#39;u&gt; =
+  | NumericS of RRealScalar&lt;&#39;u&gt;
+  | IntegerS of RIntScalar&lt;&#39;u&gt;
+  | LogicalS of RScalarBase&lt;bool&gt;
+  | CharacterS of RScalarBase&lt;string&gt;
+  | ComplexS of RScalarBase&lt;RComplex&gt;
+  | RawS of RExpr
+  member AsCharacter: unit -&gt; RScalarBase&lt;string&gt;
+  member AsComplex: unit -&gt; RScalarBase&lt;RComplex&gt;
+  member AsInt: unit -&gt; RIntScalar&lt;&#39;u&gt;
+  member AsLogical: unit -&gt; RScalarBase&lt;bool&gt;
+  member AsReal: unit -&gt; RRealScalar&lt;&#39;u&gt;</div>
+<div popover class="fsdocs-tip" id="fs33">member Abstractions.RExpr.ValueAt: index: int -&gt; Runtime.RTypes.RScalar&lt;&#39;u&gt;</div>
+<div popover class="fsdocs-tip" id="fs34">member Runtime.RTypes.RScalar.AsReal: unit -&gt; Runtime.RTypes.Real.Scalar.RRealScalar&lt;&#39;u&gt;</div>
+<div popover class="fsdocs-tip" id="fs35">val z: Runtime.RTypes.RScalar&lt;1&gt;</div>
+<div popover class="fsdocs-tip" id="fs36">val typedVectorByIndex: index: int -&gt; expr: Abstractions.RExpr -&gt; Runtime.RTypes.RScalar&lt;&#39;u&gt;</div>
+<div popover class="fsdocs-tip" id="fs37">val x: float</div>
+<div popover class="fsdocs-tip" id="fs38">val summary: Abstractions.RExpr</div>
+<div popover class="fsdocs-tip" id="fs39">type R =
+  static member AIC: ?object: obj * ?k: obj * ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ARMAacf: ?ar: obj * ?ma: obj * ?lag_max: obj * ?pacf: obj -&gt; RExpr + 2 overloads
+  static member ARMAtoMA: ?ar: obj * ?ma: obj * ?lag_max: obj -&gt; RExpr + 2 overloads
+  static member BIC: ?object: obj * ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member Box_test: ?x: obj * ?lag: obj * ?``type`` : obj * ?fitdf: obj -&gt; RExpr + 2 overloads
+  static member C: ?object: obj * ?contr: obj * ?how_many: obj * ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member D: ?expr: obj * ?name: obj -&gt; RExpr + 2 overloads
+  static member DF2formula: ?x: obj * ?env: obj -&gt; RExpr + 2 overloads
+  static member Gamma: ?link: obj -&gt; RExpr + 2 overloads
+  static member HoltWinters: ?x: obj * ?alpha: obj * ?beta: obj * ?gamma: obj * ?seasonal: obj * ?start_periods: obj * ?l_start: obj * ?b_start: obj * ?s_start: obj * ?optim_start: obj * ?optim_control: obj -&gt; RExpr + 2 overloads
+  ...<br /><em>R statistical functions.</em></div>
+<div popover class="fsdocs-tip" id="fs40">R.binom_test(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Exact Binomial Test</em><br />R.binom_test(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Exact Binomial Test</em><br />R.binom_test(?x: obj, ?n: obj, ?p: obj, ?alternative: obj, ?conf_level: obj) : Abstractions.RExpr<br /><em>Exact Binomial Test</em></div>
+<div popover class="fsdocs-tip" id="fs41">val listItem: name: string -&gt; expr: Abstractions.RExpr -&gt; Abstractions.RExpr</div>
+<div popover class="fsdocs-tip" id="fs42">R.parse(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Parse R Expressions</em><br />R.parse(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Parse R Expressions</em><br />R.parse(?file: obj, ?n: obj, ?text: obj, ?prompt: obj, ?keep_source: obj, ?srcfile: obj, ?encoding: obj) : Abstractions.RExpr<br /><em>Parse R Expressions</em></div>
+<div popover class="fsdocs-tip" id="fs43">R.eval(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em><br />R.eval(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em><br />R.eval(?expr: obj, ?envir: obj, ?enclos: obj) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em></div>
+<div popover class="fsdocs-tip" id="fs44">val s4: Abstractions.RExpr</div>
+<div popover class="fsdocs-tip" id="fs45">val slots: (Abstractions.RExpr -&gt; Map&lt;string,string&gt;)<br /><em>&lt;summary&gt; For an S4 object, get a dictionary containing first the
+ slot name and second the slot&#39;s R type.&lt;/summary&gt;<br />&lt;param name=&quot;expr&quot;&gt;An R symbolic expression&lt;/param&gt;<br />&lt;returns&gt;A diictionary with key = slot name, and value = R type&lt;/returns&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs46">property R.mtcars: Abstractions.RExpr with get</div>
+<div popover class="fsdocs-tip" id="fs47">val trySlots: (Abstractions.RExpr -&gt; Map&lt;string,string&gt; option)<br /><em>&lt;summary&gt; For an S4 object, get a dictionary containing first the
+ slot name and second the slot&#39;s R type. If the expression
+ is not an S4 object, returns `None`.&lt;/summary&gt;<br />&lt;param name=&quot;expr&quot;&gt;An R symbolic expression&lt;/param&gt;<br />&lt;returns&gt;A diictionary with key = slot name, and value = R type&lt;/returns&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs48">val slot: name: string -&gt; expr: Abstractions.RExpr -&gt; Abstractions.RExpr<br /><em>&lt;summary&gt;Gets the value of a slot as a SymbolicExpression&lt;/summary&gt;<br />&lt;param name=&quot;name&quot;&gt;Slot name to retrieve&lt;/param&gt;<br />&lt;param name=&quot;expr&quot;&gt;An R symbolic expression&lt;/param&gt;<br />&lt;returns&gt;A symbolic expression containing the slot value&lt;/returns&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs49">val trySlot: name: string -&gt; expr: Abstractions.RExpr -&gt; Abstractions.RExpr option<br /><em>&lt;summary&gt;Gets the value of a slot as a SymbolicExpression&lt;/summary&gt;<br />&lt;param name=&quot;name&quot;&gt;Slot name to retrieve&lt;/param&gt;<br />&lt;param name=&quot;expr&quot;&gt;An R symbolic expression&lt;/param&gt;<br />&lt;returns&gt;Some symbolic expression if the expression was an S4
+ object and had the slot, or None otherwise.&lt;/returns&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs50">module Array
+
+from Microsoft.FSharp.Collections</div>
+<div popover class="fsdocs-tip" id="fs51">module Parallel
+
+from Microsoft.FSharp.Collections.ArrayModule</div>
+<div popover class="fsdocs-tip" id="fs52">val map: mapping: (&#39;T -&gt; &#39;U) -&gt; array: &#39;T array -&gt; &#39;U array</div>
+<div popover class="fsdocs-tip" id="fs53">val i: int</div>
+<div popover class="fsdocs-tip" id="fs54">R.sqrt(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>No documentation available</em><br />R.sqrt(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>No documentation available</em><br />R.sqrt(?paramArray: obj array) : Abstractions.RExpr<br /><em>No documentation available</em></div>
+
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#Working-with-R-expressions">
+      Working with R expressions
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Inpecting-a-value">
+      Inpecting a value
+    </a>
+  </li>
+  <li class="level-4">
+    <a href="#Printing-R-values-to-the-console-F-interactive">
+      Printing R values to the console (F# interactive)
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Extracting-values-R-gt-F">
+      Extracting values (R -&gt; F#)
+    </a>
+  </li>
+  <li class="level-4">
+    <a href="#Extracting-using-the-semantic-R-types-layer">
+      Extracting using the semantic R types layer
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Viewing-as-an-R-semantic-type">
+      Viewing as an R semantic type
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Quick-access-to-common-properties">
+      Quick access to common properties
+    </a>
+  </li>
+  <li class="level-4">
+    <a href="#Vectors">
+      Vectors
+    </a>
+  </li>
+  <li class="level-4">
+    <a href="#Lists-and-list-based-objects">
+      Lists and list-based objects
+    </a>
+  </li>
+  <li class="level-4">
+    <a href="#S4-objects-slots">
+      S4 objects (slots)
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Parallel-processing">
+      Parallel processing
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-copy-button.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-root="https://fslab.org/RProvider/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="BlueMountain Capital;FsLab" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="RProvider">
+    <meta property="og:title" content="Operators
+" />
+    <meta property="og:url" content="https://fslab.org/RProvider/operators.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="https://fslab.org/RProvider/">
+    <meta name="twitter:title" content="Operators
+">
+    
+    <title>Operators
+ | RProvider</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fslab.org/RProvider/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-details-set-expanded.js"></script>
+    <link href="https://fslab.org/RProvider/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fslab.org/RProvider/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+                    Repository</a></li>
+                <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header active">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header ">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://fslab.org/RProvider/">
+            <img alt="Logo" src="https://fslab.org/RProvider/img/logo.png">
+            <strong>RProvider</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/fslaborg/RProvider/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+            Repository</a></li>
+        <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header active">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header ">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        
+<h1><a name="Operators" class="anchor" href="#Operators">Operators</a></h1>
+<p>RProvider includes the <code>RProvider.Operators</code> module, which contains custom operators that can make working with R easier. Make sure to open it alongside your packages:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="1" class="id">RProvider</span>
+<span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="2" class="id">RProvider</span><span class="pn">.</span><span data-fsdocs-tip="fs2" data-fsdocs-tip-unique="3" class="m">Operators</span>
+
+<span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="4" class="id">RProvider</span><span class="pn">.</span><span class="id">``base``</span>
+<span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="5" class="id">RProvider</span><span class="pn">.</span><span data-fsdocs-tip="fs3" data-fsdocs-tip-unique="6" class="id">datasets</span>
+<span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="7" class="id">RProvider</span><span class="pn">.</span><span data-fsdocs-tip="fs4" data-fsdocs-tip-unique="8" class="id">stats</span>
+</code></pre>
+<h1><a name="Accessing-members-slots" class="anchor" href="#Accessing-members-slots">Accessing members / slots</a></h1>
+<p>You can use the dynamic (<code>?</code>) operator to access:</p>
+<ul>
+<li>Slots in S4 objects</li>
+<li>Members of list types</li>
+</ul>
+<h3><a name="List-accessing-named-columns-in-a-dataframe" class="anchor" href="#List-accessing-named-columns-in-a-dataframe">List: accessing named columns in a dataframe.</a></h3>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="9" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs6" data-fsdocs-tip-unique="10" class="id">mtcars</span><span class="o">?</span><span class="id">mpg</span>
+</code></pre>
+<p>### S4 object: access a slot</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs7" data-fsdocs-tip-unique="11" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs8" data-fsdocs-tip-unique="12" class="id">eval</span> <span class="s">&quot;setClass(&#39;testclass&#39;, representation(foo=&#39;character&#39;, bar=&#39;integer&#39;))&quot;</span>
+
+<span class="k">let</span> <span data-fsdocs-tip="fs9" data-fsdocs-tip-unique="13" class="id">test</span> <span class="o">=</span> <span data-fsdocs-tip="fs7" data-fsdocs-tip-unique="14" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs8" data-fsdocs-tip-unique="15" class="id">eval</span> <span class="s">&quot;new(&#39;testclass&#39;, foo=&#39;s4&#39;, bar=1:4)&quot;</span>
+
+<span data-fsdocs-tip="fs9" data-fsdocs-tip-unique="16" class="id">test</span><span class="o">?</span><span class="id">foo</span>
+</code></pre>
+
+        <div popover class="fsdocs-tip" id="fs1">namespace RProvider</div>
+<div popover class="fsdocs-tip" id="fs2">module Operators
+
+from RProvider<br /><em>&lt;summary&gt;
+ Custom operators that make composing and working with
+ R symbolic expressions easier.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs3">namespace RProvider.datasets</div>
+<div popover class="fsdocs-tip" id="fs4">namespace RProvider.stats</div>
+<div popover class="fsdocs-tip" id="fs5">type R =
+  static member AirPassengers: RExpr
+  static member BJsales: RExpr
+  static member BJsales_lead: RExpr
+  static member BOD: RExpr
+  static member CO2: RExpr
+  static member ChickWeight: RExpr
+  static member DNase: RExpr
+  static member EuStockMarkets: RExpr
+  static member Formaldehyde: RExpr
+  static member HairEyeColor: RExpr
+  ...<br /><em>Base R datasets.</em></div>
+<div popover class="fsdocs-tip" id="fs6">property R.mtcars: Abstractions.RExpr with get</div>
+<div popover class="fsdocs-tip" id="fs7">type R =
+  static member ``!`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``!=`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``!_hexmode`` : ?a: obj -&gt; RExpr + 2 overloads
+  static member ``!_octmode`` : ?a: obj -&gt; RExpr + 2 overloads
+  static member ``$`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``$&lt;-`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``$&lt;-_POSIXlt`` : ?x: obj * ?name: obj * ?value: obj -&gt; RExpr + 2 overloads
+  static member ``$&lt;-_data_frame`` : ?x: obj * ?name: obj * ?value: obj -&gt; RExpr + 2 overloads
+  static member ``$_DLLInfo`` : ?x: obj * ?name: obj -&gt; RExpr + 2 overloads
+  static member ``$_package__version`` : ?x: obj * ?name: obj -&gt; RExpr + 2 overloads
+  ...<br /><em>Base R functions.</em></div>
+<div popover class="fsdocs-tip" id="fs8">Multiple items<br />R.eval(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em><br />R.eval(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em><br />R.eval(?expr: obj, ?envir: obj, ?enclos: obj) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em><br /><br />--------------------<br />R.eval(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em><br />R.eval(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em><br />R.eval(?expr: obj, ?envir: obj, ?enclos: obj) : Abstractions.RExpr<br /><em>Evaluate an (Unevaluated) Expression</em></div>
+<div popover class="fsdocs-tip" id="fs9">val test: Abstractions.RExpr</div>
+
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#Operators">
+      Operators
+    </a>
+  </li>
+  <li class="level-1">
+    <a href="#Accessing-members-slots">
+      Accessing members / slots
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#List-accessing-named-columns-in-a-dataframe">
+      List: accessing named columns in a dataframe.
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-copy-button.js"></script>
+
+</body>
+</html>

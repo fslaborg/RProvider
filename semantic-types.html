@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" data-root="https://fslab.org/RProvider/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="BlueMountain Capital;FsLab" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="RProvider">
+    <meta property="og:title" content="R Semantic Types" />
+    <meta property="og:url" content="https://fslab.org/RProvider/semantic-types.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="https://fslab.org/RProvider/">
+    <meta name="twitter:title" content="R Semantic Types">
+    
+    <title>R Semantic Types | RProvider</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fslab.org/RProvider/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-details-set-expanded.js"></script>
+    <link href="https://fslab.org/RProvider/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fslab.org/RProvider/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+                    Repository</a></li>
+                <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header active">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header ">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://fslab.org/RProvider/">
+            <img alt="Logo" src="https://fslab.org/RProvider/img/logo.png">
+            <strong>RProvider</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/fslaborg/RProvider/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+            Repository</a></li>
+        <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header active">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header ">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        
+<h1><a name="Semantic-Types" class="anchor" href="#Semantic-Types">Semantic Types</a></h1>
+<p>RProvider includes a semantic type layer that provides strongly typed wrappers around R values.</p>
+<h2><a name="Numeric" class="anchor" href="#Numeric">Numeric</a></h2>
+<p>In R, as in F#, there is a distinction between integer and real (floating-point) numeric values.</p>
+<p>R represents floating point numbers through the 'real' data type. Here, we include semantic types for R's real numbers that include full arithmetic support. Similarly, the integer semantic type includes arithmetic support.</p>
+<p><strong>Important.</strong> R automatically casts integers to real numbers during any mathematical operations, even if only integers are involved. Our semantic types therefore follow the same casting rules.</p>
+<h3><a name="Scalars" class="anchor" href="#Scalars">Scalars</a></h3>
+<p>R does not make a distinction between scalars and vectors; scalars are simply vectors of length one. Here, we have made a distinction.</p>
+<p>To create an integer from an F# value:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span data-fsdocs-tip="fs9" data-fsdocs-tip-unique="12" class="id">FSharp</span><span class="pn">.</span><span data-fsdocs-tip="fs10" data-fsdocs-tip-unique="13" class="id">Data</span><span class="pn">.</span><span data-fsdocs-tip="fs11" data-fsdocs-tip-unique="14" class="id">UnitSystems</span><span class="pn">.</span><span data-fsdocs-tip="fs12" data-fsdocs-tip-unique="15" class="id">SI</span><span class="pn">.</span><span data-fsdocs-tip="fs13" data-fsdocs-tip-unique="16" class="id">UnitSymbols</span>
+
+<span class="k">let</span> <span data-fsdocs-tip="fs14" data-fsdocs-tip-unique="17" class="id">i</span> <span class="o">=</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="18" class="id">Runtime</span><span class="pn">.</span><span data-fsdocs-tip="fs16" data-fsdocs-tip-unique="19" class="m">RTypes</span><span class="pn">.</span><span data-fsdocs-tip="fs17" data-fsdocs-tip-unique="20" class="m">Integer</span><span class="pn">.</span><span data-fsdocs-tip="fs18" data-fsdocs-tip-unique="21" class="m">Scalar</span><span class="pn">.</span><span data-fsdocs-tip="fs19" data-fsdocs-tip-unique="22" class="id">fromInt</span> <span class="n">1</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs20" data-fsdocs-tip-unique="23" class="rt">kg</span><span class="pn">&gt;</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs21" data-fsdocs-tip-unique="24" class="m">Option</span><span class="pn">.</span><span data-fsdocs-tip="fs22" data-fsdocs-tip-unique="25" class="id">get</span>
+</code></pre>
+<p>Similarly, to create R-based real (floating point) numbers from F# values:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs23" data-fsdocs-tip-unique="26" class="id">x</span> <span class="o">=</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="27" class="id">Runtime</span><span class="pn">.</span><span data-fsdocs-tip="fs16" data-fsdocs-tip-unique="28" class="m">RTypes</span><span class="pn">.</span><span data-fsdocs-tip="fs24" data-fsdocs-tip-unique="29" class="m">Real</span><span class="pn">.</span><span data-fsdocs-tip="fs25" data-fsdocs-tip-unique="30" class="m">Scalar</span><span class="pn">.</span><span data-fsdocs-tip="fs26" data-fsdocs-tip-unique="31" class="id">fromFloat</span> <span class="n">2.1</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="32" class="rt">m</span><span class="pn">&gt;</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs21" data-fsdocs-tip-unique="33" class="m">Option</span><span class="pn">.</span><span data-fsdocs-tip="fs22" data-fsdocs-tip-unique="34" class="id">get</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs28" data-fsdocs-tip-unique="35" class="id">y</span> <span class="o">=</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="36" class="id">Runtime</span><span class="pn">.</span><span data-fsdocs-tip="fs16" data-fsdocs-tip-unique="37" class="m">RTypes</span><span class="pn">.</span><span data-fsdocs-tip="fs24" data-fsdocs-tip-unique="38" class="m">Real</span><span class="pn">.</span><span data-fsdocs-tip="fs25" data-fsdocs-tip-unique="39" class="m">Scalar</span><span class="pn">.</span><span data-fsdocs-tip="fs26" data-fsdocs-tip-unique="40" class="id">fromFloat</span> <span class="n">54.9</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="41" class="rt">s</span><span class="pn">&gt;</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs21" data-fsdocs-tip-unique="42" class="m">Option</span><span class="pn">.</span><span data-fsdocs-tip="fs22" data-fsdocs-tip-unique="43" class="id">get</span>
+
+<span class="k">let</span> <span data-fsdocs-tip="fs30" data-fsdocs-tip-unique="44" class="id">z</span> <span class="o">=</span> <span data-fsdocs-tip="fs23" data-fsdocs-tip-unique="45" class="id">x</span> <span class="o">/</span> <span data-fsdocs-tip="fs28" data-fsdocs-tip-unique="46" class="id">y</span>
+</code></pre>
+<h3><a name="Vectors" class="anchor" href="#Vectors">Vectors</a></h3>
+<p>Vectors may be created within R memory in a similar way to scalars:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs31" data-fsdocs-tip-unique="47" class="id">dist</span> <span class="o">=</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="48" class="id">Runtime</span><span class="pn">.</span><span data-fsdocs-tip="fs16" data-fsdocs-tip-unique="49" class="m">RTypes</span><span class="pn">.</span><span data-fsdocs-tip="fs24" data-fsdocs-tip-unique="50" class="m">Real</span><span class="pn">.</span><span data-fsdocs-tip="fs32" data-fsdocs-tip-unique="51" class="m">Vector</span><span class="pn">.</span><span data-fsdocs-tip="fs33" data-fsdocs-tip-unique="52" class="id">fromFloats</span> <span class="pn">[</span> <span class="n">1.</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="53" class="rt">m</span><span class="pn">&gt;</span> <span class="o">..</span> <span class="n">1.</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="54" class="rt">m</span><span class="pn">&gt;</span> <span class="o">..</span> <span class="n">10.</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="55" class="rt">m</span><span class="pn">&gt;</span> <span class="pn">]</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs34" data-fsdocs-tip-unique="56" class="id">speed</span> <span class="o">=</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="57" class="id">Runtime</span><span class="pn">.</span><span data-fsdocs-tip="fs16" data-fsdocs-tip-unique="58" class="m">RTypes</span><span class="pn">.</span><span data-fsdocs-tip="fs24" data-fsdocs-tip-unique="59" class="m">Real</span><span class="pn">.</span><span data-fsdocs-tip="fs32" data-fsdocs-tip-unique="60" class="m">Vector</span><span class="pn">.</span><span data-fsdocs-tip="fs33" data-fsdocs-tip-unique="61" class="id">fromFloats</span> <span class="pn">[</span> <span class="n">1.</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="62" class="rt">m</span><span class="o">/</span><span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="63" class="rt">s</span><span class="pn">&gt;</span> <span class="o">..</span> <span class="n">1.</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="64" class="rt">m</span><span class="o">/</span><span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="65" class="rt">s</span><span class="pn">&gt;</span> <span class="o">..</span> <span class="n">10.</span><span class="pn">&lt;</span><span data-fsdocs-tip="fs27" data-fsdocs-tip-unique="66" class="rt">m</span><span class="o">/</span><span data-fsdocs-tip="fs29" data-fsdocs-tip-unique="67" class="rt">s</span><span class="pn">&gt;</span> <span class="pn">]</span>
+
+<span class="c">// Pass vectors into R functions</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs35" data-fsdocs-tip-unique="68" class="id">m</span> <span class="o">=</span> <span data-fsdocs-tip="fs36" data-fsdocs-tip-unique="69" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs37" data-fsdocs-tip-unique="70" class="id">median</span> <span data-fsdocs-tip="fs31" data-fsdocs-tip-unique="71" class="id">dist</span>
+
+<span class="c">// Unit-aware arithmetic</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs38" data-fsdocs-tip-unique="72" class="id">time</span> <span class="o">=</span> <span data-fsdocs-tip="fs31" data-fsdocs-tip-unique="73" class="id">dist</span> <span class="o">/</span> <span data-fsdocs-tip="fs34" data-fsdocs-tip-unique="74" class="id">speed</span>
+</code></pre>
+<h3><a name="Arithmetic" class="anchor" href="#Arithmetic">Arithmetic</a></h3>
+<p>The int- and float-based R semantic types support F# operators; underneath, these call
+R's operators. In effect, you can orchestrate R calculations using the F# typed view
+of the values.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs39" data-fsdocs-tip-unique="75" class="id">ex1</span> <span class="o">=</span> <span data-fsdocs-tip="fs23" data-fsdocs-tip-unique="76" class="id">x</span> <span class="o">+</span> <span data-fsdocs-tip="fs23" data-fsdocs-tip-unique="77" class="id">x</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs40" data-fsdocs-tip-unique="78" class="id">ex2</span> <span class="o">=</span> <span data-fsdocs-tip="fs23" data-fsdocs-tip-unique="79" class="id">x</span> <span class="o">*</span> <span data-fsdocs-tip="fs28" data-fsdocs-tip-unique="80" class="id">y</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs41" data-fsdocs-tip-unique="81" class="id">ex3</span> <span class="o">=</span> <span data-fsdocs-tip="fs39" data-fsdocs-tip-unique="82" class="id">ex1</span> <span class="o">/</span> <span data-fsdocs-tip="fs40" data-fsdocs-tip-unique="83" class="id">ex2</span>
+</code></pre>
+<p>Of course, RProvider's basic type inference means that we do not know the unit-typing of R's functions, so at present any returned values from R functions are dimensionless, regardless of inputs.</p>
+<p>Note that any operations on integers in R results in real numbers as the return type.</p>
+<h3><a name="Named-vectors" class="anchor" href="#Named-vectors">Named vectors</a></h3>
+<p>In R, vectors may be named such that each value has a label. RProvider is configured to allow
+dotting into the elements of a vector to retrieve a scalar based on either an integer index
+or a string name.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs42" data-fsdocs-tip-unique="84" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs43" data-fsdocs-tip-unique="85" class="id">typedVectorByName</span>
+<span data-fsdocs-tip="fs42" data-fsdocs-tip-unique="86" class="m">RExpr</span><span class="pn">.</span><span data-fsdocs-tip="fs44" data-fsdocs-tip-unique="87" class="id">typedVectorByIndex</span>
+</code></pre>
+<h2><a name="Factors" class="anchor" href="#Factors">Factors</a></h2>
+<p>Factors are a core R data type and are used to represent categorical variables. In essence, they are a list of classes plus an integer-based vector of indices. You may inspect and extract R factors semantically, as in the below example which again is using the built-in penguin data frame:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs45" data-fsdocs-tip-unique="88" class="id">species</span> <span class="o">=</span> <span data-fsdocs-tip="fs46" data-fsdocs-tip-unique="89" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs47" data-fsdocs-tip-unique="90" class="id">penguins</span><span class="o">?</span><span data-fsdocs-tip="fs45" data-fsdocs-tip-unique="91" class="id">species</span><span class="pn">.</span><span class="id">AsFactor</span><span class="pn">(</span><span class="pn">)</span>
+
+<span data-fsdocs-tip="fs45" data-fsdocs-tip-unique="92" class="id">species</span><span class="pn">.</span><span data-fsdocs-tip="fs48" data-fsdocs-tip-unique="93" class="prop">Levels</span><span class="pn">.</span><span data-fsdocs-tip="fs49" data-fsdocs-tip-unique="94" class="id">Value</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>Some ["Adelie"; "Chinstrap"; "Gentoo"]</code></pre></td></tr></table>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs45" data-fsdocs-tip-unique="95" class="id">species</span><span class="pn">.</span><span data-fsdocs-tip="fs50" data-fsdocs-tip-unique="96" class="id">Indices</span>
+
+<span class="c">// Extract the factor to an F# list of strings</span>
+<span data-fsdocs-tip="fs45" data-fsdocs-tip-unique="97" class="id">species</span><span class="pn">.</span><span data-fsdocs-tip="fs51" data-fsdocs-tip-unique="98" class="prop">AsStringVector</span><span class="pn">.</span><span data-fsdocs-tip="fs52" data-fsdocs-tip-unique="99" class="id">Value</span>
+</code></pre>
+<h2><a name="Heterogeneous-Lists-HLists" class="anchor" href="#Heterogeneous-Lists-HLists">Heterogeneous Lists (HLists)</a></h2>
+<p>In R, lists may contain values of disparate types. In F#, lists must be homogeneous.</p>
+<p>For example, the let's make a new list:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs53" data-fsdocs-tip-unique="100" class="id">hetL</span> <span class="o">=</span> <span data-fsdocs-tip="fs54" data-fsdocs-tip-unique="101" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs55" data-fsdocs-tip-unique="102" class="id">list</span><span class="pn">(</span><span class="s">&quot;apple&quot;</span><span class="pn">,</span> <span class="pn">[</span><span data-fsdocs-tip="fs56" data-fsdocs-tip-unique="103" class="uc">Some</span> <span class="s">&quot;pear&quot;</span><span class="pn">;</span> <span data-fsdocs-tip="fs57" data-fsdocs-tip-unique="104" class="uc">None</span><span class="pn">]</span><span class="pn">,</span> <span class="n">123.0</span><span class="pn">)</span>
+
+<span data-fsdocs-tip="fs53" data-fsdocs-tip-unique="105" class="id">hetL</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>R semantic type &lt;ListType&gt;
+
+[[1]]
+[1] "apple"
+
+[[2]]
+[1] "pear" NA    
+
+[[3]]
+[1] 123
+
+</code></pre></td></tr></table>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs53" data-fsdocs-tip-unique="106" class="id">hetL</span><span class="pn">.</span><span data-fsdocs-tip="fs58" data-fsdocs-tip-unique="107" class="id">Type</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>ListType</code></pre></td></tr></table>
+<p>RProvider includes a semantic type for R's heterogeneous lists.
+We can type an R value into the semantic type as follows:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs59" data-fsdocs-tip-unique="108" class="id">hetLSem</span> <span class="o">=</span> <span data-fsdocs-tip="fs53" data-fsdocs-tip-unique="109" class="id">hetL</span><span class="pn">.</span><span data-fsdocs-tip="fs60" data-fsdocs-tip-unique="110" class="id">AsList</span><span class="pn">(</span><span class="pn">)</span>
+
+<span data-fsdocs-tip="fs59" data-fsdocs-tip-unique="111" class="id">hetLSem</span><span class="pn">.</span><span data-fsdocs-tip="fs61" data-fsdocs-tip-unique="112" class="id">Length</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>3</code></pre></td></tr></table>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs59" data-fsdocs-tip-unique="113" class="id">hetLSem</span><span class="pn">.</span><span class="pn">[</span><span class="n">2</span><span class="pn">]</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>R semantic type &lt;ScalarType&gt;
+
+[1] 123
+</code></pre></td></tr></table>
+<p>If the list has named items, you may also dot in using a string name.</p>
+<h2><a name="Data-Frames" class="anchor" href="#Data-Frames">Data Frames</a></h2>
+<p>Data frames are a core base type in R. Internally, they are simply lists.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs62" data-fsdocs-tip-unique="114" class="id">iris</span> <span class="o">=</span> <span data-fsdocs-tip="fs46" data-fsdocs-tip-unique="115" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs63" data-fsdocs-tip-unique="116" class="id">iris</span><span class="pn">.</span><span data-fsdocs-tip="fs64" data-fsdocs-tip-unique="117" class="id">AsDataFrame</span><span class="pn">(</span><span class="pn">)</span>
+
+<span data-fsdocs-tip="fs62" data-fsdocs-tip-unique="118" class="id">iris</span><span class="pn">.</span><span data-fsdocs-tip="fs65" data-fsdocs-tip-unique="119" class="id">Names</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>[|Some "Sepal.Length"; Some "Sepal.Width"; Some "Petal.Length";
+  Some "Petal.Width"; Some "Species"|]</code></pre></td></tr></table>
+<p>Columns may be accessed using <code>.Column</code>. The return type is a <code>Column</code>, which
+is a discriminated union of possible R data types.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span data-fsdocs-tip="fs62" data-fsdocs-tip-unique="120" class="id">iris</span><span class="pn">.</span><span data-fsdocs-tip="fs66" data-fsdocs-tip-unique="121" class="id">Column</span> <span class="s">&quot;Sepal.Width&quot;</span>
+</code></pre>
+<table class="pre"><tr><td><pre><code>NumericColumn { Inner = { Sexp = { ptr = 4865644544n } } }</code></pre></td></tr></table>
+<p>We use a DU because the column may be one of many data types, as internally the
+data frame is just a heterogeneous list with a class attached.</p>
+
+        <div popover class="fsdocs-tip" id="fs1">namespace RProvider</div>
+<div popover class="fsdocs-tip" id="fs2">module Operators
+
+from RProvider<br /><em>&lt;summary&gt;
+ Custom operators that make composing and working with
+ R symbolic expressions easier.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs3">namespace RProvider.datasets</div>
+<div popover class="fsdocs-tip" id="fs4">namespace RProvider.stats</div>
+<div popover class="fsdocs-tip" id="fs5">val fsi: FSharp.Compiler.Interactive.InteractiveSession</div>
+<div popover class="fsdocs-tip" id="fs6">member FSharp.Compiler.Interactive.InteractiveSession.AddPrinter: (&#39;T -&gt; string) -&gt; unit</div>
+<div popover class="fsdocs-tip" id="fs7">module FSIPrinters
+
+from RProvider<br /><em>&lt;summary&gt;
+ Print functions that may be used in
+ F# interactive to &#39;pretty-print&#39; R types to the
+ console window. Use in your scripts by
+ passing to `fsi.AddPrinter`.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs8">val rValue: expr: Abstractions.RExpr -&gt; string<br /><em>&lt;summary&gt;
+ Print any `SymbolicExpression` using R&#39;s built-in
+ `print` function.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs9">Multiple items<br />namespace FSharp<br /><br />--------------------<br />namespace Microsoft.FSharp</div>
+<div popover class="fsdocs-tip" id="fs10">namespace Microsoft.FSharp.Data</div>
+<div popover class="fsdocs-tip" id="fs11">namespace Microsoft.FSharp.Data.UnitSystems</div>
+<div popover class="fsdocs-tip" id="fs12">namespace Microsoft.FSharp.Data.UnitSystems.SI</div>
+<div popover class="fsdocs-tip" id="fs13">namespace Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols</div>
+<div popover class="fsdocs-tip" id="fs14">val i: Runtime.RTypes.Integer.Scalar.RIntScalar&lt;kg&gt;</div>
+<div popover class="fsdocs-tip" id="fs15">namespace RProvider.Runtime</div>
+<div popover class="fsdocs-tip" id="fs16">module RTypes
+
+from RProvider.Runtime<br /><em>&lt;summary&gt;
+ Types representing common R types, and
+ functions for working with them.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs17">module Integer
+
+from RProvider.Runtime.RTypes<br /><em>&lt;summary&gt;
+ Semantic types for integer vectors and scalars.
+ Supports arithmetic using R functions.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs18">module Scalar
+
+from RProvider.Runtime.RTypes.Integer<br /><em>&lt;summary&gt;
+ Scalar operations on integers in R. For int-based
+ arithmetic, R will always return real numbers.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs19">val fromInt: value: int&lt;&#39;u&gt; -&gt; Runtime.RTypes.Integer.Scalar.RIntScalar&lt;&#39;u&gt; option</div>
+<div popover class="fsdocs-tip" id="fs20">
+type kg = Data.UnitSystems.SI.UnitNames.kilogram</div>
+<div popover class="fsdocs-tip" id="fs21">module Option
+
+from Microsoft.FSharp.Core</div>
+<div popover class="fsdocs-tip" id="fs22">val get: option: &#39;T option -&gt; &#39;T</div>
+<div popover class="fsdocs-tip" id="fs23">val x: Runtime.RTypes.Real.Scalar.RRealScalar&lt;m&gt;</div>
+<div popover class="fsdocs-tip" id="fs24">module Real
+
+from RProvider.Runtime.RTypes<br /><em>&lt;summary&gt;
+ Types for expressing real numbers that are within
+ an R environment. Operations are zero-copy within R.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs25">module Scalar
+
+from RProvider.Runtime.RTypes.Real</div>
+<div popover class="fsdocs-tip" id="fs26">val fromFloat: value: float&lt;&#39;u&gt; -&gt; Runtime.RTypes.Real.Scalar.RRealScalar&lt;&#39;u&gt; option</div>
+<div popover class="fsdocs-tip" id="fs27">
+type m = Data.UnitSystems.SI.UnitNames.metre</div>
+<div popover class="fsdocs-tip" id="fs28">val y: Runtime.RTypes.Real.Scalar.RRealScalar&lt;s&gt;</div>
+<div popover class="fsdocs-tip" id="fs29">
+type s = Data.UnitSystems.SI.UnitNames.second</div>
+<div popover class="fsdocs-tip" id="fs30">val z: Runtime.RTypes.Real.Scalar.RRealScalar&lt;m/s&gt;</div>
+<div popover class="fsdocs-tip" id="fs31">val dist: Runtime.RTypes.Real.Vector.RRealVector&lt;m&gt;</div>
+<div popover class="fsdocs-tip" id="fs32">module Vector
+
+from RProvider.Runtime.RTypes.Real</div>
+<div popover class="fsdocs-tip" id="fs33">val fromFloats: items: float&lt;&#39;u&gt; seq -&gt; Runtime.RTypes.Real.Vector.RRealVector&lt;&#39;u&gt;<br /><em>&lt;summary&gt;
+ Send an F# sequence of floats to R.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs34">val speed: Runtime.RTypes.Real.Vector.RRealVector&lt;m/s&gt;</div>
+<div popover class="fsdocs-tip" id="fs35">val m: Abstractions.RExpr</div>
+<div popover class="fsdocs-tip" id="fs36">type R =
+  static member AIC: ?object: obj * ?k: obj * ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ARMAacf: ?ar: obj * ?ma: obj * ?lag_max: obj * ?pacf: obj -&gt; RExpr + 2 overloads
+  static member ARMAtoMA: ?ar: obj * ?ma: obj * ?lag_max: obj -&gt; RExpr + 2 overloads
+  static member BIC: ?object: obj * ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member Box_test: ?x: obj * ?lag: obj * ?``type`` : obj * ?fitdf: obj -&gt; RExpr + 2 overloads
+  static member C: ?object: obj * ?contr: obj * ?how_many: obj * ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member D: ?expr: obj * ?name: obj -&gt; RExpr + 2 overloads
+  static member DF2formula: ?x: obj * ?env: obj -&gt; RExpr + 2 overloads
+  static member Gamma: ?link: obj -&gt; RExpr + 2 overloads
+  static member HoltWinters: ?x: obj * ?alpha: obj * ?beta: obj * ?gamma: obj * ?seasonal: obj * ?start_periods: obj * ?l_start: obj * ?b_start: obj * ?s_start: obj * ?optim_start: obj * ?optim_control: obj -&gt; RExpr + 2 overloads
+  ...<br /><em>R statistical functions.</em></div>
+<div popover class="fsdocs-tip" id="fs37">R.median(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Median Value</em><br />R.median(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Median Value</em><br />R.median(?x: obj, ?na_rm: obj, ?paramArray: obj array) : Abstractions.RExpr<br /><em>Median Value</em></div>
+<div popover class="fsdocs-tip" id="fs38">val time: Runtime.RTypes.Real.Vector.RRealVector&lt;s&gt;</div>
+<div popover class="fsdocs-tip" id="fs39">val ex1: Runtime.RTypes.Real.Scalar.RRealScalar&lt;m&gt;</div>
+<div popover class="fsdocs-tip" id="fs40">val ex2: Runtime.RTypes.Real.Scalar.RRealScalar&lt;m s&gt;</div>
+<div popover class="fsdocs-tip" id="fs41">val ex3: Runtime.RTypes.Real.Scalar.RRealScalar&lt;/s&gt;</div>
+<div popover class="fsdocs-tip" id="fs42">module RExpr
+
+from RProvider<br /><em>&lt;summary&gt;
+ Functions for working with R expressions.
+&lt;/summary&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs43">val typedVectorByName: name: string -&gt; expr: Abstractions.RExpr -&gt; Runtime.RTypes.RScalar&lt;&#39;u&gt;</div>
+<div popover class="fsdocs-tip" id="fs44">val typedVectorByIndex: index: int -&gt; expr: Abstractions.RExpr -&gt; Runtime.RTypes.RScalar&lt;&#39;u&gt;</div>
+<div popover class="fsdocs-tip" id="fs45">val species: Runtime.RTypes.Factor.RFactor</div>
+<div popover class="fsdocs-tip" id="fs46">type R =
+  static member AirPassengers: RExpr
+  static member BJsales: RExpr
+  static member BJsales_lead: RExpr
+  static member BOD: RExpr
+  static member CO2: RExpr
+  static member ChickWeight: RExpr
+  static member DNase: RExpr
+  static member EuStockMarkets: RExpr
+  static member Formaldehyde: RExpr
+  static member HairEyeColor: RExpr
+  ...<br /><em>Base R datasets.</em></div>
+<div popover class="fsdocs-tip" id="fs47">property R.penguins: Abstractions.RExpr with get</div>
+<div popover class="fsdocs-tip" id="fs48">property Runtime.RTypes.Factor.RFactor.Levels: Lazy&lt;string list option&gt; with get</div>
+<div popover class="fsdocs-tip" id="fs49">property System.Lazy.Value: string list option with get</div>
+<div popover class="fsdocs-tip" id="fs50">property Runtime.RTypes.Factor.RFactor.Indices: Lazy&lt;int option array&gt; with get</div>
+<div popover class="fsdocs-tip" id="fs51">property Runtime.RTypes.Factor.RFactor.AsStringVector: Lazy&lt;string array&gt; with get</div>
+<div popover class="fsdocs-tip" id="fs52">property System.Lazy.Value: string array with get</div>
+<div popover class="fsdocs-tip" id="fs53">val hetL: Abstractions.RExpr</div>
+<div popover class="fsdocs-tip" id="fs54">type R =
+  static member ``!`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``!=`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``!_hexmode`` : ?a: obj -&gt; RExpr + 2 overloads
+  static member ``!_octmode`` : ?a: obj -&gt; RExpr + 2 overloads
+  static member ``$`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``$&lt;-`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``$&lt;-_POSIXlt`` : ?x: obj * ?name: obj * ?value: obj -&gt; RExpr + 2 overloads
+  static member ``$&lt;-_data_frame`` : ?x: obj * ?name: obj * ?value: obj -&gt; RExpr + 2 overloads
+  static member ``$_DLLInfo`` : ?x: obj * ?name: obj -&gt; RExpr + 2 overloads
+  static member ``$_package__version`` : ?x: obj * ?name: obj -&gt; RExpr + 2 overloads
+  ...<br /><em>Base R functions.</em></div>
+<div popover class="fsdocs-tip" id="fs55">R.list(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Lists - Generic and Dotted Pairs</em><br />R.list(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Lists - Generic and Dotted Pairs</em><br />R.list(?paramArray: obj array) : Abstractions.RExpr<br /><em>Lists - Generic and Dotted Pairs</em></div>
+<div popover class="fsdocs-tip" id="fs56">union case Option.Some: Value: &#39;T -&gt; Option&lt;&#39;T&gt;</div>
+<div popover class="fsdocs-tip" id="fs57">union case Option.None: Option&lt;&#39;T&gt;</div>
+<div popover class="fsdocs-tip" id="fs58">property Abstractions.RExpr.Type: Runtime.RTypes.RSemanticType with get</div>
+<div popover class="fsdocs-tip" id="fs59">val hetLSem: Runtime.RTypes.HeterogeneousList.HList</div>
+<div popover class="fsdocs-tip" id="fs60">member Abstractions.RExpr.AsList: unit -&gt; Runtime.RTypes.HeterogeneousList.HList</div>
+<div popover class="fsdocs-tip" id="fs61">property Runtime.RTypes.HeterogeneousList.HList.Length: int with get</div>
+<div popover class="fsdocs-tip" id="fs62">val iris: Runtime.RTypes.DataFrame.RFrame</div>
+<div popover class="fsdocs-tip" id="fs63">property R.iris: Abstractions.RExpr with get</div>
+<div popover class="fsdocs-tip" id="fs64">member Abstractions.RExpr.AsDataFrame: unit -&gt; Runtime.RTypes.DataFrame.RFrame</div>
+<div popover class="fsdocs-tip" id="fs65">property Runtime.RTypes.DataFrame.RFrame.Names: string option array with get</div>
+<div popover class="fsdocs-tip" id="fs66">member Runtime.RTypes.DataFrame.RFrame.Column: name: string -&gt; Runtime.RTypes.DataFrame.Column.Column</div>
+
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#Semantic-Types">
+      Semantic Types
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Numeric">
+      Numeric
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Scalars">
+      Scalars
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Vectors">
+      Vectors
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Arithmetic">
+      Arithmetic
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Named-vectors">
+      Named vectors
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Factors">
+      Factors
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Heterogeneous-Lists-HLists">
+      Heterogeneous Lists (HLists)
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Data-Frames">
+      Data Frames
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-copy-button.js"></script>
+
+</body>
+</html>
