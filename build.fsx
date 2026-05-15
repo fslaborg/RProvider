@@ -258,8 +258,7 @@ Target.create
         DotNet.exec
             id
             "fsdocs"
-            ("build --clean --eval --properties Configuration=Release --parameters fsdocs-package-version "
-             + release.NugetVersion)
+            "build --clean true --eval"
         |> ignore)
 
 // --------------------------------------------------------------------------------------
