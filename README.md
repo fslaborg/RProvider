@@ -17,7 +17,7 @@ The R Provider discovers R packages that are available in your R installation an
 
 Package | Stable | Prerelease
 --- | --- | ---
-RProvider | [![NuGet Version](https://img.shields.io/nuget/v/RProvider)](https://www.nuget.org/packages/bristlecone/) | [![NuGet Version](https://img.shields.io/nuget/vpre/RProvider)](https://www.nuget.org/packages/bristlecone/)
+RProvider | [![NuGet Version](https://img.shields.io/nuget/v/RProvider)](https://www.nuget.org/packages/rprovider/) | [![NuGet Version](https://img.shields.io/nuget/vpre/RProvider)](https://www.nuget.org/packages/rprovider/)
 
 ## Requirements
 
