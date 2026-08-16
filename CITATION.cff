@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - name: "RProvider contributors"
+  - family-names: "Martin"
+    given-names: "Andrew C."
+    orcid: "https://orcid.org/0000-0001-5540-6161"
+title: "RProvider: An F# Type Provider for R"
+version: "3.0.0"
+date-released: "2026-05-15"
+url: "https://github.com/fslaborg/RProvider"
