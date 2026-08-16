@@ -1,5 +1,6 @@
 # F# R Provider
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21964392.svg)](https://doi.org/10.5281/zenodo.21964392)
 [![Discord](https://img.shields.io/discord/836161044501889064?color=purple&label=Join%20our%20Discord%21&logo=discord&logoColor=white)](https://discord.gg/VUpfpzfBmd)
 [![Github Actions](https://github.com/fslaborg/RProvider/actions/workflows/push.yml/badge.svg?branch=master)](https://github.com/fslaborg/RProvider/actions/workflows/push.yml)
 
