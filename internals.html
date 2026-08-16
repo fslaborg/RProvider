@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" data-root="https://fslab.org/RProvider/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="BlueMountain Capital;FsLab" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="RProvider">
+    <meta property="og:title" content="How does it work?
+" />
+    <meta property="og:url" content="https://fslab.org/RProvider/internals.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="https://fslab.org/RProvider/">
+    <meta name="twitter:title" content="How does it work?
+">
+    
+    <title>How does it work?
+ | RProvider</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fslab.org/RProvider/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-details-set-expanded.js"></script>
+    <link href="https://fslab.org/RProvider/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fslab.org/RProvider/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+                    Repository</a></li>
+                <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header ">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header active">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://fslab.org/RProvider/">
+            <img alt="Logo" src="https://fslab.org/RProvider/img/logo.png">
+            <strong>RProvider</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/fslaborg/RProvider/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+            Repository</a></li>
+        <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header ">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header active">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        
+<h1><a name="How-does-it-work" class="anchor" href="#How-does-it-work">How does it work?</a></h1>
+<h2><a name="How-do-we-call-into-R" class="anchor" href="#How-do-we-call-into-R">How do we call into R?</a></h2>
+<p>The RProvider binds to the native R C API within the calling process (using <a href="https://github.com/AndrewIOM/fsharp-r-bridge/">RBridge</a>).  This happens in several places:</p>
+<ul>
+<li>In the IDE, to provide IntelliSense for packages/functions/parameters.</li>
+<li>In the F# compiler, to generate code that calls the R functionality you are calling.</li>
+<li>In your resulting binary, to execute the generated code.</li>
+<li>In F# Interactive, to do all of the above interactively.</li>
+</ul>
+<h2><a name="How-does-RProvider-rely-on-RBridge" class="anchor" href="#How-does-RProvider-rely-on-RBridge">How does RProvider rely on RBridge?</a></h2>
+<p>RBridge allows R functionality to be called from .NET, and exposes a type that represents R values (RBridge.SymbolicExpression). R code may be executed by passing the code as a string into an eval method. From the RProvider, we introspect on available R packages and functions and expose them as members of provided types.  You can then call them just like regular .NET functions, with IntelliSense and compile-time checking. RBridge handles raw R interop and basic structural elements of R types. RProvider adds a semantic layer on top of this that provides a richer representation of R expression types and operations.</p>
+<h2><a name="How-do-we-expose-R-packages" class="anchor" href="#How-do-we-expose-R-packages">How do we expose R packages?</a></h2>
+<p>RProvider determines the set of installed packages in your R installation and exposes them as namespaces under the root RProvider namespace.  This allows you to 'open' the namespaces you want to use as if they were regular .NET namespaces.</p>
+<p>Under the namespace for a given package, RProvider exposes a single static type called "R", which contains static methods mirroring each of the functions and values that exist in the package.  This means that the members under "R." will be the union of available functions in all of the package namespaces you have opened.</p>
+<h2><a name="Is-it-Statically-Typed" class="anchor" href="#Is-it-Statically-Typed">Is it Statically Typed?</a></h2>
+<p>Kind of.  It is statically type checked to the extent that it can be given the type information available from R.  In practice, this means that the F# compiler and IDE statically checks that the function you are calling exists in the package you are calling.  In some cases, we can also determine that you are not passing too many arguments to the function, though common use of ... (aka varargs/params) in R functions defeats that in many cases.</p>
+<p>R is dynamically typed, so we cannot determine what the types of function arguments are supposed to be.  So all arguments are of type obj.  R functions can also be written such that they will work even if arguments that do not have default values are omitted, so we expose each argument as optional.  And for R functions that accept a ... argument, we expose a paramarray argument that allows any number of additional arguments to be passed.  In that case, you can basically pass any number of arguments to the function.</p>
+
+        
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#How-does-it-work">
+      How does it work?
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#How-do-we-call-into-R">
+      How do we call into R?
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#How-does-RProvider-rely-on-RBridge">
+      How does RProvider rely on RBridge?
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#How-do-we-expose-R-packages">
+      How do we expose R packages?
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Is-it-Statically-Typed">
+      Is it Statically Typed?
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-copy-button.js"></script>
+
+</body>
+</html>

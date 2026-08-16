@@ -1,0 +1,18 @@
+# RProvider
+
+## Docs
+
+- [Developer notes](https://fslab.org/RProvider/devnotes.md)
+- [Reading and writing R data files](https://fslab.org/RProvider/reading-rdata.md)
+- [F# R Type Provider](https://fslab.org/RProvider/index.md)
+- [Plots and graphics](https://fslab.org/RProvider/plots.md)
+- [Quickstart: stats](https://fslab.org/RProvider/quickstart-base.md)
+- [Passing Data into R functions from F#](https://fslab.org/RProvider/passing-data.md)
+- [Installing](https://fslab.org/RProvider/installation.md)
+- [How does it work?](https://fslab.org/RProvider/internals.md)
+- [R Expressions](https://fslab.org/RProvider/expressions.md)
+- [Operators](https://fslab.org/RProvider/operators.md)
+- [R Semantic Types](https://fslab.org/RProvider/semantic-types.md)
+- [R Packages and Environments](https://fslab.org/RProvider/packages.md)
+- [Whats and Whys](https://fslab.org/RProvider/whatwhy.md)
+- [Diagnostics and debugging](https://fslab.org/RProvider/diagnostics.md)

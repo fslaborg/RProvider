@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-root="https://fslab.org/RProvider/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="BlueMountain Capital;FsLab" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="RProvider">
+    <meta property="og:title" content="Diagnostics and debugging
+" />
+    <meta property="og:url" content="https://fslab.org/RProvider/diagnostics.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="https://fslab.org/RProvider/">
+    <meta name="twitter:title" content="Diagnostics and debugging
+">
+    
+    <title>Diagnostics and debugging
+ | RProvider</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fslab.org/RProvider/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-details-set-expanded.js"></script>
+    <link href="https://fslab.org/RProvider/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fslab.org/RProvider/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+                    Repository</a></li>
+                <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header ">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header active">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://fslab.org/RProvider/">
+            <img alt="Logo" src="https://fslab.org/RProvider/img/logo.png">
+            <strong>RProvider</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/fslaborg/RProvider/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+            Repository</a></li>
+        <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header ">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Guides
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header active">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        
+<h1><a name="Diagnostics-and-debugging" class="anchor" href="#Diagnostics-and-debugging">Diagnostics and debugging</a></h1>
+<p>The R type provider uses a common logging system across all of its components.
+The design-time, runtime, and server instances all log to a common log file.</p>
+<p>The logfile is disabled by default. It is enabled by setting the environment
+variable <code>RPROVIDER_LOG</code> to <code>true</code> (/ <code>on</code> / <code>1</code>).</p>
+<p>If RProvider is not working correctly, the log file may give you some hints on what is wrong and provide details
+that you can send when <a href="https://github.com/fslaborg/RProvider/issues">submitting an issue</a>.</p>
+<h2><a name="Log-location" class="anchor" href="#Log-location">Log location</a></h2>
+<p>The rprovider.log file will be created and appended
+to depending on the OS it is run on. On macOS, the log will also display in the Console app that is an included macOS utility.</p>
+<ul>
+<li>macOS: ~/Library/Logs/\RProvider/rprovider.log</li>
+<li>Windows: %LOCALAPPDATA%\RProvider\rprovider.log</li>
+<li>Linux: ~/.local/state/RProvider/rprovider.log</li>
+</ul>
+<h2><a name="To-enable-logging" class="anchor" href="#To-enable-logging">To enable logging</a></h2>
+<p>Logging is controlled by a single environment variable:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">RPROVIDER_LOG=true
+</code></pre></td></tr></table>
+<h3><a name="Windows" class="anchor" href="#Windows">Windows</a></h3>
+<p>To set on Windows:
+1. Open System Properties → Advanced → Environment Variables
+2. Under User variables, click New…
+3. Add:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">Name</span><span class="pn">:</span>  <span class="id">RPROVIDER_LOG</span>
+<span class="id">Value</span><span class="pn">:</span> <span class="k">true</span>
+</code></pre>
+<ol>
+<li>Restart Visual Studio / Code / your IDE so that it picks up the new environment variable.</li>
+</ol>
+<h3><a name="macOS" class="anchor" href="#macOS">macOS</a></h3>
+<p>On macOS, apps do not inherit Terminal environment variables. You must therefore set the environment variable and launch your IDE from the same terminal session. For example:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">export RPROVIDER_LOG=true
+open -n /Applications/Visual\ Studio\ Code.app
+</code></pre></td></tr></table>
+<h3><a name="Linux" class="anchor" href="#Linux">Linux</a></h3>
+<p>Similar to macOS, to set temporarily and launch VS Code:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">export RPROVIDER_LOG=true
+code .
+</code></pre></td></tr></table>
+
+        
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#Diagnostics-and-debugging">
+      Diagnostics and debugging
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Log-location">
+      Log location
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#To-enable-logging">
+      To enable logging
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Windows">
+      Windows
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#macOS">
+      macOS
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Linux">
+      Linux
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-copy-button.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" data-root="https://fslab.org/RProvider/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="BlueMountain Capital;FsLab" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="RProvider">
+    <meta property="og:title" content="Reading and writing R data files
+" />
+    <meta property="og:url" content="https://fslab.org/RProvider/reading-rdata.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="https://fslab.org/RProvider/">
+    <meta name="twitter:title" content="Reading and writing R data files
+">
+    
+    <title>Reading and writing R data files
+ | RProvider</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fslab.org/RProvider/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="https://fslab.org/RProvider/content/fsdocs-details-set-expanded.js"></script>
+    <link href="https://fslab.org/RProvider/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fslab.org/RProvider/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+                    Repository</a></li>
+                <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header ">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header active">
+  Guides
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header ">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://fslab.org/RProvider/">
+            <img alt="Logo" src="https://fslab.org/RProvider/img/logo.png">
+            <strong>RProvider</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/fslaborg/RProvider/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/fslaborg/RProvider/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/fslaborg/RProvider/">Source
+            Repository</a></li>
+        <li class="nav-header ">
+  Overview
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/whatwhy.html">
+    Whats and Whys
+
+  </a>
+</li>             
+<li class="nav-header ">
+  Getting Started
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/installation.html">
+    Installing
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/quickstart-base.html">
+    Quickstart: stats
+  </a>
+</li>             
+<li class="nav-header ">
+  Core Concepts
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/expressions.html">
+    R Expressions
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/semantic-types.html">
+    R Semantic Types
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/passing-data.html">
+    Passing Data into R functions from F#
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/operators.html">
+    Operators
+
+  </a>
+</li>             
+<li class="nav-header active">
+  Guides
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="https://fslab.org/RProvider/reading-rdata.html">
+    Reading and writing R data files
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/plots.html">
+    Plots and graphics
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/packages.html">
+    R Packages and Environments
+  </a>
+</li>             
+<li class="nav-header ">
+  Advanced
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/devnotes.html">
+    Developer notes
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/diagnostics.html">
+    Diagnostics and debugging
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="https://fslab.org/RProvider/internals.html">
+    How does it work?
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fslab.org/RProvider/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="pp">#r</span> <span class="s">&quot;nuget: RProvider, 0.0.1-local&quot;</span>
+</code></pre>
+<h1><a name="Reading-and-writing-R-data-files" class="anchor" href="#Reading-and-writing-R-data-files">Reading and writing R data files</a></h1>
+<p>When using R, you can save and load data sets as <code>*.rdata</code> and <code>*.rds</code> files.
+RProvider has an RData provider that enables you to work with statically typed
+<code>rdata</code> files (<code>.rds</code> are not supported yet; PRs welcome).</p>
+<h2><a name="Working-with-rdata-files" class="anchor" href="#Working-with-rdata-files">Working with .rdata files</a></h2>
+<p>Let's say that you have some data in R and want to pass them to F#. To do that, you
+can use the <code>save</code> function in R. The following R snippet creates a simple <code>*.rdata</code>
+file containing a couple of symbols from the sample <code>volcano</code> data set:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="R">require(datasets)
+volcanoList &lt;- unlist(as.list(volcano))
+volcanoMean &lt;- mean(volcanoList)
+symbols &lt;- c("volcano", "volcanoList", "volcanoMean")
+save(list=symols, file="C:/data/sample.rdata")
+</code></pre></td></tr></table>
+<h3><a name="Loading-in-F" class="anchor" href="#Loading-in-F">Loading in F#</a></h3>
+<p>To import the data on the F# side, you can use the <code>RData</code> type provider that is
+available in the <code>RProvider</code> namespace. It takes a static parameter specifying the
+path of the file and generates a type that exposes all the
+saved values as static members.</p>
+<p>Note. You may use absolute or relative paths. If using a relative path, it is
+best practice to include <code>ResolutionFolder = __SOURCE_DIRECTORY__</code> as below, because
+this makes the file resolution happen deterministically relative to the source file,
+whether that is an F# script, library, or app.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span data-fsdocs-tip="fs1" data-fsdocs-tip-unique="1" class="id">RProvider</span>
+
+<span class="k">type</span> <span data-fsdocs-tip="fs2" data-fsdocs-tip-unique="2" class="rt">Sample</span> <span class="o">=</span> <span data-fsdocs-tip="fs3" data-fsdocs-tip-unique="3" class="rt">RData</span><span class="pn">&lt;</span><span class="s">&quot;data/sample.rdata&quot;</span><span class="pn">,</span> <span class="fn">ResolutionFolder</span> <span class="o">=</span> <span class="k">__SOURCE_DIRECTORY__</span><span class="pn">&gt;</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs4" data-fsdocs-tip-unique="4" class="id">sample</span> <span class="o">=</span> <span data-fsdocs-tip="fs2" data-fsdocs-tip-unique="5" class="fn">Sample</span><span class="pn">(</span><span class="pn">)</span>
+
+<span class="c">// Access saved values directly as F# values</span>
+<span data-fsdocs-tip="fs4" data-fsdocs-tip-unique="6" class="id">sample</span><span class="pn">.</span><span data-fsdocs-tip="fs5" data-fsdocs-tip-unique="7" class="id">volcano</span>
+<span data-fsdocs-tip="fs4" data-fsdocs-tip-unique="8" class="id">sample</span><span class="pn">.</span><span data-fsdocs-tip="fs6" data-fsdocs-tip-unique="9" class="id">volcanoList</span>
+<span data-fsdocs-tip="fs4" data-fsdocs-tip-unique="10" class="id">sample</span><span class="pn">.</span><span data-fsdocs-tip="fs7" data-fsdocs-tip-unique="11" class="id">volcanoMean</span>
+</code></pre>
+<p>When accessed, the type provider automatically converts the data from the R format
+to F# format. In the above example, <code>volcanoList</code> is imported as <code>float[]</code> and
+the <code>volcanoMean</code> value is a <code>float</code>, as it is a single-item list in R.
+For the <code>sample.volcano</code> value, the R provider does not have a default conversion
+and so it is exposed as <code>SymbolicExpression</code>.</p>
+<p>When you have multiple <code>*.rdata</code> files containing data in the same format, you can
+pick one of them as a sample (which will be used to determine the fields of the type)
+and then pass the file name to the constructor of the generated type to load it.
+For example, if we had files <code>data/sample_1.rdata</code> to <code>data/sample_10.rdata</code>, we could
+read them as:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span data-fsdocs-tip="fs8" data-fsdocs-tip-unique="12" class="id">means</span> <span class="o">=</span> 
+  <span class="pn">[</span> <span class="k">for</span> <span data-fsdocs-tip="fs9" data-fsdocs-tip-unique="13" class="fn">i</span> <span class="k">in</span> <span class="n">1</span> <span class="o">..</span> <span class="n">10</span> <span class="k">-&gt;</span>
+      <span class="k">let</span> <span data-fsdocs-tip="fs10" data-fsdocs-tip-unique="14" class="fn">data</span> <span class="o">=</span> <span data-fsdocs-tip="fs2" data-fsdocs-tip-unique="15" class="fn">Sample</span><span class="pn">(</span><span data-fsdocs-tip="fs11" data-fsdocs-tip-unique="16" class="fn">sprintf</span> <span class="s">&quot;data/sample_</span><span class="pf">%d</span><span class="s">.rdata&quot;</span> <span data-fsdocs-tip="fs9" data-fsdocs-tip-unique="17" class="fn">i</span><span class="pn">)</span>
+      <span data-fsdocs-tip="fs10" data-fsdocs-tip-unique="18" class="fn">data</span><span class="pn">.</span><span data-fsdocs-tip="fs7" data-fsdocs-tip-unique="19" class="id">volcanoMean</span><span class="pn">.</span><span class="pn">[</span><span class="n">0</span><span class="pn">]</span> <span class="pn">]</span>
+</code></pre>
+<h3><a name="Saving-from-F" class="anchor" href="#Saving-from-F">Saving from F#</a></h3>
+<p>If you perform data acquisition in F# and then want to pass the data to R, you
+can use the standard R functions for saving the <code>*.rdata</code> files. The easiest
+option is to call the <code>R.assign</code> function to define named values in the R environment
+and then use <code>R.save</code> to save the environment to a file:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// Calculate sum of square differences</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs12" data-fsdocs-tip-unique="20" class="id">avg</span> <span class="o">=</span> <span data-fsdocs-tip="fs4" data-fsdocs-tip-unique="21" class="id">sample</span><span class="pn">.</span><span data-fsdocs-tip="fs6" data-fsdocs-tip-unique="22" class="id">volcanoList</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs13" data-fsdocs-tip-unique="23" class="m">Array</span><span class="pn">.</span><span data-fsdocs-tip="fs14" data-fsdocs-tip-unique="24" class="id">choose</span> <span data-fsdocs-tip="fs15" data-fsdocs-tip-unique="25" class="fn">id</span> <span class="o">|&gt;</span> <span data-fsdocs-tip="fs13" data-fsdocs-tip-unique="26" class="m">Array</span><span class="pn">.</span><span data-fsdocs-tip="fs16" data-fsdocs-tip-unique="27" class="id">average</span>
+<span class="k">let</span> <span data-fsdocs-tip="fs17" data-fsdocs-tip-unique="28" class="id">sqrs</span> <span class="o">=</span> 
+  <span data-fsdocs-tip="fs4" data-fsdocs-tip-unique="29" class="id">sample</span><span class="pn">.</span><span data-fsdocs-tip="fs6" data-fsdocs-tip-unique="30" class="id">volcanoList</span> 
+  <span class="o">|&gt;</span> <span data-fsdocs-tip="fs13" data-fsdocs-tip-unique="31" class="m">Array</span><span class="pn">.</span><span data-fsdocs-tip="fs18" data-fsdocs-tip-unique="32" class="id">map</span> <span class="pn">(</span><span class="k">fun</span> <span data-fsdocs-tip="fs19" data-fsdocs-tip-unique="33" class="fn">v</span> <span class="k">-&gt;</span> <span data-fsdocs-tip="fs20" data-fsdocs-tip-unique="34" class="fn">pown</span> <span class="pn">(</span><span data-fsdocs-tip="fs19" data-fsdocs-tip-unique="35" class="fn">v</span><span class="pn">.</span><span data-fsdocs-tip="fs21" data-fsdocs-tip-unique="36" class="id">Value</span> <span class="o">-</span> <span data-fsdocs-tip="fs12" data-fsdocs-tip-unique="37" class="id">avg</span><span class="pn">)</span> <span class="n">2</span><span class="pn">)</span>
+
+<span class="c">// Save the squares to an RData file</span>
+<span data-fsdocs-tip="fs22" data-fsdocs-tip-unique="38" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs23" data-fsdocs-tip-unique="39" class="id">assign</span><span class="pn">(</span><span class="s">&quot;volcanoDiffs&quot;</span><span class="pn">,</span> <span data-fsdocs-tip="fs17" data-fsdocs-tip-unique="40" class="id">sqrs</span><span class="pn">)</span>
+<span data-fsdocs-tip="fs22" data-fsdocs-tip-unique="41" class="rt">R</span><span class="pn">.</span><span data-fsdocs-tip="fs24" data-fsdocs-tip-unique="42" class="id">save</span><span class="pn">(</span><span data-fsdocs-tip="fs25" data-fsdocs-tip-unique="43" class="fn">list</span><span class="o">=</span><span class="pn">[</span> <span class="s">&quot;volcanoDiffs&quot;</span> <span class="pn">]</span><span class="pn">,</span> <span class="fn">file</span><span class="o">=</span><span class="s">&quot;volcano.rdata&quot;</span><span class="pn">)</span>
+</code></pre>
+<p>It is recommended to use the <code>list</code> parameter of the <code>save</code> function to specify the
+names of the symbols that should be saved, rather than saving <em>all</em> symbols. The R
+provider uses additional temporary symbols and so the saved file would otherwise contain
+unnecessary fileds.</p>
+<p>Once you save the file using the above command, you can re-load it again using
+the <code>RData</code> type provider, such as: <code>new RData&lt;"C:/temp/volcano.rdata"&gt;()</code>.</p>
+
+        <div popover class="fsdocs-tip" id="fs1">namespace RProvider</div>
+<div popover class="fsdocs-tip" id="fs2">type Sample = RData&lt;...&gt;</div>
+<div popover class="fsdocs-tip" id="fs3">type RData<br /><em>&lt;summary&gt;Typed representation of an .rdata file.&lt;/summary&gt;
+           &lt;param name=&#39;FileName&#39;&gt;Location of an .rdata file from which to infer structure.&lt;/param&gt;
+           &lt;param name=&#39;ResolutionFolder&#39;&gt;If using a relative path, the folder from which to resolve the relative path.&lt;/param&gt;</em></div>
+<div popover class="fsdocs-tip" id="fs4">val sample: RData&lt;...&gt;</div>
+<div popover class="fsdocs-tip" id="fs5">property RData&lt;...&gt;.volcano: Option&lt;float&gt; array2d with get</div>
+<div popover class="fsdocs-tip" id="fs6">property RData&lt;...&gt;.volcanoList: Option&lt;float&gt; array with get</div>
+<div popover class="fsdocs-tip" id="fs7">property RData&lt;...&gt;.volcanoMean: Option&lt;float&gt; array with get</div>
+<div popover class="fsdocs-tip" id="fs8">val means: Option&lt;float&gt; list</div>
+<div popover class="fsdocs-tip" id="fs9">val i: int</div>
+<div popover class="fsdocs-tip" id="fs10">val data: RData&lt;...&gt;</div>
+<div popover class="fsdocs-tip" id="fs11">val sprintf: format: Printf.StringFormat&lt;&#39;T&gt; -&gt; &#39;T</div>
+<div popover class="fsdocs-tip" id="fs12">val avg: float</div>
+<div popover class="fsdocs-tip" id="fs13">module Array
+
+from Microsoft.FSharp.Collections</div>
+<div popover class="fsdocs-tip" id="fs14">val choose: chooser: (&#39;T -&gt; &#39;U option) -&gt; array: &#39;T array -&gt; &#39;U array</div>
+<div popover class="fsdocs-tip" id="fs15">val id: x: &#39;T -&gt; &#39;T</div>
+<div popover class="fsdocs-tip" id="fs16">val average: array: &#39;T array -&gt; &#39;T (requires member (+) and member DivideByInt and member Zero)</div>
+<div popover class="fsdocs-tip" id="fs17">val sqrs: float array</div>
+<div popover class="fsdocs-tip" id="fs18">val map: mapping: (&#39;T -&gt; &#39;U) -&gt; array: &#39;T array -&gt; &#39;U array</div>
+<div popover class="fsdocs-tip" id="fs19">val v: Option&lt;float&gt;</div>
+<div popover class="fsdocs-tip" id="fs20">val pown: x: &#39;T -&gt; n: int -&gt; &#39;T (requires member One and member ( * ) and member (/))</div>
+<div popover class="fsdocs-tip" id="fs21">property Option.Value: float with get</div>
+<div popover class="fsdocs-tip" id="fs22">type R =
+  static member ``!`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``!=`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``!_hexmode`` : ?a: obj -&gt; RExpr + 2 overloads
+  static member ``!_octmode`` : ?a: obj -&gt; RExpr + 2 overloads
+  static member ``$`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``$&lt;-`` : ?paramArray: obj array -&gt; RExpr + 2 overloads
+  static member ``$&lt;-_POSIXlt`` : ?x: obj * ?name: obj * ?value: obj -&gt; RExpr + 2 overloads
+  static member ``$&lt;-_data_frame`` : ?x: obj * ?name: obj * ?value: obj -&gt; RExpr + 2 overloads
+  static member ``$_DLLInfo`` : ?x: obj * ?name: obj -&gt; RExpr + 2 overloads
+  static member ``$_package__version`` : ?x: obj * ?name: obj -&gt; RExpr + 2 overloads
+  ...<br /><em>Base R functions.</em></div>
+<div popover class="fsdocs-tip" id="fs23">R.assign(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Assign a Value to a Name</em><br />R.assign(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Assign a Value to a Name</em><br />R.assign(?x: obj, ?value: obj, ?pos: obj, ?envir: obj, ?inherits: obj, ?immediate: obj) : Abstractions.RExpr<br /><em>Assign a Value to a Name</em></div>
+<div popover class="fsdocs-tip" id="fs24">R.save(paramsByName: List&lt;string * obj&gt;) : Abstractions.RExpr<br /><em>Save R Objects</em><br />R.save(paramsByName: System.Collections.Generic.IDictionary&lt;string,obj&gt;) : Abstractions.RExpr<br /><em>Save R Objects</em><br />R.save(?list: obj, ?file: obj, ?ascii: obj, ?version: obj, ?envir: obj, ?compress: obj, ?compression__level: obj, ?eval_promises: obj, ?precheck: obj, ?paramArray: obj array) : Abstractions.RExpr<br /><em>Save R Objects</em></div>
+<div popover class="fsdocs-tip" id="fs25">type &#39;T list = List&lt;&#39;T&gt;</div>
+
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#Reading-and-writing-R-data-files">
+      Reading and writing R data files
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Working-with-rdata-files">
+      Working with .rdata files
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Loading-in-F">
+      Loading in F#
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Saving-from-F">
+      Saving from F#
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-tips.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-theme.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-search.js"></script>
+<script type="module" src="https://fslab.org/RProvider/content/fsdocs-copy-button.js"></script>
+
+</body>
+</html>
