@@ -9,3 +9,10 @@ title: "RProvider: An F# Type Provider for R"
 version: "3.0.0"
 date-released: "2026-05-15"
 url: "https://github.com/fslaborg/RProvider"
+identifiers:
+  - description: Archive of all versions of RProvider
+    type: doi
+    value: "10.5281/zenodo.21964391"
+  - description: Archived 3.0.0 release
+    type: doi
+    value: "10.5281/zenodo.21964392"
